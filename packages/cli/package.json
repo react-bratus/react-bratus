@@ -16,7 +16,7 @@
   "author": "Stephan Boersma",
   "license": "MIT",
   "dependencies": {
-    "@my-prototype/server": "^1.1.5",
+    "@stephanboersma/server": "^1.1.6-alpha.0",
     "chalk": "^4.1.0",
     "clear": "^0.1.0",
     "commander": "^7.0.0",

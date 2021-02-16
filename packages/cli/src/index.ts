@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import * as program from 'commander';
-import Server from '@my-prototype/server';
+import Server from '@stephanboersma/server';
 
 program
   .version('1.0.7')

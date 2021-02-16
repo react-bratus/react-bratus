@@ -7,7 +7,7 @@ class Server {
   public listen(): void {
     this.app.use(
       express.static(
-        path.join(__dirname, '../node_modules/@my-prototype/app/build'),
+        path.join(__dirname, '../node_modules/@stephanboersma/app/build'),
       ),
     );
 
@@ -21,7 +21,7 @@ class Server {
       res.sendFile(
         path.join(
           __dirname,
-          '../node_modules/@my-prototype/app/build',
+          '../node_modules/@stephanboersma/app/build',
           'index.html',
         ),
       );

@@ -1,5 +1,6 @@
 {
   "name": "@stephanboersma/my-prototype",
+  "private": true,
   "workspaces": [
     "packages/*"
   ],

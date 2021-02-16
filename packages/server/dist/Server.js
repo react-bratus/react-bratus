@@ -10,7 +10,7 @@ class Server {
         this.app = express_1.default();
     }
     listen() {
-        this.app.use(express_1.default.static(path_1.default.join(__dirname, '../node_modules/@my-prototype/app/build')));
+        this.app.use(express_1.default.static(path_1.default.join(__dirname, '../node_modules/@stephanboersma/app/build')));
         this.app.get('/ping', (_req, res) => {
             const result = {
                 dir: process.cwd(),
@@ -18,7 +18,7 @@ class Server {
             res.status(200).send(result);
         });
         this.app.get('/', (_req, res) => {
-            res.sendFile(path_1.default.join(__dirname, '../node_modules/@my-prototype/app/build', 'index.html'));
+            res.sendFile(path_1.default.join(__dirname, '../node_modules/@stephanboersma/app/build', 'index.html'));
         });
         this.app.listen(3000);
         console.log('Listening on port 3000');

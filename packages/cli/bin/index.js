@@ -24,7 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const program = __importStar(require("commander"));
-const server_1 = __importDefault(require("@my-prototype/server"));
+const server_1 = __importDefault(require("@stephanboersma/server"));
 program
     .version('1.0.7')
     .description('Prototype CLI for thesis')
