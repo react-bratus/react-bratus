@@ -1,0 +1,32 @@
+{
+  "name": "@my-prototype/cli",
+  "version": "1.0.0",
+  "description": "Prototype cli",
+  "main": "./bin/index.js",
+  "bin": {
+    "prototype": "./bin/index.js"
+  },
+  "scripts": {
+    "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "create": "npm run build",
+    "build": "tsc -p .",
+    "local": "prototype",
+    "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
+  },
+  "author": "Stephan Boersma",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "clear": "^0.1.0",
+    "commander": "^7.0.0",
+    "figlet": "^1.5.0",
+    "path": "^0.12.7",
+    "@my-prototype/server": "1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.25",
+    "nodemon": "^2.0.7",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  }
+}

@@ -1,0 +1,14 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+      "target": "es2018",
+      "module": "commonjs",
+      "declaration": true,
+      "outDir": "bin",
+      "rootDir": "src",
+      "types": ["node"],
+      "resolveJsonModule": true
+    },
+    "include": ["./src/**/*.ts"],
+    "exclude": ["./bin"]
+}
