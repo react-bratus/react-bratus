@@ -1,6 +1,6 @@
 {
-  "name": "@my-prototype/app",
-  "version": "1.1.5",
+  "name": "@stephanboersma/app",
+  "version": "1.0.0",
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
@@ -42,5 +42,5 @@
   "author": "Stephan Boersma <boersma@live.dk>",
   "homepage": "",
   "license": "ISC",
-  "gitHead": "fe06f05489e1c217e5bb7a6586445c505d8991bc"
+  "gitHead": "93b99babbe7bc76544d6dd8ceff77725d802584e"
 }

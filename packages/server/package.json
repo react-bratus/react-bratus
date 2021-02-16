@@ -1,6 +1,6 @@
 {
-  "name": "@my-prototype/server",
-  "version": "1.1.5",
+  "name": "@stephanboersma/server",
+  "version": "1.0.0",
   "description": "Prototype client",
   "main": "./dist/index.js",
   "scripts": {
@@ -21,5 +21,5 @@
   "dependencies": {
     "express": "^4.17.1"
   },
-  "gitHead": "fe06f05489e1c217e5bb7a6586445c505d8991bc"
+  "gitHead": "93b99babbe7bc76544d6dd8ceff77725d802584e"
 }
