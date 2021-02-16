@@ -1,0 +1,130 @@
+0 silly argv {
+0 silly argv   _: [ 'publish' ],
+0 silly argv   composed: 'publish',
+0 silly argv   lernaVersion: '3.22.1',
+0 silly argv   '$0': 'lerna',
+0 silly argv   bump: 'patch'
+0 silly argv }
+1 notice cli v3.22.1
+2 verbose rootPath /Users/stephanboersma/Documents/Development/thesis
+3 verbose session 898b3dbf05b778b2
+4 verbose user-agent lerna/3.22.1/node@v14.15.1+x64 (darwin)
+5 silly argv {
+5 silly argv   _: [ 'publish' ],
+5 silly argv   composed: 'publish',
+5 silly argv   lernaVersion: '3.22.1',
+5 silly argv   bump: 'patch'
+5 silly argv }
+6 verbose rootPath /Users/stephanboersma/Documents/Development/thesis
+7 info current version 1.1.2
+8 silly isAnythingCommitted
+9 verbose isAnythingCommitted 1
+10 silly currentBranch
+11 verbose currentBranch main
+12 silly remoteBranchExists
+13 silly isBehindUpstream
+14 silly isBehindUpstream main is behind origin/main by 0 commit(s) and ahead by 1
+15 silly hasTags
+16 verbose hasTags true
+17 silly git-describe.sync "v1.1.2-1-gac71418" => {"lastTagName":"v1.1.2","lastVersion":"v1.1.2","refCount":"1","sha":"ac71418","isDirty":false}
+18 info Looking for changed packages since v1.1.2
+19 silly checking diff packages/app
+20 silly found diff in packages/app/package.json
+21 verbose filtered diff [ 'packages/app/package.json' ]
+22 silly checking diff packages/cli
+23 silly found diff in packages/cli/package.json
+24 verbose filtered diff [ 'packages/cli/package.json' ]
+25 silly checking diff packages/parser
+26 silly found diff in packages/parser/package.json
+27 verbose filtered diff [ 'packages/parser/package.json' ]
+28 silly checking diff packages/server
+29 silly found diff in packages/server/package.json
+30 verbose filtered diff [ 'packages/server/package.json' ]
+31 verbose updated @my-prototype/app
+32 verbose updated @my-prototype/cli
+33 verbose updated @my-prototype/parser
+34 verbose updated @my-prototype/server
+35 verbose git-describe undefined => "v1.1.2-1-gac71418"
+36 silly git-describe parsed => {"lastTagName":"v1.1.2","lastVersion":"v1.1.2","refCount":"1","sha":"ac71418","isDirty":false}
+37 info execute Skipping releases
+38 silly lifecycle No script for "preversion" in "@stephan/my-prototype", continuing
+39 silly lifecycle No script for "preversion" in "@my-prototype/app", continuing
+40 silly lifecycle No script for "preversion" in "@my-prototype/parser", continuing
+41 silly lifecycle No script for "version" in "@my-prototype/parser", continuing
+42 silly lifecycle No script for "version" in "@my-prototype/app", continuing
+43 silly lifecycle No script for "preversion" in "@my-prototype/server", continuing
+44 silly lifecycle No script for "version" in "@my-prototype/server", continuing
+45 silly lifecycle No script for "preversion" in "@my-prototype/cli", continuing
+46 silly lifecycle No script for "version" in "@my-prototype/cli", continuing
+47 silly lifecycle No script for "version" in "@stephan/my-prototype", continuing
+48 silly gitAdd [
+48 silly gitAdd   'packages/parser/package.json',
+48 silly gitAdd   'packages/app/package.json',
+48 silly gitAdd   'packages/server/package.json',
+48 silly gitAdd   'packages/cli/package.json',
+48 silly gitAdd   'lerna.json'
+48 silly gitAdd ]
+49 silly gitCommit v1.1.3
+50 verbose git [ 'commit', '-m', 'v1.1.3' ]
+51 silly gitTag v1.1.3
+52 verbose git [ 'tag', 'v1.1.3', '-m', 'v1.1.3' ]
+53 silly lifecycle No script for "postversion" in "@my-prototype/app", continuing
+54 silly lifecycle No script for "postversion" in "@my-prototype/cli", continuing
+55 silly lifecycle No script for "postversion" in "@my-prototype/parser", continuing
+56 silly lifecycle No script for "postversion" in "@my-prototype/server", continuing
+57 silly lifecycle No script for "postversion" in "@stephan/my-prototype", continuing
+58 info git Pushing tags...
+59 silly gitPush origin main
+60 info publish Publishing packages to npm...
+61 info Verifying npm credentials
+62 verbose Retrieving npm user profile
+63 http fetch GET 200 https://registry.npmjs.org/-/npm/v1/user 833ms
+64 silly npm profile get received {"tfa":false,"name":"stephanboersma","email":"boersma@live.dk","email_verified":true,"created":"2021-02-09T11:00:51.641Z","updated":"2021-02-16T10:20:44.260Z","cidr_whitelist":null,"fullname":"Stephan Boersma","twitter":"","github":"stephanboersma"}
+65 silly get npm username received {"username":"stephanboersma","tfa":false,"name":"stephanboersma","email":"boersma@live.dk","email_verified":true,"created":"2021-02-09T11:00:51.641Z","updated":"2021-02-16T10:20:44.260Z","cidr_whitelist":null,"fullname":"Stephan Boersma","twitter":"","github":"stephanboersma"}
+66 silly verifyNpmPackageAccess
+67 http fetch GET 200 https://registry.npmjs.org/-/org/stephanboersma/package?format=cli 239ms
+68 warn The logged-in user does not have any previously-published packages, skipping permission checks...
+69 info Checking two-factor auth mode
+70 verbose Retrieving npm user profile
+71 http fetch GET 200 https://registry.npmjs.org/-/npm/v1/user 262ms
+72 silly npm profile get received {"tfa":false,"name":"stephanboersma","email":"boersma@live.dk","email_verified":true,"created":"2021-02-09T11:00:51.641Z","updated":"2021-02-16T10:20:44.260Z","cidr_whitelist":null,"fullname":"Stephan Boersma","twitter":"","github":"stephanboersma"}
+73 silly 2FA false
+74 silly getCurrentSHA
+75 verbose getCurrentSHA 87d16f494bea814451ffc5d5c7bd93fb3e37d4da
+76 silly lifecycle No script for "prepublish" in "@stephan/my-prototype", continuing
+77 silly lifecycle No script for "prepare" in "@stephan/my-prototype", continuing
+78 silly lifecycle No script for "prepublishOnly" in "@stephan/my-prototype", continuing
+79 silly lifecycle No script for "prepack" in "@stephan/my-prototype", continuing
+80 verbose pack-directory packages/app/build
+81 verbose pack-directory packages/parser
+82 verbose pack-directory packages/server
+83 silly lifecycle No script for "prepublish" in "@my-prototype/app", continuing
+84 silly lifecycle No script for "prepublish" in "@my-prototype/parser", continuing
+85 silly lifecycle No script for "prepublish" in "@my-prototype/server", continuing
+86 silly lifecycle No script for "prepare" in "@my-prototype/app", continuing
+87 silly lifecycle No script for "prepare" in "@my-prototype/parser", continuing
+88 silly lifecycle No script for "prepare" in "@my-prototype/server", continuing
+89 silly lifecycle No script for "prepublishOnly" in "@my-prototype/parser", continuing
+90 silly lifecycle No script for "prepublishOnly" in "@my-prototype/app", continuing
+91 silly lifecycle No script for "prepublishOnly" in "@my-prototype/server", continuing
+92 silly lifecycle No script for "prepack" in "@my-prototype/parser", continuing
+93 silly lifecycle No script for "prepack" in "@my-prototype/app", continuing
+94 silly lifecycle No script for "prepack" in "@my-prototype/server", continuing
+95 silly lifecycle No script for "postpack" in "@my-prototype/parser", continuing
+96 verbose packed packages/parser
+97 silly lifecycle No script for "postpack" in "@my-prototype/server", continuing
+98 verbose packed packages/server
+99 verbose pack-directory packages/cli
+100 silly lifecycle No script for "prepublish" in "@my-prototype/cli", continuing
+101 silly lifecycle No script for "prepare" in "@my-prototype/cli", continuing
+102 silly lifecycle No script for "prepublishOnly" in "@my-prototype/cli", continuing
+103 silly lifecycle No script for "prepack" in "@my-prototype/cli", continuing
+104 silly lifecycle No script for "postpack" in "@my-prototype/app", continuing
+105 verbose packed packages/app/build
+106 silly lifecycle No script for "postpack" in "@my-prototype/cli", continuing
+107 verbose packed packages/cli
+108 silly lifecycle No script for "postpack" in "@stephan/my-prototype", continuing
+109 verbose publish @my-prototype/app
+110 verbose publish @my-prototype/parser
+111 verbose publish @my-prototype/server
+112 error

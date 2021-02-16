@@ -1,9 +1,6 @@
 {
   "name": "@my-prototype/app",
   "version": "1.1.3",
-  "publishConfig": {
-    "directory": "build"
-  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
@@ -44,5 +41,6 @@
   "description": "> TODO: description",
   "author": "Stephan Boersma <boersma@live.dk>",
   "homepage": "",
-  "license": "ISC"
+  "license": "ISC",
+  "gitHead": "87d16f494bea814451ffc5d5c7bd93fb3e37d4da"
 }
