@@ -18,8 +18,8 @@
     "typescript": "^4.1.3"
   },
   "dependencies": {
-    "@stephanboersma/app": "^1.1.6-alpha.1",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "@stephanboersma/app": "^1.1.6-alpha.1"
   },
   "gitHead": "93b99babbe7bc76544d6dd8ceff77725d802584e"
 }
