@@ -1,6 +1,6 @@
 {
   "name": "@my-prototype/cli",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Prototype cli",
   "main": "./bin/index.js",
   "bin": {
@@ -16,7 +16,7 @@
   "author": "Stephan Boersma",
   "license": "MIT",
   "dependencies": {
-    "@my-prototype/server": "^1.1.0",
+    "@my-prototype/server": "^1.1.1",
     "chalk": "^4.1.0",
     "clear": "^0.1.0",
     "commander": "^7.0.0",
