@@ -33,7 +33,7 @@ const test = () => {
     .then((body) => console.log(body));
 };
 test();
-const App: React.FC = () => {
+function App(): JSX.Element {
   return (
     <Wrapper>
       <GlobalStyleProvider />
@@ -46,11 +46,11 @@ const App: React.FC = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          FUCK
+          Link
         </StyledLink>
       </Header>
     </Wrapper>
   );
-};
+}
 
 export default App;

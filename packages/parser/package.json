@@ -16,5 +16,12 @@
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   },
-  "gitHead": "93b99babbe7bc76544d6dd8ceff77725d802584e"
+  "gitHead": "93b99babbe7bc76544d6dd8ceff77725d802584e",
+  "dependencies": {
+    "@babel/parser": "^7.12.16",
+    "@babel/plugin-transform-typescript": "^7.12.16",
+    "@babel/traverse": "^7.12.13",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7"
+  }
 }

@@ -16,11 +16,13 @@
   "author": "Stephan Boersma",
   "license": "MIT",
   "dependencies": {
+    "@stephanboersma/parser": "^1.1.6-alpha.0",
     "@stephanboersma/server": "^1.1.6-alpha.2",
     "chalk": "^4.1.0",
     "clear": "^0.1.0",
     "commander": "^7.0.0",
     "figlet": "^1.5.0",
+    "fs": "^0.0.1-security",
     "path": "^0.12.7"
   },
   "devDependencies": {

@@ -1,6 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const add = (a, b) => a + b;
-console.log('This is going to be the parser: ', add(1, 2));
-exports.default = add;
+exports.default = void 0;
+var ASTParser_1 = require("./ASTParser");
+Object.defineProperty(exports, "default", { enumerable: true, get: function () { return __importDefault(ASTParser_1).default; } });
 //# sourceMappingURL=index.js.map
