@@ -11,12 +11,12 @@ class ASTParser {
 
   public parsePath(): void {
     const content = fs.readFileSync(this.path, 'utf8');
-    const ast = parse(content, {
+    const ast: any = parse(content, {
       sourceType: 'module',
       plugins: ['typescript', 'jsx'],
     });
     traverse(ast, {
-      enter(path) {
+      enter(path: any) {
         if (path.isJSXElement()) {
           console.log(path);
         }
