@@ -5,53 +5,28 @@ import * as fs from 'fs';
 import * as glob from 'glob';
 import * as _path from 'path';
 
-class ReactComponent {
-  public type: any = null;
-  public identifier: any = null;
-  public jsxElements: any[] = [];
-  public path: string | null = null;
-
-  public hasJSX(): boolean {
-    return this.jsxElements.length > 0;
-  }
-
-  public printRelatedComponents(): void {
-    this.jsxElements.forEach((element) => {
-      console.log(element.name.name);
-    });
-  }
-
-  public toString(): string {
-    let objectString = `${this.identifier.name} = {\n`;
-
-    objectString += `  path: ${this.path},\n`;
-    objectString += `  definedBy: ${this.type.type},\n`;
-    objectString += `  elements: [\n`;
-    this.jsxElements.forEach((element) => {
-      objectString += `    ${element.name.name},\n`;
-    });
-    objectString += `  ]\n`;
-    objectString += `}\n`;
-    return objectString;
-  }
-}
+import Graph from './Models/Graph';
+import ParsedFile from './Models/ParsedFile';
+import ReactComponent from './Models/ReactComponent';
 
 class ASTParser {
   private path: string;
-  public parsedFiles: any[] = [];
+  public parsedFiles: ParsedFile[] = [];
 
   constructor(sourcePath: string) {
     this.path = sourcePath;
     this.getFilesAndDirectories().then(async (files) => {
+      const allComponents: ReactComponent[] = [];
       for (let i = 0; i < files.length; i++) {
         const parsedFile = await this.parseFile(files[i]);
-        this.parsedFiles.push(parsedFile);
+        console.log(parsedFile);
+        if (parsedFile.hasComponents()) {
+          this.parsedFiles.push(parsedFile);
+          allComponents.push(...parsedFile.components);
+        }
       }
-      this.parsedFiles.forEach((parsedFile) => {
-        parsedFile.components.forEach((component: ReactComponent) => {
-          console.log(component.toString());
-        });
-      });
+      const graph: Graph = new Graph(allComponents);
+      fs.writeFileSync(`${process.cwd()}/graphData.json`, graph.toString());
     });
   }
 
@@ -66,18 +41,13 @@ class ASTParser {
     });
   }
 
-  private async parseFile(file: string): Promise<any> {
+  private async parseFile(file: string): Promise<ParsedFile> {
     return new Promise((resolve, reject) => {
-      const parsedFile: any = {
-        path: file,
-        imports: [],
-        components: [],
-        exports: [],
-      };
+      const parsedFile: ParsedFile = new ParsedFile(file);
       let currentObject: ReactComponent = new ReactComponent();
       try {
-        const fileContent: any = fs.readFileSync(file, 'utf8');
-        const ast: any = parse(fileContent, {
+        const fileContent: string = fs.readFileSync(file, 'utf8');
+        const ast = parse(fileContent, {
           sourceType: 'module',
           plugins: ['typescript', 'jsx'],
         });

@@ -1,4 +1,5 @@
 import express from 'express';
+import fs from 'fs';
 import path from 'path';
 
 class Server {
@@ -15,6 +16,9 @@ class Server {
     });
     this.app.get('/', (_req: express.Request, res: express.Response) => {
       res.sendFile(path.join(__dirname, '../../app/build', 'index.html'));
+    });
+    this.app.get('/data', (_req: express.Request, res: express.Response) => {
+      res.status(200).send(fs.readFileSync(`${process.cwd()}/graphData.json`));
     });
     this.app.listen(3000);
     console.log('Listening on port 3000');

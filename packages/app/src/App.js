@@ -12,6 +12,10 @@ const App = () => {
 
   useEffect(() => {
     activate(locale);
+    fetch('http://localhost:3000/data')
+      .then((res) => res.json())
+      .then(console.log)
+      .catch(console.log);
   }, [locale]);
   return (
     <I18nProvider i18n={i18n}>

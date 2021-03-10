@@ -26,48 +26,25 @@ const parser_1 = require("@babel/parser");
 const traverse_1 = __importDefault(require("@babel/traverse"));
 const fs = __importStar(require("fs"));
 const glob = __importStar(require("glob"));
-class ReactComponent {
-    constructor() {
-        this.type = null;
-        this.identifier = null;
-        this.jsxElements = [];
-        this.path = null;
-    }
-    hasJSX() {
-        return this.jsxElements.length > 0;
-    }
-    printRelatedComponents() {
-        this.jsxElements.forEach((element) => {
-            console.log(element.name.name);
-        });
-    }
-    toString() {
-        let objectString = `${this.identifier.name} = {\n`;
-        objectString += `  path: ${this.path},\n`;
-        objectString += `  definedBy: ${this.type.type},\n`;
-        objectString += `  elements: [\n`;
-        this.jsxElements.forEach((element) => {
-            objectString += `    ${element.name.name},\n`;
-        });
-        objectString += `  ]\n`;
-        objectString += `}\n`;
-        return objectString;
-    }
-}
+const Graph_1 = __importDefault(require("./Models/Graph"));
+const ParsedFile_1 = __importDefault(require("./Models/ParsedFile"));
+const ReactComponent_1 = __importDefault(require("./Models/ReactComponent"));
 class ASTParser {
     constructor(sourcePath) {
         this.parsedFiles = [];
         this.path = sourcePath;
         this.getFilesAndDirectories().then(async (files) => {
+            const allComponents = [];
             for (let i = 0; i < files.length; i++) {
                 const parsedFile = await this.parseFile(files[i]);
-                this.parsedFiles.push(parsedFile);
+                console.log(parsedFile);
+                if (parsedFile.hasComponents()) {
+                    this.parsedFiles.push(parsedFile);
+                    allComponents.push(...parsedFile.components);
+                }
             }
-            this.parsedFiles.forEach((parsedFile) => {
-                parsedFile.components.forEach((component) => {
-                    console.log(component.toString());
-                });
-            });
+            const graph = new Graph_1.default(allComponents);
+            fs.writeFileSync(`${process.cwd()}/graphData.json`, graph.toString());
         });
     }
     getFilesAndDirectories() {
@@ -82,13 +59,8 @@ class ASTParser {
     }
     async parseFile(file) {
         return new Promise((resolve, reject) => {
-            const parsedFile = {
-                path: file,
-                imports: [],
-                components: [],
-                exports: [],
-            };
-            let currentObject = new ReactComponent();
+            const parsedFile = new ParsedFile_1.default(file);
+            let currentObject = new ReactComponent_1.default();
             try {
                 const fileContent = fs.readFileSync(file, 'utf8');
                 const ast = parser_1.parse(fileContent, {
@@ -163,7 +135,7 @@ class ASTParser {
                             currentObject.path = file;
                             if (currentObject.hasJSX())
                                 parsedFile.components.push(currentObject);
-                            currentObject = new ReactComponent();
+                            currentObject = new ReactComponent_1.default();
                         }
                         if (node.type == 'Program') {
                             console.log('Close' + node.type);

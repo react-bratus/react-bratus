@@ -3,6 +3,7 @@
 import ASTParser from '@stephanboersma/parser';
 import Server from '@stephanboersma/server';
 import { program } from 'commander';
+import * as fs from 'fs';
 
 const packageJson = require('../package.json');
 
@@ -17,8 +18,15 @@ const options = program.opts();
 if (options.start) {
   console.log(program.opts());
   console.log(process.cwd());
-  const s = new Server();
-  s.listen();
+  if (fs.existsSync(`${process.cwd()}/graphData.json`)) {
+    const s = new Server();
+    s.listen();
+  } else {
+    const parser = new ASTParser(`${process.cwd()}/src`);
+    console.log(parser);
+    const s = new Server();
+    s.listen();
+  }
 }
 
 if (options.compile) {

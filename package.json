@@ -5,7 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "lerna run build"
+    "build": "lerna run build && lerna link"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
