@@ -1,6 +1,8 @@
 declare class ASTParser {
     private path;
-    constructor(_path: string);
-    parsePath(): void;
+    parsedFiles: any[];
+    constructor(sourcePath: string);
+    getFilesAndDirectories(): Promise<string[]>;
+    private parseFile;
 }
 export default ASTParser;

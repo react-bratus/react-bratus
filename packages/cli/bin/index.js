@@ -22,7 +22,7 @@ if (options.start) {
     s.listen();
 }
 if (options.compile) {
-    const parser = new parser_1.default(`${process.cwd()}/src/App.js`);
-    parser.parsePath();
+    const parser = new parser_1.default(`${process.cwd()}/src`);
+    console.log(parser);
 }
 //# sourceMappingURL=index.js.map

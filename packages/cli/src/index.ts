@@ -22,6 +22,6 @@ if (options.start) {
 }
 
 if (options.compile) {
-  const parser = new ASTParser(`${process.cwd()}/src/App.js`);
-  parser.parsePath();
+  const parser = new ASTParser(`${process.cwd()}/src`);
+  console.log(parser);
 }
