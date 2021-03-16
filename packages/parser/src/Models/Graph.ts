@@ -1,46 +1,24 @@
+import Component from './Component';
 import Edge from './Edge';
 import Node from './Node';
-import ReactComponent from './ReactComponent';
 
 class Graph {
   public nodes: Node[] = [];
   public edges: Edge[] = [];
-  constructor(components: ReactComponent[]) {
-    this.createNodes(components);
-    this.createEdges(components);
-  }
 
-  private createNodes(components: ReactComponent[]): void {
-    console.log('test1', components);
+  public addNodes(components: Component[]): void {
     components.forEach((component) => {
-      this.nodes.push(
-        new Node(component.getFullyQualifiedName(), {
-          label: component.getName(),
-        })
-      );
-    });
-  }
-
-  private createEdges(components: ReactComponent[]): void {
-    console.log('test2');
-    components.forEach((component) => {
-      const source = component.getFullyQualifiedName();
-      component
-        .getRelatedComponents()
-        .map((relatedComponent) => relatedComponent.name.name)
-        .filter((value, index, self) => self.indexOf(value) === index)
-        .forEach((fullyQualifiedName) => {
-          if (this.nodes.some((node) => node.id === fullyQualifiedName)) {
-            this.edges.push(
-              new Edge(source + fullyQualifiedName, source, fullyQualifiedName)
-            );
-          }
+      if (component.hasJSX()) {
+        const node = new Node(component.getId(), {
+          label: component.getElementName(),
+          component,
         });
+        this.nodes.push(node);
+      }
     });
   }
 
   public toString(): string {
-    console.log('test3');
     return JSON.stringify({
       nodes: this.nodes,
       edges: this.edges,

@@ -26,25 +26,29 @@ const parser_1 = require("@babel/parser");
 const traverse_1 = __importDefault(require("@babel/traverse"));
 const fs = __importStar(require("fs"));
 const glob = __importStar(require("glob"));
+const Attribute_1 = __importDefault(require("./Models/Attribute"));
+const Component_1 = __importDefault(require("./Models/Component"));
 const Graph_1 = __importDefault(require("./Models/Graph"));
+const JSXElement_1 = __importDefault(require("./Models/JSXElement"));
 const ParsedFile_1 = __importDefault(require("./Models/ParsedFile"));
-const ReactComponent_1 = __importDefault(require("./Models/ReactComponent"));
 class ASTParser {
     constructor(sourcePath) {
         this.parsedFiles = [];
+        this.components = [];
         this.path = sourcePath;
         this.getFilesAndDirectories().then(async (files) => {
-            const allComponents = [];
+            const graph = new Graph_1.default();
             for (let i = 0; i < files.length; i++) {
-                const parsedFile = await this.parseFile(files[i]);
-                console.log(parsedFile);
-                if (parsedFile.hasComponents()) {
-                    this.parsedFiles.push(parsedFile);
-                    allComponents.push(...parsedFile.components);
+                if (!files[i].includes('stories')) {
+                    const parsedFile = await this.parseFile(files[i]);
+                    if (parsedFile.hasComponents()) {
+                        this.parsedFiles.push(parsedFile);
+                        this.components.push(...parsedFile.components);
+                        graph.addNodes(parsedFile.components);
+                    }
                 }
             }
-            const graph = new Graph_1.default(allComponents);
-            fs.writeFileSync(`${process.cwd()}/graphData.json`, graph.toString());
+            fs.writeFileSync(this.path + '/../graphData.json', graph.toString());
         });
     }
     getFilesAndDirectories() {
@@ -57,12 +61,14 @@ class ASTParser {
             });
         });
     }
-    async parseFile(file) {
+    async parseFile(path) {
         return new Promise((resolve, reject) => {
-            const parsedFile = new ParsedFile_1.default(file);
-            let currentObject = new ReactComponent_1.default();
+            const parsedFile = new ParsedFile_1.default(path);
+            let component = new Component_1.default(path);
+            let jsxElement = new JSXElement_1.default(path);
+            let attribute = new Attribute_1.default();
             try {
-                const fileContent = fs.readFileSync(file, 'utf8');
+                const fileContent = fs.readFileSync(path, 'utf8');
                 const ast = parser_1.parse(fileContent, {
                     sourceType: 'module',
                     plugins: ['typescript', 'jsx'],
@@ -88,7 +94,7 @@ class ASTParser {
                                     break;
                             }
                             if (name) {
-                                parsedFile.imports.push({
+                                component.addImport({
                                     alias,
                                     name,
                                     source: modulePath,
@@ -97,48 +103,88 @@ class ASTParser {
                         });
                     },
                     ClassDeclaration({ node }) {
-                        if (!currentObject.type) {
-                            console.log('Open ClassDeclaration');
-                            currentObject.type = node;
+                        if (component.isUndefined()) {
+                            console.log(`Open component: ${node.type}`);
+                            component.open(node);
                         }
                     },
                     VariableDeclaration({ node }) {
-                        if (!currentObject.type) {
-                            console.log('Open VariableDeclaration');
-                            currentObject.type = node;
+                        if (component.isUndefined()) {
+                            console.log(`Open component: ${node.type}`);
+                            component.open(node);
                         }
                     },
                     FunctionDeclaration({ node }) {
-                        if (!currentObject.type) {
-                            console.log('Open FunctionDeclaration');
-                            currentObject.type = node;
+                        if (component.isUndefined()) {
+                            console.log(`Open component: ${node.type}`);
+                            component.open(node);
                         }
                     },
                     Identifier({ node }) {
-                        if (currentObject.type && !currentObject.identifier) {
-                            console.log('Identify currentObject: ', node.name);
-                            currentObject.identifier = node;
+                        if (component.isOpen() && !component.isIdentified()) {
+                            console.log(`Identify component: ${node.name}`);
+                            component.identify(node);
                         }
                     },
                     JSXOpeningElement({ node }) {
-                        if (currentObject.type) {
-                            console.log('Add JSX Element');
-                            currentObject.jsxElements.push(node);
+                        if (jsxElement.isUndefined()) {
+                            console.log(`Open Element: ${node.type}`);
+                            jsxElement.open(node);
+                        }
+                    },
+                    JSXAttribute({ node }) {
+                        if (attribute.isUndefined()) {
+                            console.log(`Open Attribute: ${node.type}`);
+                            attribute.open(node);
+                        }
+                    },
+                    JSXIdentifier({ node }) {
+                        if (jsxElement.isOpen() && !jsxElement.isIdentified()) {
+                            console.log(`Identify Element: ${node.name}`);
+                            jsxElement.identify(node);
+                        }
+                        if (attribute.isOpen() && !attribute.isIdentified()) {
+                            console.log(`Identify Attribute: ${node.name}`);
+                            attribute.identify(node);
+                        }
+                    },
+                    JSXExpressionContainer({ node }) {
+                        if (attribute.isOpen() && attribute.isIdentified()) {
+                            if (node.expression.type === 'Identifier') {
+                                console.log(`Set value of attribute: ${node.type}`);
+                                attribute.setValue(node.expression.name);
+                            }
+                        }
+                    },
+                    StringLiteral({ node }) {
+                        if (attribute.isOpen() && attribute.isIdentified()) {
+                            console.log(`Set value of attributet: ${node.type}`);
+                            attribute.setValue(node.value);
                         }
                     },
                     exit({ node }) {
                         if ((node.type == 'VariableDeclaration' ||
                             node.type == 'FunctionDeclaration' ||
                             node.type == 'ClassDeclaration') &&
-                            node == currentObject.type) {
-                            console.log('Close' + node.type);
-                            currentObject.path = file;
-                            if (currentObject.hasJSX())
-                                parsedFile.components.push(currentObject);
-                            currentObject = new ReactComponent_1.default();
+                            node == component.getNode()) {
+                            console.log(`Close component: ${node.type}`);
+                            if (component.hasJSX()) {
+                                parsedFile.components.push(component);
+                            }
+                            component = new Component_1.default(path);
+                        }
+                        if (node.type == 'JSXOpeningElement' &&
+                            node == jsxElement.getNode()) {
+                            console.log(`Close element: ${node.type}`);
+                            component.addJSXElement(jsxElement);
+                            jsxElement = new JSXElement_1.default(path);
+                        }
+                        if (node.type == 'JSXAttribute' && node == attribute.getNode()) {
+                            console.log(`Close attribute: ${node.type}`);
+                            jsxElement.addAttribute(attribute);
+                            attribute = new Attribute_1.default();
                         }
                         if (node.type == 'Program') {
-                            console.log('Close' + node.type);
                             resolve(parsedFile);
                         }
                     },

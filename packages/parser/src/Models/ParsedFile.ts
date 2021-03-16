@@ -1,9 +1,9 @@
-import ReactComponent from './ReactComponent';
+import Component from './Component';
 
 class ParsedFile {
   public path: string;
   imports: any[] = [];
-  components: ReactComponent[] = [];
+  components: Component[] = [];
   exports: any = [];
 
   constructor(path: string) {
@@ -12,6 +12,10 @@ class ParsedFile {
 
   public hasComponents(): boolean {
     return this.components.length > 0;
+  }
+
+  public print(): void {
+    this.components.forEach((component) => console.log(component));
   }
 }
 export default ParsedFile;

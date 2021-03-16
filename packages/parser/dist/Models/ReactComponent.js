@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 class ReactComponent {
     constructor() {
         this.type = null;
-        this.identifier = null;
+        this.name = '';
         this.jsxElements = [];
         this.path = null;
     }
@@ -14,22 +14,13 @@ class ReactComponent {
         return this.jsxElements;
     }
     getName() {
-        return this.identifier.name;
+        return this.name;
+    }
+    setName(name) {
+        this.name = name;
     }
     getFullyQualifiedName() {
-        return `${this.getName()}`;
-    }
-    toString() {
-        let objectString = `${this.identifier.name} = {\n`;
-        objectString += `  path: ${this.path},\n`;
-        objectString += `  definedBy: ${this.type.type},\n`;
-        objectString += `  elements: [\n`;
-        this.jsxElements.forEach((element) => {
-            objectString += `    ${element.name.name},\n`;
-        });
-        objectString += `  ]\n`;
-        objectString += `}\n`;
-        return objectString;
+        return `${this.path}:${this.getName()}`;
     }
 }
 exports.default = ReactComponent;
