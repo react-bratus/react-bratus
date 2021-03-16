@@ -2,6 +2,7 @@
   "name": "@stephanboersma/parser",
   "version": "1.1.6-alpha.0",
   "description": "Prototype parser",
+  "private": true,
   "main": "./dist/index.js",
   "scripts": {
     "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",

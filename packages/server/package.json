@@ -2,6 +2,7 @@
   "name": "@stephanboersma/server",
   "version": "1.1.6-alpha.2",
   "description": "Prototype client",
+  "private": true,
   "main": "./dist/index.js",
   "scripts": {
     "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
