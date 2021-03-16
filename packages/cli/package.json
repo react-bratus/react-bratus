@@ -1,6 +1,6 @@
 {
   "name": "@stephanboersma/cli",
-  "version": "1.1.6-alpha.2",
+  "version": "1.1.6-alpha.3",
   "private": true,
   "description": "Prototype cli",
   "main": "./bin/index.js",
@@ -17,8 +17,8 @@
   "author": "Stephan Boersma",
   "license": "MIT",
   "dependencies": {
-    "@stephanboersma/parser": "^1.1.6-alpha.0",
-    "@stephanboersma/server": "^1.1.6-alpha.2",
+    "@stephanboersma/parser": "^1.1.6-alpha.3",
+    "@stephanboersma/server": "^1.1.6-alpha.3",
     "chalk": "^4.1.0",
     "clear": "^0.1.0",
     "commander": "^7.0.0",
