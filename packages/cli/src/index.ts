@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import ASTParser from '@stephanboersma/parser';
-import Server from '@stephanboersma/server';
+import ASTParser from '@react-bratus/parser';
+import Server from '@react-bratus/server';
 import { program } from 'commander';
 import * as fs from 'fs';
 

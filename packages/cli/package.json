@@ -19,8 +19,8 @@
   "author": "Stephan Boersma",
   "license": "MIT",
   "dependencies": {
-    "@stephanboersma/parser": "^1.1.6-alpha.3",
-    "@stephanboersma/server": "^1.1.6-alpha.3",
+    "@react-bratus/parser": "^1.1.6-alpha.5",
+    "@react-bratus/server": "^1.1.6-alpha.6",
     "chalk": "^4.1.0",
     "clear": "^0.1.0",
     "commander": "^7.0.0",
