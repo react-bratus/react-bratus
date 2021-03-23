@@ -1,4 +1,4 @@
-import Component from './Component';
+import Component from '../Builder/Component';
 
 interface Position {
   x: number;

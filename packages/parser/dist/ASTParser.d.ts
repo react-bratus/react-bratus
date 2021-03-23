@@ -1,4 +1,4 @@
-import Component from './Models/Component';
+import Component from './Builder/Component';
 declare class ASTParser {
     private path;
     components: Component[];

@@ -26,12 +26,12 @@ const parser_1 = require("@babel/parser");
 const traverse_1 = __importDefault(require("@babel/traverse"));
 const fs = __importStar(require("fs"));
 const glob = __importStar(require("glob"));
-const Attribute_1 = __importDefault(require("./Models/Attribute"));
-const Component_1 = __importDefault(require("./Models/Component"));
-const Graph_1 = __importDefault(require("./Models/Graph"));
-const Import_1 = __importDefault(require("./Models/Import"));
-const JSXElement_1 = __importDefault(require("./Models/JSXElement"));
-const ParsedFile_1 = __importDefault(require("./Models/ParsedFile"));
+const Attribute_1 = __importDefault(require("./Builder/Attribute"));
+const Component_1 = __importDefault(require("./Builder/Component"));
+const Import_1 = __importDefault(require("./Builder/Import"));
+const JSXElement_1 = __importDefault(require("./Builder/JSXElement"));
+const ParsedFile_1 = __importDefault(require("./Builder/ParsedFile"));
+const Graph_1 = __importDefault(require("./Graph/Graph"));
 class ASTParser {
     constructor(sourcePath) {
         this.components = [];
