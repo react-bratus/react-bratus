@@ -1,6 +1,6 @@
 {
   "name": "@react-bratus/cli",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "publishConfig": {
     "access": "public"
   },
@@ -20,7 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "@react-bratus/parser": "^1.2.2",
-    "@react-bratus/server": "^1.2.2",
+    "@react-bratus/server": "^1.2.3",
     "chalk": "^4.1.0",
     "clear": "^0.1.0",
     "commander": "^7.0.0",

@@ -1,6 +1,6 @@
 {
   "name": "@react-bratus/server",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "publishConfig": {
     "access": "public"
   },
@@ -21,7 +21,7 @@
     "typescript": "^4.1.3"
   },
   "dependencies": {
-    "@react-bratus/app": "^1.2.2",
+    "@react-bratus/app": "^1.2.3",
     "express": "^4.17.1"
   },
   "gitHead": "6de840ebd664b9cae7defc39031816cb106a62ad"
