@@ -33,14 +33,19 @@ class ASTParser {
           }
         }
       }
-      const graph = new Graph(this.components);
-      graph.build();
-      fs.writeFileSync(
-        this.path + '/../.react-bratus/data.json',
-        graph.toString()
-      );
     });
+    const graph = new Graph(this.components);
+    graph.build();
+    this.writeDataToFile(graph.toString());
   }
+  private writeDataToFile(graphData: string): void {
+    const dir = this.path + '../.react-bratus';
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
+    }
+    fs.writeFileSync(dir + '/data.json', graphData);
+  }
+
   // TODO: Being able to exclude files in GLOB pattern
   public getFilesAndDirectories(): Promise<string[]> {
     return new Promise((resolve, reject) => {

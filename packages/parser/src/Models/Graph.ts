@@ -1,7 +1,7 @@
 import Component from './Component';
 import Edge from './Edge';
 import JSXElement from './JSXElement';
-import Node from './Node';
+import Node, { NodeData } from './Node';
 
 class Graph {
   public nodes: Node[] = [];
@@ -18,66 +18,63 @@ class Graph {
       const component = this.components[i];
       if (component.getElementName() == 'App') {
         const elements = component.getJSXElements();
-        const root = new Node(component.getElementName(), {
+        const root = this.createNode(component.getElementName(), {
           label: component.getElementName(),
           component,
         });
-        console.log(`Root: ${component.getElementName()}`);
-
         for (let k = 0; k < elements.length; k++) {
           const element = elements[k];
-          console.log(`Found element: ${element.getName()}`);
-          this.addEdge(root, element);
-          this.level--;
+          try {
+            this.buildComponentTree(root, element);
+          } catch (err) {
+            console.log(err);
+          }
         }
-        if (root.outDegree > 0) this.nodes.push(root);
       }
     }
   }
 
-  public addEdge(source: Node, element: JSXElement): void {
-    this.level++;
-    console.log('level: ', this.level);
-    const findComponent = this.components.filter(
+  private buildComponentTree(source: Node, element: JSXElement): void {
+    const component = this.findComponent(element);
+    const target = this.createNode(
+      `${source.id}:${component.getElementName()}`,
+      {
+        label: component.getElementName(),
+        component: component,
+      }
+    );
+    this.createEdge(source, target, element.isOptional());
+    if (component.hasJSX()) {
+      component.getJSXElements().forEach((subElement) => {
+        this.buildComponentTree(target, subElement);
+      });
+    }
+  }
+
+  private findComponent(element: JSXElement): Component {
+    const components = this.components.filter(
       (component) => component.getElementName() === element.getName()
     );
-    const componentFound = findComponent.length == 1 ? findComponent[0] : null;
-    if (componentFound) {
-      console.log(
-        `Component match with element: ${componentFound.getElementName()}. Creating link: ${
-          source.id
-        }:${componentFound.getElementName()}`
-      );
-      const targetNode = new Node(
-        `${source.id}:${componentFound.getElementName()}`,
-        { label: componentFound.getElementName(), component: componentFound }
-      );
-      const edge = new Edge(
-        targetNode.id,
-        source.id,
-        targetNode.id,
-        element.isOptional()
-      );
-      source.outDegree++;
-      targetNode.inDegree++;
-      this.nodes.push(targetNode);
-      this.edges.push(edge);
-      if (componentFound.hasJSX()) {
-        console.log(
-          `Sub component has children ${componentFound.getElementName()}.`
-        );
-        componentFound.getJSXElements().forEach((el) => {
-          this.addEdge(targetNode, el);
-          this.level--;
-        });
-      }
+    if (components.length === 1) {
+      return components[0];
     } else {
-      const mess =
-        findComponent.length > 1
-          ? `More than one component found`
-          : `No matching component found: ${element.getName()}`;
-      console.log(mess, findComponent.length);
+      throw new Error(
+        'Could not find component or more than one component found'
+      );
     }
+  }
+
+  private createNode(id: string, data: NodeData): Node {
+    const node = new Node(id, data);
+    this.nodes.push(node);
+    return node;
+  }
+  private createEdge(source: Node, target: Node, optional: boolean): Edge {
+    const edge = new Edge(target.id, source.id, target.id, optional);
+    this.edges.push(edge);
+    source.outDegree++;
+    target.inDegree++;
+    return edge;
   }
 
   public toString(): string {

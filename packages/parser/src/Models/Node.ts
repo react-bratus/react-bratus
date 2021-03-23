@@ -4,7 +4,7 @@ interface Position {
   x: number;
   y: number;
 }
-interface NodeData {
+export interface NodeData {
   label: string;
   component: Component;
 }
