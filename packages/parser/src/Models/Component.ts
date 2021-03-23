@@ -1,8 +1,9 @@
+import Import from './Import';
 import JSXElement from './JSXElement';
 import ParsableElement from './ParsableElement';
 class Component extends ParsableElement {
   private JSXElements: JSXElement[] = [];
-  private imports: any[] = [];
+  private imports: Import[] = [];
   constructor(path: string) {
     super(path);
   }
@@ -11,7 +12,7 @@ class Component extends ParsableElement {
     this.JSXElements.push(element);
   }
 
-  addImport(_import: any): void {
+  addImport(_import: Import): void {
     this.imports.push(_import);
   }
 

@@ -9,11 +9,11 @@ class Graph {
   public edges: Edge[] = [];
   public level = 0;
 
-  public addNodes(components: Component[]): void {
-    this.components.push(...components);
+  constructor(components: Component[]) {
+    this.components = components;
   }
 
-  public createEdges(): void {
+  public build(): void {
     for (let i = 0; i < this.components.length; i++) {
       const component = this.components[i];
       if (component.getElementName() == 'App') {

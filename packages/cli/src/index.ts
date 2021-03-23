@@ -23,7 +23,6 @@ if (options.start) {
     s.listen();
   } else {
     const parser = new ASTParser(`${process.cwd()}/src`);
-    console.log(parser);
     const s = new Server();
     s.listen();
   }
