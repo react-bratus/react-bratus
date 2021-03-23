@@ -7,8 +7,8 @@ declare class Graph {
     components: Component[];
     edges: Edge[];
     level: number;
-    addNodes(components: Component[]): void;
-    createEdges(): void;
+    constructor(components: Component[]);
+    build(): void;
     addEdge(source: Node, element: JSXElement): void;
     toString(): string;
 }

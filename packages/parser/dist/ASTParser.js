@@ -29,27 +29,27 @@ const glob = __importStar(require("glob"));
 const Attribute_1 = __importDefault(require("./Models/Attribute"));
 const Component_1 = __importDefault(require("./Models/Component"));
 const Graph_1 = __importDefault(require("./Models/Graph"));
+const Import_1 = __importDefault(require("./Models/Import"));
 const JSXElement_1 = __importDefault(require("./Models/JSXElement"));
 const ParsedFile_1 = __importDefault(require("./Models/ParsedFile"));
 class ASTParser {
     constructor(sourcePath) {
-        this.parsedFiles = [];
         this.components = [];
         this.path = sourcePath;
+    }
+    compile() {
         this.getFilesAndDirectories().then(async (files) => {
-            const graph = new Graph_1.default();
             for (let i = 0; i < files.length; i++) {
                 if (!files[i].includes('stories')) {
                     const parsedFile = await this.parseFile(files[i]);
                     if (parsedFile.hasComponents()) {
-                        this.parsedFiles.push(parsedFile);
                         this.components.push(...parsedFile.components);
-                        graph.addNodes(parsedFile.components);
                     }
                 }
             }
-            graph.createEdges();
-            fs.writeFileSync(this.path + '/../graphData.json', graph.toString());
+            const graph = new Graph_1.default(this.components);
+            graph.build();
+            fs.writeFileSync(this.path + '/../.react-bratus/data.json', graph.toString());
         });
     }
     getFilesAndDirectories() {
@@ -71,7 +71,7 @@ class ASTParser {
             let component = new Component_1.default(path);
             const elements = [new JSXElement_1.default(path)];
             const attributes = [new Attribute_1.default()];
-            let inIfStatement = false;
+            let ifStatementLevel = 0;
             try {
                 const fileContent = fs.readFileSync(path, 'utf8');
                 const ast = parser_1.parse(fileContent, {
@@ -99,46 +99,36 @@ class ASTParser {
                                     break;
                             }
                             if (name) {
-                                component.addImport({
-                                    alias,
-                                    name,
-                                    source: modulePath,
-                                });
+                                component.addImport(new Import_1.default(alias, name, modulePath));
                             }
                         });
                     },
                     ClassDeclaration({ node }) {
                         if (component.isUndefined()) {
-                            console.log(`Open component: ${node.type}`);
                             component.open(node);
                         }
                     },
                     VariableDeclaration({ node }) {
                         if (component.isUndefined()) {
-                            console.log(`Open component: ${node.type}`);
                             component.open(node);
                         }
                     },
                     FunctionDeclaration({ node }) {
                         if (component.isUndefined()) {
-                            console.log(`Open component: ${node.type}`);
                             component.open(node);
                         }
                     },
                     Identifier({ node }) {
                         if (component.isOpen() && !component.isIdentified()) {
-                            console.log(`Identify component: ${node.name}`);
                             component.identify(node);
                         }
                     },
-                    IfStatement({ node }) {
-                        console.log('open if: ', node.type);
-                        inIfStatement = true;
+                    IfStatement() {
+                        ifStatementLevel++;
                     },
                     JSXOpeningElement({ node }) {
                         const jsxElement = ASTParser.peek(elements);
                         if (jsxElement.isUndefined()) {
-                            console.log(`Open Element: ${node.type}`);
                             jsxElement.open(node);
                         }
                         else {
@@ -150,7 +140,6 @@ class ASTParser {
                     JSXAttribute({ node }) {
                         const attribute = ASTParser.peek(attributes);
                         if (attribute.isUndefined()) {
-                            console.log(`Open Attribute: ${node.type}`);
                             attribute.open(node);
                         }
                         else {
@@ -160,17 +149,12 @@ class ASTParser {
                         }
                     },
                     JSXIdentifier({ node }) {
-                        if (elements.length > 1) {
-                            console.log(elements);
-                        }
                         const jsxElement = ASTParser.peek(elements);
                         const attribute = ASTParser.peek(attributes);
                         if (jsxElement.isOpen() && !jsxElement.isIdentified()) {
-                            console.log(`Identify Element: ${node.name}`);
                             jsxElement.identify(node);
                         }
                         else if (attribute.isOpen() && !attribute.isIdentified()) {
-                            console.log(`Identify Attribute: ${node.name}`);
                             attribute.identify(node);
                         }
                     },
@@ -178,7 +162,6 @@ class ASTParser {
                         const attribute = ASTParser.peek(attributes);
                         if (attribute.isOpen() && attribute.isIdentified()) {
                             if (node.expression.type === 'Identifier') {
-                                console.log(`Set value of attribute: ${node.type}`);
                                 attribute.setValue(node.expression.name);
                             }
                         }
@@ -186,37 +169,31 @@ class ASTParser {
                     StringLiteral({ node }) {
                         const attribute = ASTParser.peek(attributes);
                         if (attribute.isOpen() && attribute.isIdentified()) {
-                            console.log(`Set value of attributet: ${node.type}`);
                             attribute.setValue(node.value);
                         }
                     },
                     exit({ node }) {
                         if (component.close(node)) {
-                            console.log(`Close component: ${node.type}`);
                             parsedFile.components.push(component);
                             component = new Component_1.default(path);
                         }
                         const jsxElement = ASTParser.peek(elements);
                         if (jsxElement.close(node)) {
-                            console.log(`Close element: ${node.type}`);
-                            jsxElement.setOptional(inIfStatement);
+                            jsxElement.setOptional(ifStatementLevel > 0);
                             component.addJSXElement(jsxElement);
-                            console.log(`Pop: ${jsxElement.getElementName()}`);
                             elements.pop();
                             if (elements.length === 0)
                                 elements.push(new JSXElement_1.default(path));
                         }
                         const attribute = ASTParser.peek(attributes);
                         if (attribute.close(node)) {
-                            console.log(`Close attribute: ${node.type}`);
                             jsxElement.addAttribute(attribute);
                             attributes.pop();
                             if (attributes.length === 0)
                                 attributes.push(new Attribute_1.default());
                         }
                         if (node.type == 'IfStatement') {
-                            console.log('Close if:');
-                            inIfStatement = false;
+                            ifStatementLevel--;
                         }
                         if (node.type == 'Program') {
                             resolve(parsedFile);

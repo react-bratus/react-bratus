@@ -6,16 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Edge_1 = __importDefault(require("./Edge"));
 const Node_1 = __importDefault(require("./Node"));
 class Graph {
-    constructor() {
+    constructor(components) {
         this.nodes = [];
         this.components = [];
         this.edges = [];
         this.level = 0;
+        this.components = components;
     }
-    addNodes(components) {
-        this.components.push(...components);
-    }
-    createEdges() {
+    build() {
         for (let i = 0; i < this.components.length; i++) {
             const component = this.components[i];
             if (component.getElementName() == 'App') {
