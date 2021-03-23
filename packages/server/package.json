@@ -1,6 +1,9 @@
 {
   "name": "@react-bratus/server",
   "version": "1.1.6-alpha.4",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "React Bratus Server",
   "main": "./dist/index.js",
   "scripts": {
@@ -21,5 +24,5 @@
     "@stephanboersma/app": "^1.1.6-alpha.1",
     "express": "^4.17.1"
   },
-  "gitHead": "93b99babbe7bc76544d6dd8ceff77725d802584e"
+  "gitHead": "6de840ebd664b9cae7defc39031816cb106a62ad"
 }

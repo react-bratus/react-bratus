@@ -1,6 +1,9 @@
 {
   "name": "@react-bratus/cli",
   "version": "1.1.6-alpha.4",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "React Bratus cli",
   "main": "./bin/index.js",
   "bin": {
@@ -31,5 +34,5 @@
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   },
-  "gitHead": "93b99babbe7bc76544d6dd8ceff77725d802584e"
+  "gitHead": "6de840ebd664b9cae7defc39031816cb106a62ad"
 }
