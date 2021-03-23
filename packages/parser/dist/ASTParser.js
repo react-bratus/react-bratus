@@ -49,8 +49,15 @@ class ASTParser {
             }
             const graph = new Graph_1.default(this.components);
             graph.build();
-            fs.writeFileSync(this.path + '/../.react-bratus/data.json', graph.toString());
+            this.writeDataToFile(graph.toString());
         });
+    }
+    writeDataToFile(graphData) {
+        const dir = this.path + '/../.react-bratus';
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        }
+        fs.writeFileSync(dir + '/data.json', graphData);
     }
     getFilesAndDirectories() {
         return new Promise((resolve, reject) => {
@@ -174,7 +181,8 @@ class ASTParser {
                     },
                     exit({ node }) {
                         if (component.close(node)) {
-                            parsedFile.components.push(component);
+                            if (component.hasJSX())
+                                parsedFile.components.push(component);
                             component = new Component_1.default(path);
                         }
                         const jsxElement = ASTParser.peek(elements);

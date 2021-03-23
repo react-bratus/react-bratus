@@ -1,6 +1,6 @@
-import Component from './Component';
+import Component from '../Builder/Component';
+import JSXElement from '../Builder/JSXElement';
 import Edge from './Edge';
-import JSXElement from './JSXElement';
 import Node, { NodeData } from './Node';
 
 class Graph {
@@ -24,30 +24,30 @@ class Graph {
         });
         for (let k = 0; k < elements.length; k++) {
           const element = elements[k];
-          try {
-            this.buildComponentTree(root, element);
-          } catch (err) {
-            console.log(err);
-          }
+          this.buildComponentTree(root, element);
         }
       }
     }
   }
 
   private buildComponentTree(source: Node, element: JSXElement): void {
-    const component = this.findComponent(element);
-    const target = this.createNode(
-      `${source.id}:${component.getElementName()}`,
-      {
-        label: component.getElementName(),
-        component: component,
+    try {
+      const component = this.findComponent(element);
+      const target = this.createNode(
+        `${source.id}:${component.getElementName()}`,
+        {
+          label: component.getElementName(),
+          component: component,
+        }
+      );
+      this.createEdge(source, target, element.isOptional());
+      if (component.hasJSX()) {
+        component.getJSXElements().forEach((subElement) => {
+          this.buildComponentTree(target, subElement);
+        });
       }
-    );
-    this.createEdge(source, target, element.isOptional());
-    if (component.hasJSX()) {
-      component.getJSXElements().forEach((subElement) => {
-        this.buildComponentTree(target, subElement);
-      });
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -57,10 +57,11 @@ class Graph {
     );
     if (components.length === 1) {
       return components[0];
+    } else if (components.length > 1) {
+      console.log(components.map((c) => c.getElementName()));
+      throw new Error('More than one component found');
     } else {
-      throw new Error(
-        'Could not find component or more than one component found'
-      );
+      throw new Error('No component found: ' + element.getName());
     }
   }
 

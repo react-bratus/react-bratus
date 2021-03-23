@@ -1,6 +1,5 @@
 import Component from './Component';
 import Edge from './Edge';
-import JSXElement from './JSXElement';
 import Node from './Node';
 declare class Graph {
     nodes: Node[];
@@ -9,7 +8,10 @@ declare class Graph {
     level: number;
     constructor(components: Component[]);
     build(): void;
-    addEdge(source: Node, element: JSXElement): void;
+    private buildComponentTree;
+    private findComponent;
+    private createNode;
+    private createEdge;
     toString(): string;
 }
 export default Graph;

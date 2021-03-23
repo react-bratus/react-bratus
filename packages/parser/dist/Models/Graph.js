@@ -18,49 +18,59 @@ class Graph {
             const component = this.components[i];
             if (component.getElementName() == 'App') {
                 const elements = component.getJSXElements();
-                const root = new Node_1.default(component.getElementName(), {
+                const root = this.createNode(component.getElementName(), {
                     label: component.getElementName(),
                     component,
                 });
-                console.log(`Root: ${component.getElementName()}`);
                 for (let k = 0; k < elements.length; k++) {
                     const element = elements[k];
-                    console.log(`Found element: ${element.getName()}`);
-                    this.addEdge(root, element);
-                    this.level--;
+                    this.buildComponentTree(root, element);
                 }
-                if (root.outDegree > 0)
-                    this.nodes.push(root);
             }
         }
     }
-    addEdge(source, element) {
-        this.level++;
-        console.log('level: ', this.level);
-        const findComponent = this.components.filter((component) => component.getElementName() === element.getName());
-        const componentFound = findComponent.length == 1 ? findComponent[0] : null;
-        if (componentFound) {
-            console.log(`Component match with element: ${componentFound.getElementName()}. Creating link: ${source.id}:${componentFound.getElementName()}`);
-            const targetNode = new Node_1.default(`${source.id}:${componentFound.getElementName()}`, { label: componentFound.getElementName(), component: componentFound });
-            const edge = new Edge_1.default(targetNode.id, source.id, targetNode.id, element.isOptional());
-            source.outDegree++;
-            targetNode.inDegree++;
-            this.nodes.push(targetNode);
-            this.edges.push(edge);
-            if (componentFound.hasJSX()) {
-                console.log(`Sub component has children ${componentFound.getElementName()}.`);
-                componentFound.getJSXElements().forEach((el) => {
-                    this.addEdge(targetNode, el);
-                    this.level--;
+    buildComponentTree(source, element) {
+        try {
+            const component = this.findComponent(element);
+            const target = this.createNode(`${source.id}:${component.getElementName()}`, {
+                label: component.getElementName(),
+                component: component,
+            });
+            this.createEdge(source, target, element.isOptional());
+            if (component.hasJSX()) {
+                component.getJSXElements().forEach((subElement) => {
+                    this.buildComponentTree(target, subElement);
                 });
             }
         }
-        else {
-            const mess = findComponent.length > 1
-                ? `More than one component found`
-                : `No matching component found: ${element.getName()}`;
-            console.log(mess, findComponent.length);
+        catch (error) {
+            console.log(error);
         }
+    }
+    findComponent(element) {
+        const components = this.components.filter((component) => component.getElementName() === element.getName());
+        if (components.length === 1) {
+            return components[0];
+        }
+        else if (components.length > 1) {
+            console.log(components.map((c) => c.getElementName()));
+            throw new Error('More than one component found');
+        }
+        else {
+            throw new Error('No component found: ' + element.getName());
+        }
+    }
+    createNode(id, data) {
+        const node = new Node_1.default(id, data);
+        this.nodes.push(node);
+        return node;
+    }
+    createEdge(source, target, optional) {
+        const edge = new Edge_1.default(target.id, source.id, target.id, optional);
+        this.edges.push(edge);
+        source.outDegree++;
+        target.inDegree++;
+        return edge;
     }
     toString() {
         return JSON.stringify({

@@ -4,6 +4,7 @@ declare class ASTParser {
     components: Component[];
     constructor(sourcePath: string);
     compile(): void;
+    private writeDataToFile;
     getFilesAndDirectories(): Promise<string[]>;
     static peek<T>(array: T[]): T;
     private parseFile;

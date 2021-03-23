@@ -18,7 +18,9 @@ class Server {
       res.sendFile(path.join(__dirname, '../../app/build', 'index.html'));
     });
     this.app.get('/data', (_req: express.Request, res: express.Response) => {
-      res.status(200).send(fs.readFileSync(`${process.cwd()}/graphData.json`));
+      res
+        .status(200)
+        .send(fs.readFileSync(`${process.cwd()}/.react-bratus/data.json`));
     });
     this.app.listen(3000);
     console.log('Listening on port 3000');

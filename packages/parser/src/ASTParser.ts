@@ -5,12 +5,12 @@ import * as fs from 'fs';
 import * as glob from 'glob';
 import * as _path from 'path';
 
-import Attribute from './Models/Attribute';
-import Component from './Models/Component';
-import Graph from './Models/Graph';
-import Import from './Models/Import';
-import JSXElement from './Models/JSXElement';
-import ParsedFile from './Models/ParsedFile';
+import Attribute from './Builder/Attribute';
+import Component from './Builder/Component';
+import Import from './Builder/Import';
+import JSXElement from './Builder/JSXElement';
+import ParsedFile from './Builder/ParsedFile';
+import Graph from './Graph/Graph';
 
 class ASTParser {
   private path: string;
@@ -33,13 +33,13 @@ class ASTParser {
           }
         }
       }
+      const graph = new Graph(this.components);
+      graph.build();
+      this.writeDataToFile(graph.toString());
     });
-    const graph = new Graph(this.components);
-    graph.build();
-    this.writeDataToFile(graph.toString());
   }
   private writeDataToFile(graphData: string): void {
-    const dir = this.path + '../.react-bratus';
+    const dir = this.path + '/../.react-bratus';
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
     }
@@ -170,9 +170,10 @@ class ASTParser {
           },
           exit({ node }) {
             if (component.close(node)) {
-              parsedFile.components.push(component);
+              if (component.hasJSX()) parsedFile.components.push(component);
               component = new Component(path);
             }
+
             const jsxElement = ASTParser.peek(elements);
             if (jsxElement.close(node)) {
               jsxElement.setOptional(ifStatementLevel > 0);
