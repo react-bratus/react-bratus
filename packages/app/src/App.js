@@ -25,7 +25,7 @@ const App = () => {
 
   const nodeWidth = 172;
   const nodeHeight = 36;
-  const getLayoutedElements = (elements, direction = 'TB') => {
+  const getLayoutedElements = (elements, direction = 'LR') => {
     const isHorizontal = direction === 'LR';
     dagreGraph.setGraph({ rankdir: direction });
 
@@ -67,13 +67,19 @@ const App = () => {
       })
       .catch(console.log);
   }, [locale]);
+
+  const test = (e, node) => console.log(node);
   return (
     <I18nProvider i18n={i18n}>
       <I18nWatchLocaleProvider>
         <ThemeProvider>
           <StyledDiv>
             {elements && (
-              <ReactFlow elements={elements} connectionLineType="smoothstep" />
+              <ReactFlow
+                elements={elements}
+                connectionLineType="smoothstep"
+                onElementClick={test}
+              />
             )}
           </StyledDiv>
         </ThemeProvider>

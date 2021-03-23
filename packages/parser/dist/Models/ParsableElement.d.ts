@@ -12,6 +12,7 @@ declare class ParsableElement {
     getNode(): Node | undefined;
     open(node: Node): void;
     isOpen(): boolean;
+    close(node: Node): boolean;
     isUndefined(): boolean;
     isIdentified(): boolean;
     identify(identifier: Identifier | JSXIdentifier): void;

@@ -1,7 +1,7 @@
 {
-  "name": "@stephanboersma/server",
+  "name": "@react-bratus/server",
   "version": "1.1.6-alpha.3",
-  "description": "Prototype client",
+  "description": "React Bratus Server",
   "private": true,
   "main": "./dist/index.js",
   "scripts": {

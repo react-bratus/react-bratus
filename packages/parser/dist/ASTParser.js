@@ -48,6 +48,7 @@ class ASTParser {
                     }
                 }
             }
+            graph.createEdges();
             fs.writeFileSync(this.path + '/../graphData.json', graph.toString());
         });
     }
@@ -61,12 +62,16 @@ class ASTParser {
             });
         });
     }
+    static peek(array) {
+        return array[array.length - 1];
+    }
     async parseFile(path) {
         return new Promise((resolve, reject) => {
             const parsedFile = new ParsedFile_1.default(path);
             let component = new Component_1.default(path);
-            let jsxElement = new JSXElement_1.default(path);
-            let attribute = new Attribute_1.default();
+            const elements = [new JSXElement_1.default(path)];
+            const attributes = [new Attribute_1.default()];
+            let inIfStatement = false;
             try {
                 const fileContent = fs.readFileSync(path, 'utf8');
                 const ast = parser_1.parse(fileContent, {
@@ -126,29 +131,51 @@ class ASTParser {
                             component.identify(node);
                         }
                     },
+                    IfStatement({ node }) {
+                        console.log('open if: ', node.type);
+                        inIfStatement = true;
+                    },
                     JSXOpeningElement({ node }) {
+                        const jsxElement = ASTParser.peek(elements);
                         if (jsxElement.isUndefined()) {
                             console.log(`Open Element: ${node.type}`);
                             jsxElement.open(node);
                         }
+                        else {
+                            const newElement = new JSXElement_1.default(path);
+                            newElement.open(node);
+                            elements.push(newElement);
+                        }
                     },
                     JSXAttribute({ node }) {
+                        const attribute = ASTParser.peek(attributes);
                         if (attribute.isUndefined()) {
                             console.log(`Open Attribute: ${node.type}`);
                             attribute.open(node);
                         }
+                        else {
+                            const newAttribute = new Attribute_1.default();
+                            newAttribute.open(node);
+                            attributes.push(newAttribute);
+                        }
                     },
                     JSXIdentifier({ node }) {
+                        if (elements.length > 1) {
+                            console.log(elements);
+                        }
+                        const jsxElement = ASTParser.peek(elements);
+                        const attribute = ASTParser.peek(attributes);
                         if (jsxElement.isOpen() && !jsxElement.isIdentified()) {
                             console.log(`Identify Element: ${node.name}`);
                             jsxElement.identify(node);
                         }
-                        if (attribute.isOpen() && !attribute.isIdentified()) {
+                        else if (attribute.isOpen() && !attribute.isIdentified()) {
                             console.log(`Identify Attribute: ${node.name}`);
                             attribute.identify(node);
                         }
                     },
                     JSXExpressionContainer({ node }) {
+                        const attribute = ASTParser.peek(attributes);
                         if (attribute.isOpen() && attribute.isIdentified()) {
                             if (node.expression.type === 'Identifier') {
                                 console.log(`Set value of attribute: ${node.type}`);
@@ -157,32 +184,39 @@ class ASTParser {
                         }
                     },
                     StringLiteral({ node }) {
+                        const attribute = ASTParser.peek(attributes);
                         if (attribute.isOpen() && attribute.isIdentified()) {
                             console.log(`Set value of attributet: ${node.type}`);
                             attribute.setValue(node.value);
                         }
                     },
                     exit({ node }) {
-                        if ((node.type == 'VariableDeclaration' ||
-                            node.type == 'FunctionDeclaration' ||
-                            node.type == 'ClassDeclaration') &&
-                            node == component.getNode()) {
+                        if (component.close(node)) {
                             console.log(`Close component: ${node.type}`);
-                            if (component.hasJSX()) {
-                                parsedFile.components.push(component);
-                            }
+                            parsedFile.components.push(component);
                             component = new Component_1.default(path);
                         }
-                        if (node.type == 'JSXOpeningElement' &&
-                            node == jsxElement.getNode()) {
+                        const jsxElement = ASTParser.peek(elements);
+                        if (jsxElement.close(node)) {
                             console.log(`Close element: ${node.type}`);
+                            jsxElement.setOptional(inIfStatement);
                             component.addJSXElement(jsxElement);
-                            jsxElement = new JSXElement_1.default(path);
+                            console.log(`Pop: ${jsxElement.getElementName()}`);
+                            elements.pop();
+                            if (elements.length === 0)
+                                elements.push(new JSXElement_1.default(path));
                         }
-                        if (node.type == 'JSXAttribute' && node == attribute.getNode()) {
+                        const attribute = ASTParser.peek(attributes);
+                        if (attribute.close(node)) {
                             console.log(`Close attribute: ${node.type}`);
                             jsxElement.addAttribute(attribute);
-                            attribute = new Attribute_1.default();
+                            attributes.pop();
+                            if (attributes.length === 0)
+                                attributes.push(new Attribute_1.default());
+                        }
+                        if (node.type == 'IfStatement') {
+                            console.log('Close if:');
+                            inIfStatement = false;
                         }
                         if (node.type == 'Program') {
                             resolve(parsedFile);

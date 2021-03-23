@@ -1,7 +1,7 @@
 {
-  "name": "@stephanboersma/parser",
+  "name": "@react-bratus/parser",
   "version": "1.1.6-alpha.3",
-  "description": "Prototype parser",
+  "description": "React Bratus parser",
   "private": true,
   "main": "./dist/index.js",
   "scripts": {

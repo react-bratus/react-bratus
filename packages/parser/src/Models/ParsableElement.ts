@@ -24,6 +24,9 @@ class ParsableElement {
   isOpen(): boolean {
     return !!this.node;
   }
+  close(node: Node): boolean {
+    return node === this.node;
+  }
   isUndefined(): boolean {
     return this.node === undefined;
   }

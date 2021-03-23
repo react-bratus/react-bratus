@@ -3,6 +3,7 @@ import ParsableElement from './ParsableElement';
 
 class JSXElement extends ParsableElement {
   private attributes: Map<string, Attribute> = new Map<string, Attribute>();
+  private optional = false;
   constructor(path: string) {
     super(path);
   }
@@ -15,6 +16,18 @@ class JSXElement extends ParsableElement {
         'JSXElement.addAttribute: This component has not been opened yet.'
       );
     }
+  }
+
+  setOptional(isOptional: boolean): void {
+    if (super.getElementName() === 'Route') {
+      this.optional = true;
+    } else {
+      this.optional = isOptional;
+    }
+  }
+
+  isOptional(): boolean {
+    return this.optional;
   }
 
   getAttribute(key: string): Attribute | undefined {

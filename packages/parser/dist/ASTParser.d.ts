@@ -6,6 +6,7 @@ declare class ASTParser {
     components: Component[];
     constructor(sourcePath: string);
     getFilesAndDirectories(): Promise<string[]>;
+    static peek<T>(array: T[]): T;
     private parseFile;
 }
 export default ASTParser;

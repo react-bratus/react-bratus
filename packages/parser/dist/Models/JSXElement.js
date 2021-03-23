@@ -8,6 +8,7 @@ class JSXElement extends ParsableElement_1.default {
     constructor(path) {
         super(path);
         this.attributes = new Map();
+        this.optional = false;
     }
     addAttribute(attribute) {
         if (super.isOpen()) {
@@ -16,6 +17,17 @@ class JSXElement extends ParsableElement_1.default {
         else {
             throw new Error('JSXElement.addAttribute: This component has not been opened yet.');
         }
+    }
+    setOptional(isOptional) {
+        if (super.getElementName() === 'Route') {
+            this.optional = true;
+        }
+        else {
+            this.optional = isOptional;
+        }
+    }
+    isOptional() {
+        return this.optional;
     }
     getAttribute(key) {
         if (this.attributes.has(key)) {

@@ -1,5 +1,5 @@
 {
-  "name": "@stephanboersma/my-prototype",
+  "name": "react-bratus",
   "private": true,
   "workspaces": [
     "packages/*"
