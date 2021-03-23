@@ -30,25 +30,25 @@ const fs = __importStar(require("fs"));
 const packageJson = require('../package.json');
 commander_1.program
     .version(packageJson.version)
-    .description('Prototype CLI for thesis')
+    .description('React Bratus CLI')
     .option('-s, --start', 'Start server')
     .option('-c, --compile', 'Compile prototype project')
     .parse(process.argv);
 const options = commander_1.program.opts();
 if (options.start) {
-    console.log(commander_1.program.opts());
-    console.log(process.cwd());
     if (fs.existsSync(`${process.cwd()}/graphData.json`)) {
-        const s = new server_1.default();
-        s.listen();
+        const server = new server_1.default();
+        server.listen();
     }
     else {
+        const parser = new parser_1.default(`${process.cwd()}/src`);
+        parser.compile();
         const server = new server_1.default();
         server.listen();
     }
 }
 if (options.compile) {
     const parser = new parser_1.default(`${process.cwd()}/src`);
-    console.log(parser);
+    parser.compile();
 }
 //# sourceMappingURL=index.js.map
