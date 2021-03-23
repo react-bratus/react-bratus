@@ -19,7 +19,7 @@
   "author": "Stephan Boersma",
   "license": "MIT",
   "dependencies": {
-    "@react-bratus/parser": "^1.1.6-alpha.7",
+    "@react-bratus/parser": "^1.1.6-alpha.8",
     "@react-bratus/server": "^1.1.6-alpha.7",
     "chalk": "^4.1.0",
     "clear": "^0.1.0",
