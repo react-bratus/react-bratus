@@ -23,8 +23,9 @@ if (options.start) {
     s.listen();
   } else {
     const parser = new ASTParser(`${process.cwd()}/src`);
-    const s = new Server();
-    s.listen();
+    console.log(parser);
+    const server = new Server();
+    server.listen();
   }
 }
 

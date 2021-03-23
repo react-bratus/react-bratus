@@ -43,10 +43,8 @@ if (options.start) {
         s.listen();
     }
     else {
-        const parser = new parser_1.default(`${process.cwd()}/src`);
-        console.log(parser);
-        const s = new server_1.default();
-        s.listen();
+        const server = new server_1.default();
+        server.listen();
     }
 }
 if (options.compile) {
