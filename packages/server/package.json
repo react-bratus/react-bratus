@@ -2,7 +2,6 @@
   "name": "@react-bratus/server",
   "version": "1.1.6-alpha.3",
   "description": "React Bratus Server",
-  "private": true,
   "main": "./dist/index.js",
   "scripts": {
     "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
