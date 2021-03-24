@@ -1,7 +1,10 @@
 {
-  "name": "@stephanboersma/parser",
-  "version": "1.1.6-alpha.0",
-  "description": "Prototype parser",
+  "name": "@react-bratus/parser",
+  "version": "1.2.2",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "React Bratus parser",
   "main": "./dist/index.js",
   "scripts": {
     "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
@@ -17,12 +20,13 @@
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   },
-  "gitHead": "93b99babbe7bc76544d6dd8ceff77725d802584e",
+  "gitHead": "6de840ebd664b9cae7defc39031816cb106a62ad",
   "dependencies": {
     "@babel/parser": "^7.12.16",
     "@babel/plugin-transform-typescript": "^7.12.16",
     "@babel/traverse": "^7.12.13",
     "fs": "^0.0.1-security",
+    "glob": "^7.1.6",
     "path": "^0.12.7"
   }
 }

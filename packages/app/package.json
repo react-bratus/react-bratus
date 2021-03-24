@@ -1,15 +1,19 @@
 {
-  "name": "@stephanboersma/app",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@react-bratus/app",
+  "version": "1.2.3",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@lingui/react": "^3.6.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "dagre": "^0.8.5",
     "polished": "^4.1.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-flow-renderer": "^9.1.2",
     "react-scripts": "4.0.3",
     "styled-components": "^5.2.1",
     "web-vitals": "^1.0.1"
@@ -47,5 +51,6 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "prettier": "^2.2.1"
-  }
+  },
+  "gitHead": "6de840ebd664b9cae7defc39031816cb106a62ad"
 }
