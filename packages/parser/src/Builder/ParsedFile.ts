@@ -13,9 +13,5 @@ class ParsedFile {
   public hasComponents(): boolean {
     return this.components.length > 0;
   }
-
-  public print(): void {
-    this.components.forEach((component) => console.log(component));
-  }
 }
 export default ParsedFile;

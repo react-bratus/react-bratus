@@ -1,3 +1,4 @@
+import ASTParser from '../ASTParser';
 import Component from '../Builder/Component';
 import JSXElement from '../Builder/JSXElement';
 import Edge from './Edge';
@@ -6,17 +7,21 @@ import Node, { NodeData } from './Node';
 class Graph {
   public nodes: Node[] = [];
   public components: Component[] = [];
+  private componentMap: Map<string, Component>;
   public edges: Edge[] = [];
   public level = 0;
 
-  constructor(components: Component[]) {
+  constructor(components: Component[], componentMap: Map<string, Component>) {
     this.components = components;
+    this.componentMap = componentMap;
   }
 
   public build(): void {
+    ASTParser.logEntryToFile(`[Info] Building graph`);
     for (let i = 0; i < this.components.length; i++) {
       const component = this.components[i];
       if (component.getElementName() == 'App') {
+        ASTParser.logEntryToFile(`[Info] Creating root node`);
         const elements = component.getJSXElements();
         const root = this.createNode(component.getElementName(), {
           label: component.getElementName(),
@@ -32,36 +37,29 @@ class Graph {
 
   private buildComponentTree(source: Node, element: JSXElement): void {
     try {
-      const component = this.findComponent(element);
-      const target = this.createNode(
-        `${source.id}:${component.getElementName()}`,
-        {
-          label: component.getElementName(),
-          component: component,
+      const component = this.componentMap.get(element.getElementName());
+      if (component) {
+        ASTParser.logEntryToFile(
+          `[Info] Creating link between: ${
+            source.data.label
+          } and ${component.getElementName()}`
+        );
+        const target = this.createNode(
+          `${source.id}:${component.getElementName()}`,
+          {
+            label: component.getElementName(),
+            component: component,
+          }
+        );
+        this.createEdge(source, target, element);
+        if (component.hasJSX()) {
+          component.getJSXElements().forEach((subElement) => {
+            this.buildComponentTree(target, subElement);
+          });
         }
-      );
-      this.createEdge(source, target, element.isOptional());
-      if (component.hasJSX()) {
-        component.getJSXElements().forEach((subElement) => {
-          this.buildComponentTree(target, subElement);
-        });
       }
     } catch (error) {
-      console.log(error);
-    }
-  }
-
-  private findComponent(element: JSXElement): Component {
-    const components = this.components.filter(
-      (component) => component.getElementName() === element.getName()
-    );
-    if (components.length === 1) {
-      return components[0];
-    } else if (components.length > 1) {
-      console.log(components.map((c) => c.getElementName()));
-      throw new Error('More than one component found');
-    } else {
-      throw new Error('No component found: ' + element.getName());
+      ASTParser.logEntryToFile(`Error thrown: ${error.getMessage()}`);
     }
   }
 
@@ -70,8 +68,16 @@ class Graph {
     this.nodes.push(node);
     return node;
   }
-  private createEdge(source: Node, target: Node, optional: boolean): Edge {
-    const edge = new Edge(target.id, source.id, target.id, optional);
+  private createEdge(source: Node, target: Node, element: JSXElement): Edge {
+    const edge = new Edge(
+      target.id,
+      source.id,
+      target.id,
+      element.isOptional()
+    );
+    if (element.isRouteElement && element.routePath) {
+      edge.label = element.routePath;
+    }
     this.edges.push(edge);
     source.outDegree++;
     target.inDegree++;

@@ -4,12 +4,12 @@ import Node from './Node';
 declare class Graph {
     nodes: Node[];
     components: Component[];
+    private componentMap;
     edges: Edge[];
     level: number;
-    constructor(components: Component[]);
+    constructor(components: Component[], componentMap: Map<string, Component>);
     build(): void;
     private buildComponentTree;
-    private findComponent;
     private createNode;
     private createEdge;
     toString(): string;

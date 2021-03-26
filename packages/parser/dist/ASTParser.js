@@ -33,26 +33,43 @@ const JSXElement_1 = __importDefault(require("./Builder/JSXElement"));
 const ParsedFile_1 = __importDefault(require("./Builder/ParsedFile"));
 const Graph_1 = __importDefault(require("./Graph/Graph"));
 class ASTParser {
-    constructor(sourcePath) {
+    constructor(sourcePath, log) {
         this.components = [];
+        this.componentMap = new Map();
         this.path = sourcePath;
+        ASTParser.log = log;
+        ASTParser.logEntryToFile(`[Info] ASTParser initialized with path: ${this.path}`);
     }
     compile() {
+        ASTParser.logEntryToFile(`[INFO] Parsing project`);
         this.getFilesAndDirectories().then(async (files) => {
+            ASTParser.logEntryToFile(`[Info] Traversing files: [${files.join(',\n')}]`);
             for (let i = 0; i < files.length; i++) {
                 if (!files[i].includes('stories')) {
                     const parsedFile = await this.parseFile(files[i]);
                     if (parsedFile.hasComponents()) {
                         this.components.push(...parsedFile.components);
+                        parsedFile.components.forEach((component) => {
+                            const componentName = component.getElementName();
+                            if (!this.componentMap.has(componentName)) {
+                                ASTParser.logEntryToFile(`[Info] Adding component: ${componentName}`);
+                                this.componentMap.set(componentName, component);
+                            }
+                            else {
+                                ASTParser.logEntryToFile(`[Warning] A duplicate component found which was not added: ${componentName}`);
+                            }
+                        });
                     }
                 }
             }
-            const graph = new Graph_1.default(this.components);
+            const graph = new Graph_1.default(this.components, this.componentMap);
+            ASTParser.logEntryToFile(`[Info] Traversal finished`);
             graph.build();
             this.writeDataToFile(graph.toString());
         });
     }
     writeDataToFile(graphData) {
+        ASTParser.logEntryToFile(`[Info] Writing data to .react-bratus/data.json`);
         const dir = this.path + '/../.react-bratus';
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir);
@@ -73,6 +90,7 @@ class ASTParser {
         return array[array.length - 1];
     }
     async parseFile(path) {
+        ASTParser.logEntryToFile(`[Info] Parsing file: ${path}`);
         return new Promise((resolve, reject) => {
             const parsedFile = new ParsedFile_1.default(path);
             let component = new Component_1.default(path);
@@ -106,50 +124,64 @@ class ASTParser {
                                     break;
                             }
                             if (name) {
+                                ASTParser.logEntryToFile(`[Info] Import added to component: ${name}`);
                                 component.addImport(new Import_1.default(alias, name, modulePath));
                             }
                         });
                     },
                     ClassDeclaration({ node }) {
                         if (component.isUndefined()) {
+                            ASTParser.logEntryToFile(`[Info] Open component by ClassDeclaration`);
                             component.open(node);
                         }
                     },
                     VariableDeclaration({ node }) {
                         if (component.isUndefined()) {
+                            ASTParser.logEntryToFile(`[Info] Open component by VariableDeclaration`);
                             component.open(node);
                         }
                     },
                     FunctionDeclaration({ node }) {
                         if (component.isUndefined()) {
+                            ASTParser.logEntryToFile(`[Info] Open component by FunctionDeclaration`);
                             component.open(node);
                         }
                     },
                     Identifier({ node }) {
                         if (component.isOpen() && !component.isIdentified()) {
+                            ASTParser.logEntryToFile(`[Info] Identify component`);
                             component.identify(node);
                         }
                     },
                     IfStatement() {
+                        ASTParser.logEntryToFile(`[Info] Increment level of depth in if statement: ${ifStatementLevel}`);
                         ifStatementLevel++;
                     },
                     JSXOpeningElement({ node }) {
                         const jsxElement = ASTParser.peek(elements);
+                        const attribute = ASTParser.peek(attributes);
                         if (jsxElement.isUndefined()) {
+                            ASTParser.logEntryToFile(`[Info] Open jsxElement`);
                             jsxElement.open(node);
                         }
                         else {
-                            const newElement = new JSXElement_1.default(path);
-                            newElement.open(node);
-                            elements.push(newElement);
+                            if (jsxElement.isRoute() &&
+                                attribute.getElementName() == 'render') {
+                                ASTParser.logEntryToFile(`[Info] Open jsxElement within render attribute. Resetting identifier`);
+                                jsxElement.open(node);
+                                jsxElement.isRouteElement = true;
+                                jsxElement.resetIdentifier();
+                            }
                         }
                     },
                     JSXAttribute({ node }) {
                         const attribute = ASTParser.peek(attributes);
                         if (attribute.isUndefined()) {
+                            ASTParser.logEntryToFile(`[Info] Open Attribute`);
                             attribute.open(node);
                         }
                         else {
+                            ASTParser.logEntryToFile(`[Info] Open Attribute`);
                             const newAttribute = new Attribute_1.default();
                             newAttribute.open(node);
                             attributes.push(newAttribute);
@@ -159,34 +191,54 @@ class ASTParser {
                         const jsxElement = ASTParser.peek(elements);
                         const attribute = ASTParser.peek(attributes);
                         if (jsxElement.isOpen() && !jsxElement.isIdentified()) {
+                            ASTParser.logEntryToFile(`[Info] Identify jsxElement`);
                             jsxElement.identify(node);
                         }
                         else if (attribute.isOpen() && !attribute.isIdentified()) {
+                            ASTParser.logEntryToFile(`[Info] Identify Attribute`);
                             attribute.identify(node);
                         }
                     },
                     JSXExpressionContainer({ node }) {
+                        const jsxElement = ASTParser.peek(elements);
                         const attribute = ASTParser.peek(attributes);
                         if (attribute.isOpen() && attribute.isIdentified()) {
                             if (node.expression.type === 'Identifier') {
+                                ASTParser.logEntryToFile(`[Info] Set value of Attribute`);
                                 attribute.setValue(node.expression.name);
+                                if (jsxElement.isRoute() &&
+                                    attribute.getElementName() == 'component') {
+                                    ASTParser.logEntryToFile(`[Info] Set name of Route element`);
+                                    jsxElement.setName(attribute.getValue());
+                                    jsxElement.isRouteElement = true;
+                                }
                             }
                         }
                     },
                     StringLiteral({ node }) {
+                        const jsxElement = ASTParser.peek(elements);
                         const attribute = ASTParser.peek(attributes);
                         if (attribute.isOpen() && attribute.isIdentified()) {
+                            ASTParser.logEntryToFile(`[Info] Set value of Attribute`);
                             attribute.setValue(node.value);
+                            if (jsxElement.isRoute() &&
+                                attribute.getElementName() == 'path') {
+                                ASTParser.logEntryToFile(`[Info] Set path of Route element`);
+                                jsxElement.routePath = attribute.getValue();
+                            }
                         }
                     },
                     exit({ node }) {
                         if (component.close(node)) {
-                            if (component.hasJSX())
+                            if (component.hasJSX()) {
+                                ASTParser.logEntryToFile(`[Info] Close component: ${component.getElementName()}`);
                                 parsedFile.components.push(component);
+                            }
                             component = new Component_1.default(path);
                         }
                         const jsxElement = ASTParser.peek(elements);
                         if (jsxElement.close(node)) {
+                            ASTParser.logEntryToFile(`[Info] Close Element: ${jsxElement.getElementName()}`);
                             jsxElement.setOptional(ifStatementLevel > 0);
                             component.addJSXElement(jsxElement);
                             elements.pop();
@@ -195,15 +247,20 @@ class ASTParser {
                         }
                         const attribute = ASTParser.peek(attributes);
                         if (attribute.close(node)) {
-                            jsxElement.addAttribute(attribute);
+                            ASTParser.logEntryToFile(`[Info] Close Attribute: ${attribute.getElementName()}`);
+                            if (jsxElement.isOpen()) {
+                                jsxElement.addAttribute(attribute);
+                            }
                             attributes.pop();
                             if (attributes.length === 0)
                                 attributes.push(new Attribute_1.default());
                         }
                         if (node.type == 'IfStatement') {
+                            ASTParser.logEntryToFile(`[Info] Reduce level of depth in if statement: ${ifStatementLevel}`);
                             ifStatementLevel--;
                         }
                         if (node.type == 'Program') {
+                            ASTParser.logEntryToFile(`[Info] Finish parsing file: ${parsedFile.path}`);
                             resolve(parsedFile);
                         }
                     },
@@ -214,6 +271,12 @@ class ASTParser {
             }
         });
     }
+    static logEntryToFile(logEntry) {
+        if (ASTParser.log) {
+            console.log(logEntry);
+        }
+    }
 }
+ASTParser.log = false;
 exports.default = ASTParser;
 //# sourceMappingURL=ASTParser.js.map

@@ -3,6 +3,7 @@ class Edge {
   public source: string;
   public target: string;
   public animated: boolean;
+  public label: string | undefined;
 
   constructor(id: string, source: string, target: string, optional: boolean) {
     this.id = id;

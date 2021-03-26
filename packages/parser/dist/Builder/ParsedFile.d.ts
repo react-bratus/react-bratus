@@ -6,6 +6,5 @@ declare class ParsedFile {
     exports: any;
     constructor(path: string);
     hasComponents(): boolean;
-    print(): void;
 }
 export default ParsedFile;

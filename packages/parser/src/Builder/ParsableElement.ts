@@ -41,6 +41,12 @@ class ParsableElement {
     }
     this.name = identifier.name;
   }
+  setName(name: string): void {
+    this.name = name;
+  }
+  resetIdentifier(): void {
+    this.name = undefined;
+  }
 
   getElementName(): string {
     if (!this.isOpen()) {
