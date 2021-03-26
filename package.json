@@ -6,7 +6,7 @@
   ],
   "scripts": {
     "build": "lerna run build && lerna link",
-    "link": "cd packages/cli && yarn link"
+    "link-cli": "cd packages/cli && yarn link"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
