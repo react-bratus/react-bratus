@@ -1,11 +1,12 @@
 {
-  "name": "@stephanboersma/my-prototype",
+  "name": "react-bratus",
   "private": true,
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "build": "lerna run build"
+    "build": "lerna run build && lerna link",
+    "link-cli": "cd packages/cli && yarn link"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

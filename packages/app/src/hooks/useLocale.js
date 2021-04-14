@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { getUserLocale } from '../utils';
 
-const LOCAL_STORAGE_KEY = 'escooter-reporter:settings:locale';
+const LOCAL_STORAGE_KEY = 'react-bratus:settings:locale';
 
 const useLocale = () => {
   const [locale, setLocale] = useState(

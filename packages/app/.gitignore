@@ -8,8 +8,9 @@
 # testing
 /coverage
 
+.react-bratus
+
 # production
-/build
 
 # misc
 .DS_Store
