@@ -3,61 +3,65 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const ASTParser_1 = __importDefault(require("../ASTParser"));
 const Edge_1 = __importDefault(require("./Edge"));
 const Node_1 = __importDefault(require("./Node"));
 class Graph {
-    constructor(components) {
+    constructor(componentMap) {
         this.nodes = [];
-        this.components = [];
         this.edges = [];
         this.level = 0;
-        this.components = components;
+        this.componentMap = componentMap;
     }
     build() {
-        for (let i = 0; i < this.components.length; i++) {
-            const component = this.components[i];
-            if (component.getElementName() == 'App') {
-                const elements = component.getJSXElements();
-                const root = this.createNode(component.getElementName(), {
-                    label: component.getElementName(),
-                    component,
-                });
-                for (let k = 0; k < elements.length; k++) {
-                    const element = elements[k];
-                    this.buildComponentTree(root, element);
-                }
+        ASTParser_1.default.logEntryToFile(`[Info] Building graph`);
+        const component = this.componentMap.get('App');
+        if (component) {
+            ASTParser_1.default.logEntryToFile(`[Info] Creating root node`);
+            const elements = component.getJSXElements();
+            component.timesUsed++;
+            const root = this.createNode(component.getElementName(), {
+                label: component.getElementName(),
+                linesOfCode: component.getLinesOfCode(),
+                component,
+                outDegree: 0,
+                inDegree: 0,
+            });
+            for (let k = 0; k < elements.length; k++) {
+                const element = elements[k];
+                this.buildComponentTree(root, element);
             }
         }
     }
     buildComponentTree(source, element) {
         try {
-            const component = this.findComponent(element);
-            const target = this.createNode(`${source.id}:${component.getElementName()}`, {
-                label: component.getElementName(),
-                component: component,
-            });
-            this.createEdge(source, target, element.isOptional());
-            if (component.hasJSX()) {
-                component.getJSXElements().forEach((subElement) => {
-                    this.buildComponentTree(target, subElement);
-                });
+            const component = this.componentMap.get(element.getElementName());
+            if (component) {
+                component.timesUsed++;
+                const targetNodeId = `${source.id}:${component.getElementName()}`;
+                if (!this.nodes.some((node) => node.id === targetNodeId)) {
+                    ASTParser_1.default.logEntryToFile(`[Info] Creating link between: ${source.data.label} and ${component.getElementName()}`);
+                    const target = this.createNode(`${source.id}:${component.getElementName()}`, {
+                        label: component.getElementName(),
+                        linesOfCode: component.getLinesOfCode(),
+                        component: component,
+                        outDegree: 0,
+                        inDegree: 0,
+                    });
+                    this.createEdge(source, target, element);
+                    if (component.hasJSX()) {
+                        component.getJSXElements().forEach((subElement) => {
+                            this.buildComponentTree(target, subElement);
+                        });
+                    }
+                }
+                else {
+                    ASTParser_1.default.logEntryToFile(`[Warnig] Node with id: ${targetNodeId} already exist. Not creating duplicate node`);
+                }
             }
         }
         catch (error) {
-            console.log(error);
-        }
-    }
-    findComponent(element) {
-        const components = this.components.filter((component) => component.getElementName() === element.getName());
-        if (components.length === 1) {
-            return components[0];
-        }
-        else if (components.length > 1) {
-            console.log(components.map((c) => c.getElementName()));
-            throw new Error('More than one component found');
-        }
-        else {
-            throw new Error('No component found: ' + element.getName());
+            ASTParser_1.default.logEntryToFile(`Error thrown: ${error.getMessage()}`);
         }
     }
     createNode(id, data) {
@@ -65,15 +69,31 @@ class Graph {
         this.nodes.push(node);
         return node;
     }
-    createEdge(source, target, optional) {
-        const edge = new Edge_1.default(target.id, source.id, target.id, optional);
+    createEdge(source, target, element) {
+        const edge = new Edge_1.default(target.id, source.id, target.id, element.isOptional());
+        if (element.isRouteElement && element.routePath) {
+            edge.label = element.routePath;
+        }
         this.edges.push(edge);
-        source.outDegree++;
-        target.inDegree++;
+        source.data.outDegree++;
+        target.data.inDegree++;
         return edge;
+    }
+    calculateInfo() {
+        const components = [...new Set(this.componentMap.values())];
+        return {
+            uniqueComponents: components.length,
+            averageTimesUsed: components
+                .map((component) => component.timesUsed)
+                .reduce((a, b) => a + b) / components.length,
+            averageLinesOfCode: components
+                .map((component) => component.getLinesOfCode())
+                .reduce((a, b) => a + b) / components.length,
+        };
     }
     toString() {
         return JSON.stringify({
+            info: this.calculateInfo(),
             nodes: this.nodes,
             edges: this.edges,
         });

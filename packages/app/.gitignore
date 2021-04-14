@@ -8,6 +8,8 @@
 # testing
 /coverage
 
+.react-bratus
+
 # production
 
 # misc

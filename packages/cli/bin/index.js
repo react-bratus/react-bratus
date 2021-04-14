@@ -33,22 +33,23 @@ commander_1.program
     .description('React Bratus CLI')
     .option('-s, --start', 'Start server')
     .option('-c, --compile', 'Compile prototype project')
+    .option('-l, --log', 'Show logs while parsing')
     .parse(process.argv);
 const options = commander_1.program.opts();
 if (options.start) {
-    if (fs.existsSync(`${process.cwd()}/graphData.json`)) {
+    if (fs.existsSync(`${process.cwd()}/.react-bratus/data.json`)) {
         const server = new server_1.default();
         server.listen();
     }
     else {
-        const parser = new parser_1.default(`${process.cwd()}/src`);
+        const parser = new parser_1.default(`${process.cwd()}/src`, !!options.log);
         parser.compile();
         const server = new server_1.default();
         server.listen();
     }
 }
 if (options.compile) {
-    const parser = new parser_1.default(`${process.cwd()}/src`);
+    const parser = new parser_1.default(`${process.cwd()}/src`, !!options.log);
     parser.compile();
 }
 //# sourceMappingURL=index.js.map

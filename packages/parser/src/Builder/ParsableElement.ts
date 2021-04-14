@@ -17,6 +17,7 @@ class ParsableElement {
   getNode(): Node | undefined {
     return this.node;
   }
+
   open(node: Node): void {
     this.node = node;
     this.location = { start: this.node.start, end: this.node.end };
@@ -40,6 +41,12 @@ class ParsableElement {
       );
     }
     this.name = identifier.name;
+  }
+  setName(name: string): void {
+    this.name = name;
+  }
+  resetIdentifier(): void {
+    this.name = undefined;
   }
 
   getElementName(): string {

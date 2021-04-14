@@ -9,6 +9,16 @@ class Component extends ParsableElement_1.default {
         super(path);
         this.JSXElements = [];
         this.imports = [];
+        this.timesUsed = 0;
+    }
+    getLinesOfCode() {
+        const node = super.getNode();
+        if (node && node.loc) {
+            return node.loc.end.line - node.loc.start.line;
+        }
+        else {
+            throw new Error('Component is not defined or does not have location data');
+        }
     }
     addJSXElement(element) {
         this.JSXElements.push(element);

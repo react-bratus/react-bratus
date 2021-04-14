@@ -9,6 +9,7 @@ class JSXElement extends ParsableElement_1.default {
         super(path);
         this.attributes = new Map();
         this.optional = false;
+        this.isRouteElement = false;
     }
     addAttribute(attribute) {
         if (super.isOpen()) {
@@ -19,7 +20,7 @@ class JSXElement extends ParsableElement_1.default {
         }
     }
     setOptional(isOptional) {
-        if (super.getElementName() === 'Route') {
+        if (this.isRouteElement) {
             this.optional = true;
         }
         else {
@@ -35,6 +36,9 @@ class JSXElement extends ParsableElement_1.default {
         }
         throw new Error(`The attribute ${key} does not exist on this component`);
     }
+    isRoute() {
+        return super.getElementName().includes('Route');
+    }
     getName() {
         var _a;
         if (super.getElementName() === 'Route' &&
@@ -44,7 +48,6 @@ class JSXElement extends ParsableElement_1.default {
                 return component ? component : '';
             }
             catch (error) {
-                console.log(error);
                 return super.getElementName();
             }
         }

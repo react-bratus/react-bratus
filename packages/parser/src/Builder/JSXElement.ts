@@ -4,6 +4,8 @@ import ParsableElement from './ParsableElement';
 class JSXElement extends ParsableElement {
   private attributes: Map<string, Attribute> = new Map<string, Attribute>();
   private optional = false;
+  public routePath: string | undefined;
+  public isRouteElement = false;
   constructor(path: string) {
     super(path);
   }
@@ -19,7 +21,7 @@ class JSXElement extends ParsableElement {
   }
 
   setOptional(isOptional: boolean): void {
-    if (super.getElementName() === 'Route') {
+    if (this.isRouteElement) {
       this.optional = true;
     } else {
       this.optional = isOptional;
@@ -37,6 +39,10 @@ class JSXElement extends ParsableElement {
     throw new Error(`The attribute ${key} does not exist on this component`);
   }
 
+  isRoute(): boolean {
+    return super.getElementName().includes('Route');
+  }
+
   getName(): string {
     if (
       super.getElementName() === 'Route' &&
@@ -46,7 +52,6 @@ class JSXElement extends ParsableElement {
         const component = this.getAttribute('component')?.getValue();
         return component ? component : '';
       } catch (error) {
-        console.log(error);
         return super.getElementName();
       }
     } else {

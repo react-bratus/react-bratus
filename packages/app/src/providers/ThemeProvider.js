@@ -1,13 +1,23 @@
 import React from 'react';
-import { ThemeProvider as StyledThemeProvider } from 'styled-components';
-
+import {
+  createGlobalStyle,
+  ThemeProvider as StyledThemeProvider,
+} from 'styled-components';
 const THEME = {
-  primary: '#3e3e3e',
-  secondary: '#000000',
+  primary: '#00D8FF',
+  secondary: '#001529',
 };
+const GlobalStyle = createGlobalStyle`
+
+`;
 
 const ThemeProvider = ({ children }) => {
-  return <StyledThemeProvider theme={THEME}>{children}</StyledThemeProvider>;
+  return (
+    <StyledThemeProvider theme={THEME}>
+      <GlobalStyle />
+      {children}
+    </StyledThemeProvider>
+  );
 };
 
 export default ThemeProvider;

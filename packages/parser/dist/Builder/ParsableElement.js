@@ -29,6 +29,12 @@ class ParsableElement {
         }
         this.name = identifier.name;
     }
+    setName(name) {
+        this.name = name;
+    }
+    resetIdentifier() {
+        this.name = undefined;
+    }
     getElementName() {
         if (!this.isOpen()) {
             throw new Error('ParsableElement.getElementName: This component has not been opened yet.');

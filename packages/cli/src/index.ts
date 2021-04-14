@@ -12,15 +12,16 @@ program
   .description('React Bratus CLI')
   .option('-s, --start', 'Start server')
   .option('-c, --compile', 'Compile prototype project')
+  .option('-l, --log', 'Show logs while parsing')
   .parse(process.argv);
 
 const options = program.opts();
 if (options.start) {
-  if (fs.existsSync(`${process.cwd()}/graphData.json`)) {
+  if (fs.existsSync(`${process.cwd()}/.react-bratus/data.json`)) {
     const server = new Server();
     server.listen();
   } else {
-    const parser = new ASTParser(`${process.cwd()}/src`);
+    const parser = new ASTParser(`${process.cwd()}/src`, !!options.log);
     parser.compile();
     const server = new Server();
     server.listen();
@@ -28,6 +29,6 @@ if (options.start) {
 }
 
 if (options.compile) {
-  const parser = new ASTParser(`${process.cwd()}/src`);
+  const parser = new ASTParser(`${process.cwd()}/src`, !!options.log);
   parser.compile();
 }

@@ -16,6 +16,8 @@ declare class ParsableElement {
     isUndefined(): boolean;
     isIdentified(): boolean;
     identify(identifier: Identifier | JSXIdentifier): void;
+    setName(name: string): void;
+    resetIdentifier(): void;
     getElementName(): string;
     getLocation(): Location;
     getId(): string;
