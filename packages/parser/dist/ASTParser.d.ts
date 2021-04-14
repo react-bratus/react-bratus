@@ -1,7 +1,5 @@
-import Component from './Builder/Component';
 declare class ASTParser {
     private path;
-    components: Component[];
     private componentMap;
     private static log;
     constructor(sourcePath: string, log: boolean);

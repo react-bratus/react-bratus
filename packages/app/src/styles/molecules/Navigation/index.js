@@ -1,10 +1,30 @@
-import { Button, Layout, Menu, message } from 'antd';
+import { Button, Layout, Menu, message, Typography } from 'antd';
+import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 
 import { recompile } from '../../../api';
 import MenuTitle from '../../atoms/MenuTitle';
 import { baseUnit, navigationWidth } from '../../tokens/units';
+import NavigationSection from '../NavigationSection';
+const { Paragraph, Title } = Typography;
+
+const StyledTitle = styled(Title)`
+  color: #fff !important;
+  text-align: center;
+`;
+
+const InfoParagraph = styled(Paragraph)`
+  color: #fff;
+  line-height: ${baseUnit * 2}px;
+  font-size: ${baseUnit + 2}px;
+  text-align: right;
+  padding-right: ${baseUnit}px;
+`;
+
+const HighLightedNumber = styled.span`
+  color: ${({ theme }) => theme.primary};
+`;
 
 const Actions = styled.div`
   display: flex;
@@ -23,7 +43,7 @@ const Actions = styled.div`
 `;
 const { Sider } = Layout;
 
-const Navigation = () => {
+const Navigation = ({ info }) => {
   const compile = () => {
     recompile()
       .then(() => {
@@ -48,9 +68,33 @@ const Navigation = () => {
         left: 0,
       }}
     >
+      <StyledTitle level={1}>react-bratus</StyledTitle>
       <Menu theme="dark" mode="inline">
-        <MenuTitle>Info</MenuTitle>
-        <MenuTitle>Filters</MenuTitle>
+        {info && (
+          <NavigationSection title="Info">
+            <InfoParagraph>
+              your tree contains{' '}
+              <HighLightedNumber>{info.uniqueComponents} </HighLightedNumber>
+              unique components
+            </InfoParagraph>
+            <InfoParagraph>
+              your components are on average reused
+              <HighLightedNumber>
+                {' '}
+                {info.averageTimesUsed.toFixed(2)}{' '}
+              </HighLightedNumber>
+              times
+            </InfoParagraph>
+            <InfoParagraph>
+              your average component consist of
+              <HighLightedNumber>
+                {' '}
+                {info.averageLinesOfCode.toFixed(0)}{' '}
+              </HighLightedNumber>
+              lines of code
+            </InfoParagraph>
+          </NavigationSection>
+        )}
         <MenuTitle>Actions</MenuTitle>
         <Actions>
           <Button onClick={compile} ghost>
@@ -60,6 +104,9 @@ const Navigation = () => {
       </Menu>
     </Sider>
   );
+};
+Navigation.propTypes = {
+  info: PropTypes.any,
 };
 
 export default Navigation;

@@ -14,7 +14,6 @@ import Graph from './Graph/Graph';
 
 class ASTParser {
   private path: string;
-  public components: Component[] = [];
   private componentMap: Map<string, Component> = new Map();
   private static log = false;
 
@@ -39,7 +38,6 @@ class ASTParser {
         if (!files[i].includes('stories')) {
           const parsedFile = await this.parseFile(files[i]);
           if (parsedFile.hasComponents()) {
-            this.components.push(...parsedFile.components);
             parsedFile.components.forEach((component) => {
               const componentName = component.getElementName();
               if (!this.componentMap.has(componentName)) {
@@ -56,7 +54,7 @@ class ASTParser {
           }
         }
       }
-      const graph = new Graph(this.components, this.componentMap);
+      const graph = new Graph(this.componentMap);
       ASTParser.logEntryToFile(`[Info] Traversal finished`);
       graph.build();
 

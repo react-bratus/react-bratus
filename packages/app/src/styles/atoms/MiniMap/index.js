@@ -5,7 +5,8 @@ import { baseUnit } from '../../tokens/units';
 
 const StyledMiniMap = styled(MiniMap)`
   position: absolute;
-  left: ${baseUnit + 26}px;
+  right: ${baseUnit}px;
+  top: ${baseUnit}px;
 `;
 
 export default StyledMiniMap;

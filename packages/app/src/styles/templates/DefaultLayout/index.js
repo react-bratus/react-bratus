@@ -1,4 +1,5 @@
 import { Layout } from 'antd';
+import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -9,12 +10,16 @@ const ContentWrapper = styled(Layout)`
   padding: 1rem;
   height: 100vh;
 `;
-const DefaultLayout = ({ children }) => {
+const DefaultLayout = ({ children, info }) => {
   return (
     <Layout>
-      <Navigation />
+      <Navigation info={info} />
       <ContentWrapper>{children}</ContentWrapper>
     </Layout>
   );
+};
+
+DefaultLayout.propTypes = {
+  info: PropTypes.any,
 };
 export default DefaultLayout;

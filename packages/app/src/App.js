@@ -16,11 +16,15 @@ import { getLayoutedElements } from './utils/graphUtils';
 const App = () => {
   const { locale } = useLocale();
   const [elements, setElements] = useState(null);
+  const [info, setInfo] = useState(null);
 
   useEffect(() => {
     activate(locale);
     getParsedData()
       .then((data) => {
+        setInfo(data.info);
+        const test = [...new Set(data.nodes.map((n) => n.data.label))];
+        console.log(test);
         setElements(
           getLayoutedElements(
             [].concat(
@@ -48,7 +52,7 @@ const App = () => {
     <I18nProvider i18n={i18n}>
       <I18nWatchLocaleProvider>
         <ThemeProvider>
-          <DefaultLayout>
+          <DefaultLayout info={info}>
             <ComponentTree elements={elements} />
           </DefaultLayout>
         </ThemeProvider>

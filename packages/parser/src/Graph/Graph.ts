@@ -6,31 +6,31 @@ import Node, { NodeData } from './Node';
 
 class Graph {
   public nodes: Node[] = [];
-  public components: Component[] = [];
   private componentMap: Map<string, Component>;
   public edges: Edge[] = [];
   public level = 0;
 
-  constructor(components: Component[], componentMap: Map<string, Component>) {
-    this.components = components;
+  constructor(componentMap: Map<string, Component>) {
     this.componentMap = componentMap;
   }
 
   public build(): void {
     ASTParser.logEntryToFile(`[Info] Building graph`);
-    for (let i = 0; i < this.components.length; i++) {
-      const component = this.components[i];
-      if (component.getElementName() == 'App') {
-        ASTParser.logEntryToFile(`[Info] Creating root node`);
-        const elements = component.getJSXElements();
-        const root = this.createNode(component.getElementName(), {
-          label: component.getElementName(),
-          component,
-        });
-        for (let k = 0; k < elements.length; k++) {
-          const element = elements[k];
-          this.buildComponentTree(root, element);
-        }
+    const component = this.componentMap.get('App');
+    if (component) {
+      ASTParser.logEntryToFile(`[Info] Creating root node`);
+      const elements = component.getJSXElements();
+      component.timesUsed++;
+      const root = this.createNode(component.getElementName(), {
+        label: component.getElementName(),
+        linesOfCode: component.getLinesOfCode(),
+        component,
+        outDegree: 0,
+        inDegree: 0,
+      });
+      for (let k = 0; k < elements.length; k++) {
+        const element = elements[k];
+        this.buildComponentTree(root, element);
       }
     }
   }
@@ -39,23 +39,34 @@ class Graph {
     try {
       const component = this.componentMap.get(element.getElementName());
       if (component) {
-        ASTParser.logEntryToFile(
-          `[Info] Creating link between: ${
-            source.data.label
-          } and ${component.getElementName()}`
-        );
-        const target = this.createNode(
-          `${source.id}:${component.getElementName()}`,
-          {
-            label: component.getElementName(),
-            component: component,
+        component.timesUsed++;
+        const targetNodeId = `${source.id}:${component.getElementName()}`;
+        if (!this.nodes.some((node) => node.id === targetNodeId)) {
+          ASTParser.logEntryToFile(
+            `[Info] Creating link between: ${
+              source.data.label
+            } and ${component.getElementName()}`
+          );
+          const target = this.createNode(
+            `${source.id}:${component.getElementName()}`,
+            {
+              label: component.getElementName(),
+              linesOfCode: component.getLinesOfCode(),
+              component: component,
+              outDegree: 0,
+              inDegree: 0,
+            }
+          );
+          this.createEdge(source, target, element);
+          if (component.hasJSX()) {
+            component.getJSXElements().forEach((subElement) => {
+              this.buildComponentTree(target, subElement);
+            });
           }
-        );
-        this.createEdge(source, target, element);
-        if (component.hasJSX()) {
-          component.getJSXElements().forEach((subElement) => {
-            this.buildComponentTree(target, subElement);
-          });
+        } else {
+          ASTParser.logEntryToFile(
+            `[Warnig] Node with id: ${targetNodeId} already exist. Not creating duplicate node`
+          );
         }
       }
     } catch (error) {
@@ -79,13 +90,30 @@ class Graph {
       edge.label = element.routePath;
     }
     this.edges.push(edge);
-    source.outDegree++;
-    target.inDegree++;
+    source.data.outDegree++;
+    target.data.inDegree++;
     return edge;
+  }
+
+  private calculateInfo() {
+    const components: Component[] = [...new Set(this.componentMap.values())];
+
+    return {
+      uniqueComponents: components.length,
+      averageTimesUsed:
+        components
+          .map((component) => component.timesUsed)
+          .reduce((a, b) => a + b) / components.length,
+      averageLinesOfCode:
+        components
+          .map((component) => component.getLinesOfCode())
+          .reduce((a, b) => a + b) / components.length,
+    };
   }
 
   public toString(): string {
     return JSON.stringify({
+      info: this.calculateInfo(),
       nodes: this.nodes,
       edges: this.edges,
     });

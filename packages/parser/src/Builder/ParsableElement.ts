@@ -17,6 +17,7 @@ class ParsableElement {
   getNode(): Node | undefined {
     return this.node;
   }
+
   open(node: Node): void {
     this.node = node;
     this.location = { start: this.node.start, end: this.node.end };

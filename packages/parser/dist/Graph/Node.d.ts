@@ -5,14 +5,16 @@ interface Position {
 }
 export interface NodeData {
     label: string;
+    linesOfCode: number;
+    inDegree: number;
+    outDegree: number;
     component: Component;
 }
 declare class Node {
     id: string;
     position: Position;
     data: NodeData;
-    inDegree: number;
-    outDegree: number;
+    type: string;
     constructor(id: string, data: NodeData);
 }
 export default Node;
