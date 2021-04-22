@@ -4,6 +4,10 @@
   "publishConfig": {
     "access": "public"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stephanboersma/react-bratus.git"
+  },
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
     "@lingui/react": "^3.6.0",
