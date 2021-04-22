@@ -34,8 +34,8 @@ class Server {
             parser.compile();
             res.status(200).send();
         });
-        this.app.listen(3000);
-        console.log('Listening on port 3000');
+        this.app.listen(4444);
+        console.log('Listening on port 4444');
     }
 }
 exports.default = Server;

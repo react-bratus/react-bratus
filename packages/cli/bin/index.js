@@ -32,7 +32,7 @@ commander_1.program
     .version(packageJson.version)
     .description('React Bratus CLI')
     .option('-s, --start', 'Start server')
-    .option('-c, --compile', 'Compile prototype project')
+    .option('-c, --compile', 'Compile the project')
     .option('-l, --log', 'Show logs while parsing')
     .parse(process.argv);
 const options = commander_1.program.opts();
