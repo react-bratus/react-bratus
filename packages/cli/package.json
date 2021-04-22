@@ -1,6 +1,6 @@
 {
   "name": "@react-bratus/cli",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "publishConfig": {
     "access": "public"
   },
@@ -19,8 +19,8 @@
   "author": "Stephan Boersma",
   "license": "MIT",
   "dependencies": {
-    "@react-bratus/parser": "^2.0.0",
-    "@react-bratus/server": "^2.0.0",
+    "@react-bratus/parser": "^2.0.1",
+    "@react-bratus/server": "^2.0.1",
     "chalk": "^4.1.0",
     "clear": "^0.1.0",
     "commander": "^7.0.0",
