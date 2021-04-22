@@ -2,6 +2,7 @@ import 'antd/dist/antd.css';
 
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
+import { Alert, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import { getParsedData } from './api';
@@ -53,7 +54,17 @@ const App = () => {
       <I18nWatchLocaleProvider>
         <ThemeProvider>
           <DefaultLayout info={info}>
-            <ComponentTree elements={elements} />
+            {elements ? (
+              <ComponentTree elements={elements} />
+            ) : (
+              <Spin spinning={true}>
+                <Alert
+                  message="Nothing to show"
+                  description="Could not find any components to display"
+                  type="warning"
+                />
+              </Spin>
+            )}
           </DefaultLayout>
         </ThemeProvider>
       </I18nWatchLocaleProvider>

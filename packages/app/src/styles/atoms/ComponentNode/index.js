@@ -14,19 +14,17 @@ const StyledNode = styled.div`
   width: ${nodeWidth}px;
   padding: ${baseUnit}px;
   border-radius: ${borderRadius}px;
-  background-color: white;
-  border: ${({ timesUsed }) => (timesUsed < 5 ? 1 : 3)}px solid;
+  border: 1px solid;
   border-color: black;
+  background-color: white;
 `;
 const ComponentNode = ({ data }) => {
   return (
-    <StyledNode
-      linesOfCode={data.linesOfCode}
-      timesUsed={data.component.timesUsed}
-    >
+    <StyledNode linesOfCode={data.linesOfCode}>
       {data.inDegree > 0 && <Handle type="target" position="left" />}
       <div>
-        {data.label}({data.component.timesUsed})
+        {data.label}
+        {data.component.timesUsed > 1 && `(${data.component.timesUsed})`}
       </div>
       {data.outDegree > 0 && <Handle type="source" position="right" />}
     </StyledNode>

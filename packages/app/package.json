@@ -5,6 +5,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.6.2",
     "@lingui/react": "^3.6.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
