@@ -36,21 +36,23 @@ class ASTParser {
       for (let i = 0; i < files.length; i++) {
         // TODO: Being able to exclude files in GLOB pattern
         if (!files[i].includes('stories')) {
-          const parsedFile = await this.parseFile(files[i]);
-          if (parsedFile.hasComponents()) {
-            parsedFile.components.forEach((component) => {
-              const componentName = component.getElementName();
-              if (!this.componentMap.has(componentName)) {
-                ASTParser.logEntryToFile(
-                  `[Info] Adding component: ${componentName}`
-                );
-                this.componentMap.set(componentName, component);
-              } else {
-                ASTParser.logEntryToFile(
-                  `[Warning] A duplicate component found which was not added: ${componentName}`
-                );
-              }
-            });
+          if (fs.existsSync(files[i]) && fs.lstatSync(files[i]).isFile()) {
+            const parsedFile = await this.parseFile(files[i]);
+            if (parsedFile.hasComponents()) {
+              parsedFile.components.forEach((component) => {
+                const componentName = component.getElementName();
+                if (!this.componentMap.has(componentName)) {
+                  ASTParser.logEntryToFile(
+                    `[Info] Adding component: ${componentName}`
+                  );
+                  this.componentMap.set(componentName, component);
+                } else {
+                  ASTParser.logEntryToFile(
+                    `[Warning] A duplicate component found which was not added: ${componentName}`
+                  );
+                }
+              });
+            }
           }
         }
       }
@@ -73,7 +75,7 @@ class ASTParser {
   // TODO: Being able to exclude files in GLOB pattern
   public getFilesAndDirectories(): Promise<string[]> {
     return new Promise((resolve, reject) => {
-      glob.glob(this.path + '/**/*.{js,jsx,tsx}', (err, res) => {
+      glob.glob(this.path + '/**/*.{js,jsx,tsx}', (err: any, res: any) => {
         if (err) {
           reject(err);
         }
