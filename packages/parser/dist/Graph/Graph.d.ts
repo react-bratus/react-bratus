@@ -7,7 +7,7 @@ declare class Graph {
     edges: Edge[];
     level: number;
     constructor(componentMap: Map<string, Component>);
-    build(): void;
+    build(rootComponents: string[]): void;
     private buildComponentTree;
     private createNode;
     private createEdge;

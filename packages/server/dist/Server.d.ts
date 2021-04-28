@@ -1,5 +1,7 @@
 declare class Server {
     private app;
-    listen(): void;
+    private config;
+    listen(): Promise<void>;
+    private getConfiguration;
 }
 export default Server;
