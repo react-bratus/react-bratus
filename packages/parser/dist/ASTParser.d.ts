@@ -1,13 +1,19 @@
+interface ParserOptions {
+    log: boolean;
+    rootFolderPath: string;
+    rootComponents: string[];
+    pathToSaveDir: string;
+}
 declare class ASTParser {
-    private path;
     private componentMap;
+    private options;
     private static log;
-    constructor(sourcePath: string, log: boolean);
-    compile(): void;
+    constructor(options: ParserOptions);
+    parse(): void;
     private writeDataToFile;
     getFilesAndDirectories(): Promise<string[]>;
     static peek<T>(array: T[]): T;
     private parseFile;
-    static logEntryToFile(logEntry: string): void;
+    static logEntry(logEntry: string): void;
 }
 export default ASTParser;

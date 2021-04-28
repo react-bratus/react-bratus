@@ -14,25 +14,27 @@ class Graph {
     this.componentMap = componentMap;
   }
 
-  public build(): void {
-    ASTParser.logEntryToFile(`[Info] Building graph`);
-    const component = this.componentMap.get('App');
-    if (component) {
-      ASTParser.logEntryToFile(`[Info] Creating root node`);
-      const elements = component.getJSXElements();
-      component.timesUsed++;
-      const root = this.createNode(component.getElementName(), {
-        label: component.getElementName(),
-        linesOfCode: component.getLinesOfCode(),
-        component,
-        outDegree: 0,
-        inDegree: 0,
-      });
-      for (let k = 0; k < elements.length; k++) {
-        const element = elements[k];
-        this.buildComponentTree(root, element);
+  public build(rootComponents: string[]): void {
+    ASTParser.logEntry(`[Info] Building graph`);
+    rootComponents.forEach((rootComponentName) => {
+      const component = this.componentMap.get(rootComponentName);
+      if (component) {
+        ASTParser.logEntry(`[Info] Creating root node`);
+        const elements = component.getJSXElements();
+        component.timesUsed++;
+        const root = this.createNode(component.getElementName(), {
+          label: component.getElementName(),
+          linesOfCode: component.getLinesOfCode(),
+          component,
+          outDegree: 0,
+          inDegree: 0,
+        });
+        for (let k = 0; k < elements.length; k++) {
+          const element = elements[k];
+          this.buildComponentTree(root, element);
+        }
       }
-    }
+    });
   }
 
   private buildComponentTree(source: Node, element: JSXElement): void {
@@ -42,7 +44,7 @@ class Graph {
         component.timesUsed++;
         const targetNodeId = `${source.id}:${component.getElementName()}`;
         if (!this.nodes.some((node) => node.id === targetNodeId)) {
-          ASTParser.logEntryToFile(
+          ASTParser.logEntry(
             `[Info] Creating link between: ${
               source.data.label
             } and ${component.getElementName()}`
@@ -64,13 +66,13 @@ class Graph {
             });
           }
         } else {
-          ASTParser.logEntryToFile(
+          ASTParser.logEntry(
             `[Warnig] Node with id: ${targetNodeId} already exist. Not creating duplicate node`
           );
         }
       }
     } catch (error) {
-      ASTParser.logEntryToFile(`Error thrown: ${error.getMessage()}`);
+      ASTParser.logEntry(`Error thrown: ${error.getMessage()}`);
     }
   }
 
