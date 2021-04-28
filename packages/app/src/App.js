@@ -4,9 +4,11 @@ import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
 import { Alert, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { ReactFlowProvider } from 'react-flow-renderer';
 
 import { getParsedData } from './api';
 import useLocale from './hooks/useLocale';
+import HighlightedComponentsProvider from './providers/HighlightedComponentsProvider';
 import I18nWatchLocaleProvider from './providers/I18nWatchLocaleProvider';
 import ThemeProvider from './providers/ThemeProvider';
 import ComponentTree from './styles/molecules/ComponentTree';
@@ -53,19 +55,23 @@ const App = () => {
     <I18nProvider i18n={i18n}>
       <I18nWatchLocaleProvider>
         <ThemeProvider>
-          <DefaultLayout info={info}>
-            {elements ? (
-              <ComponentTree elements={elements} />
-            ) : (
-              <Spin spinning={true}>
-                <Alert
-                  message="Nothing to show"
-                  description="Could not find any components to display"
-                  type="warning"
-                />
-              </Spin>
-            )}
-          </DefaultLayout>
+          <HighlightedComponentsProvider>
+            <DefaultLayout info={info}>
+              {elements ? (
+                <ReactFlowProvider>
+                  <ComponentTree elements={elements} />
+                </ReactFlowProvider>
+              ) : (
+                <Spin spinning={true}>
+                  <Alert
+                    message="Nothing to show"
+                    description="Could not find any components to display"
+                    type="warning"
+                  />
+                </Spin>
+              )}
+            </DefaultLayout>
+          </HighlightedComponentsProvider>
         </ThemeProvider>
       </I18nWatchLocaleProvider>
     </I18nProvider>

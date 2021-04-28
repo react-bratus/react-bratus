@@ -45,18 +45,20 @@ class ASTParser {
             ASTParser.logEntryToFile(`[Info] Traversing files: [${files.join(',\n')}]`);
             for (let i = 0; i < files.length; i++) {
                 if (!files[i].includes('stories')) {
-                    const parsedFile = await this.parseFile(files[i]);
-                    if (parsedFile.hasComponents()) {
-                        parsedFile.components.forEach((component) => {
-                            const componentName = component.getElementName();
-                            if (!this.componentMap.has(componentName)) {
-                                ASTParser.logEntryToFile(`[Info] Adding component: ${componentName}`);
-                                this.componentMap.set(componentName, component);
-                            }
-                            else {
-                                ASTParser.logEntryToFile(`[Warning] A duplicate component found which was not added: ${componentName}`);
-                            }
-                        });
+                    if (fs.existsSync(files[i]) && fs.lstatSync(files[i]).isFile()) {
+                        const parsedFile = await this.parseFile(files[i]);
+                        if (parsedFile.hasComponents()) {
+                            parsedFile.components.forEach((component) => {
+                                const componentName = component.getElementName();
+                                if (!this.componentMap.has(componentName)) {
+                                    ASTParser.logEntryToFile(`[Info] Adding component: ${componentName}`);
+                                    this.componentMap.set(componentName, component);
+                                }
+                                else {
+                                    ASTParser.logEntryToFile(`[Warning] A duplicate component found which was not added: ${componentName}`);
+                                }
+                            });
+                        }
                     }
                 }
             }
