@@ -8,7 +8,6 @@ const THEME = {
   secondary: '#001529',
 };
 const GlobalStyle = createGlobalStyle`
-
 `;
 
 const ThemeProvider = ({ children }) => {
