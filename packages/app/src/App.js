@@ -4,7 +4,6 @@ import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
 import { Alert, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { ReactFlowProvider } from 'react-flow-renderer';
 
 import { getParsedData } from './api';
 import useLocale from './hooks/useLocale';
@@ -42,7 +41,7 @@ const App = () => {
                     fillOpacity: 0.7,
                   },
                   labelStyle: { fill: '#fff' },
-                  style: { stroke: edge.label ? '#00D8FF' : '#000' },
+                  style: { stroke: edge.label ? 'red' : '#000' },
                 };
               })
             )
@@ -58,9 +57,7 @@ const App = () => {
           <HighlightedComponentsProvider>
             <DefaultLayout info={info}>
               {elements ? (
-                <ReactFlowProvider>
-                  <ComponentTree elements={elements} />
-                </ReactFlowProvider>
+                <ComponentTree elements={elements} />
               ) : (
                 <Spin spinning={true}>
                   <Alert

@@ -29,8 +29,10 @@ const DefaultLayout = ({ children, info }) => {
   );
   return (
     <Layout>
-      <Navigation info={info} />
-      <ContentWrapper>{children}</ContentWrapper>
+      <ReactFlowProvider>
+        <Navigation info={info} />
+        <ContentWrapper>{children}</ContentWrapper>
+      </ReactFlowProvider>
       <ReactFlowProvider>
         <Help
           isHelpVisible={isHelpVisible}

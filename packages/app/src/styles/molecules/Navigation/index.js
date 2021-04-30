@@ -1,6 +1,7 @@
-import { Button, Layout, Menu, message, Typography } from 'antd';
+import { Button, Layout, Menu, message, TreeSelect, Typography } from 'antd';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useStoreState } from 'react-flow-renderer';
 import styled from 'styled-components';
 
 import { recompile } from '../../../api';
@@ -43,6 +44,9 @@ const Actions = styled.div`
 const { Sider } = Layout;
 
 const Navigation = ({ info }) => {
+  const [searchField, setSearchField] = useState({ value: undefined });
+  const nodes = useStoreState((store) => store.nodes);
+
   const compile = () => {
     recompile()
       .then(() => {
@@ -57,6 +61,38 @@ const Navigation = ({ info }) => {
       })
       .catch((error) => console.log('An error occurred ', error));
   };
+
+  const onChange = (value) => {
+    setSearchField({ value });
+  };
+
+  useEffect(() => console.log(nodes));
+
+  const getParentId = (id) => {
+    const idSplit = id.split(':');
+    if (idSplit.length == 1) {
+      return null;
+    }
+    idSplit.pop();
+    return idSplit[idSplit.length - 1];
+  };
+  const isLeaf = (node) => {
+    return node.data.outDegree == 0;
+  };
+  const generateTreeNodes = () => {
+    if (nodes.length > 0) {
+      return nodes.map((node) => {
+        return {
+          id: node.data.label,
+          pid: getParentId(node.id),
+          title: node.data.label,
+          value: node.id,
+          isLeaf: isLeaf(node),
+        };
+      });
+    }
+    return [];
+  };
   return (
     <Sider
       width={navigationWidth}
@@ -69,6 +105,39 @@ const Navigation = ({ info }) => {
     >
       <StyledTitle level={1}>react-bratus</StyledTitle>
       <Menu theme="dark" mode="inline">
+        <NavigationSection title="Search">
+          <TreeSelect
+            showSearch
+            style={{
+              width: '100%',
+              padding: `0 ${baseUnit}px`,
+            }}
+            value={searchField.value}
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            placeholder="Search components"
+            allowClear
+            multiple
+            treeDefaultExpandAll
+            onChange={onChange}
+            treeData={generateTreeNodes()}
+          />
+          {/* <TreeNode value="parent 1" title="parent 1">
+              <TreeNode value="parent 1-0" title="parent 1-0">
+                <TreeNode value="leaf1" title="my leaf" />
+                <TreeNode value="leaf2" title="your leaf" />
+              </TreeNode>
+              <TreeNode value="parent 1-1" title="parent 1-1">
+                <TreeNode
+                  value="sss"
+                  title={<b style={{ color: '#08c' }}>sss</b>}
+                />
+              </TreeNode>
+            </TreeNode> 
+          </TreeSelect>*/}
+        </NavigationSection>
+        <NavigationSection title="Filters">
+          <InfoParagraph>No filters have been added</InfoParagraph>
+        </NavigationSection>
         {info && (
           <NavigationSection title="Info">
             <InfoParagraph>
