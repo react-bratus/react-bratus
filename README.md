@@ -66,5 +66,6 @@ Override default configuration by creating `.bratusrc.json` in the root director
   - Highlight components feature
   - Lock highlighted component and move component including descendants at the same time
   - CLI command -c --compile has been changed to -p --parse
+  - Removed info section
 - 2.0.2
   - First release

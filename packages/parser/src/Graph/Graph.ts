@@ -97,25 +97,8 @@ class Graph {
     return edge;
   }
 
-  private calculateInfo() {
-    const components: Component[] = [...new Set(this.componentMap.values())];
-
-    return {
-      uniqueComponents: components.length,
-      averageTimesUsed:
-        components
-          .map((component) => component.timesUsed)
-          .reduce((a, b) => a + b) / components.length,
-      averageLinesOfCode:
-        components
-          .map((component) => component.getLinesOfCode())
-          .reduce((a, b) => a + b) / components.length,
-    };
-  }
-
   public toString(): string {
     return JSON.stringify({
-      info: this.calculateInfo(),
       nodes: this.nodes,
       edges: this.edges,
     });
