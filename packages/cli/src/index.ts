@@ -46,7 +46,7 @@ if (options.start) {
   }
 }
 
-if (options.compile) {
+if (options.parse) {
   parseProject(parserOptions);
 }
 
