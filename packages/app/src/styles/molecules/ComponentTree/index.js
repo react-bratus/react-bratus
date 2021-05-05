@@ -15,7 +15,7 @@ const ComponentTree = ({ elements }) => {
   const highlightComponent = (node) => {
     const componentName = node ? node.data.label : null;
     setHighlightedComponents([
-      ...highlightedComponents,
+      ...highlightedComponents.filter((_node) => _node.locked),
       {
         id: node.id,
         componentName: componentName,
