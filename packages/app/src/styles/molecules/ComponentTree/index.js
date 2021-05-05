@@ -25,13 +25,13 @@ const ComponentTree = ({ elements }) => {
     ]);
   };
 
-  const removeHighlight = (node, force) => {
+  const removeHighlight = (node) => {
     const index = highlightedComponents.findIndex(
       (component) => component.id === node.id
     );
     if (index !== -1) {
       const highlightedComponent = highlightedComponents[index];
-      if (!highlightedComponent.locked || force) {
+      if (!highlightedComponent.locked) {
         const array = [...highlightedComponents];
         array.splice(index, 1);
         setHighlightedComponents(array);
@@ -55,7 +55,7 @@ const ComponentTree = ({ elements }) => {
           elements={elements}
           nodeTypes={{ reactComponent: ComponentNode }}
           onNodeMouseEnter={(_e, node) => highlightComponent(node, false)}
-          onNodeMouseLeave={(_e, node) => removeHighlight(node, false)}
+          onNodeMouseLeave={(_e, node) => removeHighlight(node)}
           onPaneClick={resetHighlight}
         >
           <MiniMap
