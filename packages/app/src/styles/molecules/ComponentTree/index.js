@@ -59,6 +59,7 @@ const ComponentTree = ({ elements }) => {
           onPaneClick={resetHighlight}
         >
           <MiniMap
+            style={{ minWidth: '300px', minHeight: '300px' }}
             nodeColor={(node) => {
               if (isHighlighted(node)) {
                 return 'red';

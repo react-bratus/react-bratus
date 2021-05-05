@@ -8,7 +8,6 @@ import { Col, Row } from 'antd';
 import Text from 'antd/lib/typography/Text';
 import Title from 'antd/lib/typography/Title';
 import ColorHash from 'color-hash';
-import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { Handle, useStoreActions, useStoreState } from 'react-flow-renderer';
 import styled from 'styled-components';
@@ -25,11 +24,11 @@ const StyledNode = styled.div`
   width: ${nodeWidth}px;
   padding: ${baseUnit}px;
   border-radius: ${borderRadius}px;
-  border: ${({ isHighlighted, locked }) => {
+  border: ${({ isHighlighted, isLocked }) => {
     if (!isHighlighted) {
       return '1px solid black';
     } else {
-      return locked ? '3px solid black' : '3px dotted red';
+      return isLocked ? '3px solid black' : '5px solid red';
     }
   }};
   background-color: ${({ bgColor }) => bgColor};
@@ -41,7 +40,7 @@ const NodeContent = styled(Col)`
   display: flex;
   flex-direction: column;
 `;
-const ComponentNode = ({ id, data }) => {
+const ComponentNode = (node) => {
   const { highlightedComponents, setHighlightedComponents } = useContext(
     HighlightedComponentsContext
   );
@@ -52,7 +51,7 @@ const ComponentNode = ({ id, data }) => {
 
   const lockComponent = () => {
     const index = highlightedComponents.findIndex(
-      (component) => component.id === id
+      (component) => component.id === node.id
     );
     const array = [...highlightedComponents];
     if (index !== -1 && highlightedComponents[index].locked) {
@@ -63,33 +62,37 @@ const ComponentNode = ({ id, data }) => {
       setHighlightedComponents([
         ...array,
         {
-          id: id,
-          componentName: data.label,
+          id: node.id,
+          componentName: node.data.label,
           locked: true,
           search: false,
         },
       ]);
-      setSelectedElements(nodes.filter((_node) => _node.id.includes(id)));
+      setSelectedElements(nodes.filter((_node) => _node.id.includes(node.id)));
     }
   };
   const isHighlighted = () => {
     return highlightedComponents.some((component) =>
-      id.match(`${component.componentName}:+.+|${component.componentName}$`)
+      node.id.match(
+        `${component.componentName}:+.+|${component.componentName}$`
+      )
     );
   };
   const isLocked = () => {
     return highlightedComponents.some(
       (component) =>
         component.locked &&
-        id.match(`${component.componentName}:+.+|${component.componentName}$`)
+        node.id.match(
+          `${component.componentName}:+.+|${component.componentName}$`
+        )
     );
   };
 
   const getBgColor = () => {
     return isLocked()
-      ? '#FF6666	'
+      ? 'red	'
       : new ColorHash({ lightness: 0.8, hue: { min: 0, max: 366 } }).hex(
-          data.label
+          node.data.label
         );
   };
   const getFontColor = () => {
@@ -102,21 +105,21 @@ const ComponentNode = ({ id, data }) => {
   };
   return (
     <StyledNode
-      linesOfCode={data.linesOfCode}
+      linesOfCode={node.data.linesOfCode}
       isHighlighted={isHighlighted()}
       isLocked={isLocked()}
       bgColor={getBgColor}
       fontColor={getFontColor()}
     >
-      {data.inDegree > 0 && <Handle type="target" position="left" />}
+      {node.data.inDegree > 0 && <Handle type="target" position="left" />}
       <NodeContent>
         <Row>
           <Title style={{ color: getFontColor() }} level={5}>
-            {data.label}
+            {node.data.label}
           </Title>
         </Row>
         <Row style={{ flexGrow: 1, paddingTop: '12px' }} justify="center">
-          {data.component.timesUsed > 1 && (
+          {node.data.component.timesUsed > 1 && (
             <>
               <NumberOutlined
                 style={{ fontSize: '24px', color: getFontColor() }}
@@ -128,7 +131,7 @@ const ComponentNode = ({ id, data }) => {
                   color: getFontColor(),
                 }}
               >
-                used: {data.component.timesUsed}
+                used: {node.data.component.timesUsed}
               </Text>
             </>
           )}
@@ -147,21 +150,16 @@ const ComponentNode = ({ id, data }) => {
               />
             )}
             <EyeOutlined
-              onClick={() => data.onShowNodeDetail({ id: id, data: data })}
+              onClick={() => node.data.onShowNodeDetail(node)}
               style={{ fontSize: '24px', cursor: 'pointer' }}
             />
           </Row>
         )}
       </NodeContent>
 
-      {data.outDegree > 0 && <Handle type="source" position="right" />}
+      {node.data.outDegree > 0 && <Handle type="source" position="right" />}
     </StyledNode>
   );
-};
-
-ComponentNode.propTypes = {
-  id: PropTypes.string,
-  data: PropTypes.any,
 };
 
 export default ComponentNode;

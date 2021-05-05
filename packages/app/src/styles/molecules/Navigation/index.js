@@ -7,20 +7,20 @@ import { recompile } from '../../../api';
 import HighlightedComponentsContext from '../../../contexts/HighlightedComponentsContext';
 import { baseUnit, navigationWidth } from '../../tokens/units';
 import NavigationSection from '../NavigationSection';
-const { Paragraph, Title } = Typography;
+const { Title } = Typography;
 
 const StyledTitle = styled(Title)`
   color: #fff !important;
   text-align: center;
 `;
 
-const InfoParagraph = styled(Paragraph)`
+/* const InfoParagraph = styled(Paragraph)`
   color: #fff;
   line-height: ${baseUnit * 2}px;
   font-size: ${baseUnit + 2}px;
   text-align: right;
   padding: 0 ${baseUnit}px;
-`;
+`; */
 
 const Actions = styled.div`
   display: flex;
@@ -179,12 +179,6 @@ const Navigation = () => {
               Suggest new feature
             </Button>
           </Actions>
-        </NavigationSection>
-        <NavigationSection title="Controls">
-          <InfoParagraph>
-            hover components with your mouse to highlight
-          </InfoParagraph>
-          <InfoParagraph>click a component to lock the highlight</InfoParagraph>
         </NavigationSection>
       </Menu>
     </Sider>

@@ -48,7 +48,9 @@ const App = () => {
                     fill: '#001529',
                     fillOpacity: 0.7,
                   },
-                  labelStyle: { fill: '#fff' },
+                  labelStyle: {
+                    fill: '#fff',
+                  },
                   style: { stroke: edge.label ? 'red' : '#000' },
                 };
               })

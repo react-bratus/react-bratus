@@ -3,7 +3,7 @@ import { Col, Divider, Row } from 'antd';
 import Text from 'antd/lib/typography/Text';
 import Title from 'antd/lib/typography/Title';
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import styled from 'styled-components';
@@ -13,7 +13,6 @@ const StyledRow = styled(Row)`
   }
 `;
 const NodeDetail = ({ nodeDetail }) => {
-  useEffect(() => console.log(nodeDetail), []);
   if (!nodeDetail.visible) {
     return <LoadingOutlined spin />;
   }
@@ -26,6 +25,7 @@ const NodeDetail = ({ nodeDetail }) => {
           <Text copyable>{nodeDetail.node.data.path}</Text>
         </Col>
         <Divider />
+
         <Title level={5}>Code</Title>
         <SyntaxHighlighter style={vscDarkPlus} language="javascript">
           {nodeDetail.node.data.code}

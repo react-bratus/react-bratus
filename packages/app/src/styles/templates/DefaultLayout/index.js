@@ -37,6 +37,7 @@ const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
           width={800}
           visible={nodeDetail.visible}
           closable={true}
+          mask={false}
           onClose={() => setNodeDetail({ visible: false, node: null })}
           title={nodeDetail.node ? nodeDetail.node.data.label : ''}
         >
