@@ -8,6 +8,10 @@
     "build": "lerna run build && lerna link",
     "link-cli": "cd packages/cli && yarn link"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stephanboersma/react-bratus.git"
+  },
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@typescript-eslint/eslint-plugin": "^4.15.0",

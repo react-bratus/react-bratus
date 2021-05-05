@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Handle } from 'react-flow-renderer';
 import styled from 'styled-components';
 
+import HighlightedComponentsContext from '../../../contexts/HighlightedComponentsContext';
 import {
   baseNodeHeight,
   baseUnit,
@@ -14,19 +15,26 @@ const StyledNode = styled.div`
   width: ${nodeWidth}px;
   padding: ${baseUnit}px;
   border-radius: ${borderRadius}px;
+  border: ${({ isHighlighted }) =>
+    isHighlighted ? '3px dotted red' : '1px solid black'};
   background-color: white;
-  border: ${({ timesUsed }) => (timesUsed < 5 ? 1 : 3)}px solid;
-  border-color: black;
 `;
-const ComponentNode = ({ data }) => {
+const ComponentNode = ({ id, data }) => {
+  const { highlightedComponent } = useContext(HighlightedComponentsContext);
+  const isHighlighted = () => {
+    if (highlightedComponent.componentName) {
+      return id.match(
+        `${highlightedComponent.componentName}:+.+|${highlightedComponent.componentName}$`
+      );
+    }
+    return false;
+  };
   return (
-    <StyledNode
-      linesOfCode={data.linesOfCode}
-      timesUsed={data.component.timesUsed}
-    >
+    <StyledNode linesOfCode={data.linesOfCode} isHighlighted={isHighlighted()}>
       {data.inDegree > 0 && <Handle type="target" position="left" />}
       <div>
-        {data.label}({data.component.timesUsed})
+        {data.label}
+        {data.component.timesUsed > 1 && `(${data.component.timesUsed})`}
       </div>
       {data.outDegree > 0 && <Handle type="source" position="right" />}
     </StyledNode>
@@ -34,6 +42,7 @@ const ComponentNode = ({ data }) => {
 };
 
 ComponentNode.propTypes = {
+  id: PropTypes.string,
   data: PropTypes.any,
 };
 

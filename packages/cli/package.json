@@ -1,8 +1,12 @@
 {
   "name": "@react-bratus/cli",
-  "version": "2.0.0",
+  "version": "2.0.3",
   "publishConfig": {
     "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stephanboersma/react-bratus.git"
   },
   "description": "React Bratus cli",
   "main": "./bin/index.js",
@@ -19,8 +23,8 @@
   "author": "Stephan Boersma",
   "license": "MIT",
   "dependencies": {
-    "@react-bratus/parser": "^2.0.0",
-    "@react-bratus/server": "^2.0.0",
+    "@react-bratus/parser": "^2.0.3",
+    "@react-bratus/server": "^2.0.3",
     "chalk": "^4.1.0",
     "clear": "^0.1.0",
     "commander": "^7.0.0",

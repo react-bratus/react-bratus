@@ -13,25 +13,27 @@ class Graph {
         this.level = 0;
         this.componentMap = componentMap;
     }
-    build() {
-        ASTParser_1.default.logEntryToFile(`[Info] Building graph`);
-        const component = this.componentMap.get('App');
-        if (component) {
-            ASTParser_1.default.logEntryToFile(`[Info] Creating root node`);
-            const elements = component.getJSXElements();
-            component.timesUsed++;
-            const root = this.createNode(component.getElementName(), {
-                label: component.getElementName(),
-                linesOfCode: component.getLinesOfCode(),
-                component,
-                outDegree: 0,
-                inDegree: 0,
-            });
-            for (let k = 0; k < elements.length; k++) {
-                const element = elements[k];
-                this.buildComponentTree(root, element);
+    build(rootComponents) {
+        ASTParser_1.default.logEntry(`[Info] Building graph`);
+        rootComponents.forEach((rootComponentName) => {
+            const component = this.componentMap.get(rootComponentName);
+            if (component) {
+                ASTParser_1.default.logEntry(`[Info] Creating root node`);
+                const elements = component.getJSXElements();
+                component.timesUsed++;
+                const root = this.createNode(component.getElementName(), {
+                    label: component.getElementName(),
+                    linesOfCode: component.getLinesOfCode(),
+                    component,
+                    outDegree: 0,
+                    inDegree: 0,
+                });
+                for (let k = 0; k < elements.length; k++) {
+                    const element = elements[k];
+                    this.buildComponentTree(root, element);
+                }
             }
-        }
+        });
     }
     buildComponentTree(source, element) {
         try {
@@ -40,7 +42,7 @@ class Graph {
                 component.timesUsed++;
                 const targetNodeId = `${source.id}:${component.getElementName()}`;
                 if (!this.nodes.some((node) => node.id === targetNodeId)) {
-                    ASTParser_1.default.logEntryToFile(`[Info] Creating link between: ${source.data.label} and ${component.getElementName()}`);
+                    ASTParser_1.default.logEntry(`[Info] Creating link between: ${source.data.label} and ${component.getElementName()}`);
                     const target = this.createNode(`${source.id}:${component.getElementName()}`, {
                         label: component.getElementName(),
                         linesOfCode: component.getLinesOfCode(),
@@ -56,12 +58,12 @@ class Graph {
                     }
                 }
                 else {
-                    ASTParser_1.default.logEntryToFile(`[Warnig] Node with id: ${targetNodeId} already exist. Not creating duplicate node`);
+                    ASTParser_1.default.logEntry(`[Warnig] Node with id: ${targetNodeId} already exist. Not creating duplicate node`);
                 }
             }
         }
         catch (error) {
-            ASTParser_1.default.logEntryToFile(`Error thrown: ${error.getMessage()}`);
+            ASTParser_1.default.logEntry(`Error thrown: ${error.getMessage()}`);
         }
     }
     createNode(id, data) {
@@ -79,21 +81,8 @@ class Graph {
         target.data.inDegree++;
         return edge;
     }
-    calculateInfo() {
-        const components = [...new Set(this.componentMap.values())];
-        return {
-            uniqueComponents: components.length,
-            averageTimesUsed: components
-                .map((component) => component.timesUsed)
-                .reduce((a, b) => a + b) / components.length,
-            averageLinesOfCode: components
-                .map((component) => component.getLinesOfCode())
-                .reduce((a, b) => a + b) / components.length,
-        };
-    }
     toString() {
         return JSON.stringify({
-            info: this.calculateInfo(),
             nodes: this.nodes,
             edges: this.edges,
         });

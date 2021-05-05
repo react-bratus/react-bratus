@@ -11,59 +11,63 @@ import Import from './Builder/Import';
 import JSXElement from './Builder/JSXElement';
 import ParsedFile from './Builder/ParsedFile';
 import Graph from './Graph/Graph';
+interface ParserOptions {
+  log: boolean;
+  rootFolderPath: string;
+  rootComponents: string[];
+  pathToSaveDir: string;
+}
 
 class ASTParser {
-  private path: string;
   private componentMap: Map<string, Component> = new Map();
+  private options: ParserOptions;
   private static log = false;
 
-  // Should be "path_to_project/src"
-  // TODO: Being able to point at root component. Default App
-  constructor(sourcePath: string, log: boolean) {
-    this.path = sourcePath;
-    ASTParser.log = log;
-    ASTParser.logEntryToFile(
-      `[Info] ASTParser initialized with path: ${this.path}`
+  constructor(options: ParserOptions) {
+    this.options = options;
+    ASTParser.log = options.log;
+    ASTParser.logEntry(
+      `[Info] ASTParser initialized with path: ${this.options.rootFolderPath}`
     );
   }
 
-  public compile(): void {
-    ASTParser.logEntryToFile(`[INFO] Parsing project`);
+  public parse(): void {
+    ASTParser.logEntry(`[INFO] Parsing project`);
     this.getFilesAndDirectories().then(async (files) => {
-      ASTParser.logEntryToFile(
-        `[Info] Traversing files: [${files.join(',\n')}]`
-      );
+      ASTParser.logEntry(`[Info] Traversing files: [${files.join(',\n')}]`);
       for (let i = 0; i < files.length; i++) {
         // TODO: Being able to exclude files in GLOB pattern
         if (!files[i].includes('stories')) {
-          const parsedFile = await this.parseFile(files[i]);
-          if (parsedFile.hasComponents()) {
-            parsedFile.components.forEach((component) => {
-              const componentName = component.getElementName();
-              if (!this.componentMap.has(componentName)) {
-                ASTParser.logEntryToFile(
-                  `[Info] Adding component: ${componentName}`
-                );
-                this.componentMap.set(componentName, component);
-              } else {
-                ASTParser.logEntryToFile(
-                  `[Warning] A duplicate component found which was not added: ${componentName}`
-                );
-              }
-            });
+          if (fs.existsSync(files[i]) && fs.lstatSync(files[i]).isFile()) {
+            const parsedFile = await this.parseFile(files[i]);
+            if (parsedFile.hasComponents()) {
+              parsedFile.components.forEach((component) => {
+                const componentName = component.getElementName();
+                if (!this.componentMap.has(componentName)) {
+                  ASTParser.logEntry(
+                    `[Info] Adding component: ${componentName}`
+                  );
+                  this.componentMap.set(componentName, component);
+                } else {
+                  ASTParser.logEntry(
+                    `[Warning] A duplicate component found which was not added: ${componentName}`
+                  );
+                }
+              });
+            }
           }
         }
       }
       const graph = new Graph(this.componentMap);
-      ASTParser.logEntryToFile(`[Info] Traversal finished`);
-      graph.build();
+      ASTParser.logEntry(`[Info] Traversal finished`);
+      graph.build(this.options.rootComponents);
 
       this.writeDataToFile(graph.toString());
     });
   }
   private writeDataToFile(graphData: string): void {
-    ASTParser.logEntryToFile(`[Info] Writing data to .react-bratus/data.json`);
-    const dir = this.path + '/../.react-bratus';
+    ASTParser.logEntry(`[Info] Writing data to .react-bratus/data.json`);
+    const dir = this.options.pathToSaveDir;
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
     }
@@ -73,12 +77,15 @@ class ASTParser {
   // TODO: Being able to exclude files in GLOB pattern
   public getFilesAndDirectories(): Promise<string[]> {
     return new Promise((resolve, reject) => {
-      glob.glob(this.path + '/**/*.{js,jsx,tsx}', (err, res) => {
-        if (err) {
-          reject(err);
+      glob.glob(
+        this.options.rootFolderPath + '/**/*.{js,jsx,tsx}',
+        (err: any, res: any) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(res);
         }
-        resolve(res);
-      });
+      );
     });
   }
 
@@ -87,7 +94,7 @@ class ASTParser {
   }
 
   private async parseFile(path: string): Promise<ParsedFile> {
-    ASTParser.logEntryToFile(`[Info] Parsing file: ${path}`);
+    ASTParser.logEntry(`[Info] Parsing file: ${path}`);
     return new Promise((resolve, reject) => {
       const parsedFile: ParsedFile = new ParsedFile(path);
       let component: Component = new Component(path);
@@ -122,24 +129,20 @@ class ASTParser {
                   break;
               }
               if (name) {
-                ASTParser.logEntryToFile(
-                  `[Info] Import added to component: ${name}`
-                );
+                ASTParser.logEntry(`[Info] Import added to component: ${name}`);
                 component.addImport(new Import(alias, name, modulePath));
               }
             });
           },
           ClassDeclaration({ node }) {
             if (component.isUndefined()) {
-              ASTParser.logEntryToFile(
-                `[Info] Open component by ClassDeclaration`
-              );
+              ASTParser.logEntry(`[Info] Open component by ClassDeclaration`);
               component.open(node);
             }
           },
           VariableDeclaration({ node }) {
             if (component.isUndefined()) {
-              ASTParser.logEntryToFile(
+              ASTParser.logEntry(
                 `[Info] Open component by VariableDeclaration`
               );
               component.open(node);
@@ -147,7 +150,7 @@ class ASTParser {
           },
           FunctionDeclaration({ node }) {
             if (component.isUndefined()) {
-              ASTParser.logEntryToFile(
+              ASTParser.logEntry(
                 `[Info] Open component by FunctionDeclaration`
               );
               component.open(node);
@@ -155,12 +158,12 @@ class ASTParser {
           },
           Identifier({ node }) {
             if (component.isOpen() && !component.isIdentified()) {
-              ASTParser.logEntryToFile(`[Info] Identify component`);
+              ASTParser.logEntry(`[Info] Identify component`);
               component.identify(node);
             }
           },
           IfStatement() {
-            ASTParser.logEntryToFile(
+            ASTParser.logEntry(
               `[Info] Increment level of depth in if statement: ${ifStatementLevel}`
             );
             ifStatementLevel++;
@@ -169,14 +172,14 @@ class ASTParser {
             const jsxElement = ASTParser.peek(elements);
             const attribute = ASTParser.peek(attributes);
             if (jsxElement.isUndefined()) {
-              ASTParser.logEntryToFile(`[Info] Open jsxElement`);
+              ASTParser.logEntry(`[Info] Open jsxElement`);
               jsxElement.open(node);
             } else {
               if (
                 jsxElement.isRoute() &&
                 attribute.getElementName() == 'render'
               ) {
-                ASTParser.logEntryToFile(
+                ASTParser.logEntry(
                   `[Info] Open jsxElement within render attribute. Resetting identifier`
                 );
                 jsxElement.open(node);
@@ -188,10 +191,10 @@ class ASTParser {
           JSXAttribute({ node }) {
             const attribute = ASTParser.peek(attributes);
             if (attribute.isUndefined()) {
-              ASTParser.logEntryToFile(`[Info] Open Attribute`);
+              ASTParser.logEntry(`[Info] Open Attribute`);
               attribute.open(node);
             } else {
-              ASTParser.logEntryToFile(`[Info] Open Attribute`);
+              ASTParser.logEntry(`[Info] Open Attribute`);
               const newAttribute = new Attribute();
               newAttribute.open(node);
               attributes.push(newAttribute);
@@ -201,10 +204,10 @@ class ASTParser {
             const jsxElement = ASTParser.peek(elements);
             const attribute = ASTParser.peek(attributes);
             if (jsxElement.isOpen() && !jsxElement.isIdentified()) {
-              ASTParser.logEntryToFile(`[Info] Identify jsxElement`);
+              ASTParser.logEntry(`[Info] Identify jsxElement`);
               jsxElement.identify(node);
             } else if (attribute.isOpen() && !attribute.isIdentified()) {
-              ASTParser.logEntryToFile(`[Info] Identify Attribute`);
+              ASTParser.logEntry(`[Info] Identify Attribute`);
               attribute.identify(node);
             }
           },
@@ -213,13 +216,13 @@ class ASTParser {
             const attribute = ASTParser.peek(attributes);
             if (attribute.isOpen() && attribute.isIdentified()) {
               if (node.expression.type === 'Identifier') {
-                ASTParser.logEntryToFile(`[Info] Set value of Attribute`);
+                ASTParser.logEntry(`[Info] Set value of Attribute`);
                 attribute.setValue(node.expression.name);
                 if (
                   jsxElement.isRoute() &&
                   attribute.getElementName() == 'component'
                 ) {
-                  ASTParser.logEntryToFile(`[Info] Set name of Route element`);
+                  ASTParser.logEntry(`[Info] Set name of Route element`);
                   jsxElement.setName(attribute.getValue());
                   jsxElement.isRouteElement = true;
                 }
@@ -230,13 +233,13 @@ class ASTParser {
             const jsxElement = ASTParser.peek(elements);
             const attribute = ASTParser.peek(attributes);
             if (attribute.isOpen() && attribute.isIdentified()) {
-              ASTParser.logEntryToFile(`[Info] Set value of Attribute`);
+              ASTParser.logEntry(`[Info] Set value of Attribute`);
               attribute.setValue(node.value);
               if (
                 jsxElement.isRoute() &&
                 attribute.getElementName() == 'path'
               ) {
-                ASTParser.logEntryToFile(`[Info] Set path of Route element`);
+                ASTParser.logEntry(`[Info] Set path of Route element`);
                 jsxElement.routePath = attribute.getValue();
               }
             }
@@ -244,7 +247,7 @@ class ASTParser {
           exit({ node }) {
             if (component.close(node)) {
               if (component.hasJSX()) {
-                ASTParser.logEntryToFile(
+                ASTParser.logEntry(
                   `[Info] Close component: ${component.getElementName()}`
                 );
                 parsedFile.components.push(component);
@@ -254,7 +257,7 @@ class ASTParser {
 
             const jsxElement = ASTParser.peek(elements);
             if (jsxElement.close(node)) {
-              ASTParser.logEntryToFile(
+              ASTParser.logEntry(
                 `[Info] Close Element: ${jsxElement.getElementName()}`
               );
               jsxElement.setOptional(ifStatementLevel > 0);
@@ -265,7 +268,7 @@ class ASTParser {
 
             const attribute = ASTParser.peek(attributes);
             if (attribute.close(node)) {
-              ASTParser.logEntryToFile(
+              ASTParser.logEntry(
                 `[Info] Close Attribute: ${attribute.getElementName()}`
               );
               if (jsxElement.isOpen()) {
@@ -276,14 +279,14 @@ class ASTParser {
             }
 
             if (node.type == 'IfStatement') {
-              ASTParser.logEntryToFile(
+              ASTParser.logEntry(
                 `[Info] Reduce level of depth in if statement: ${ifStatementLevel}`
               );
               ifStatementLevel--;
             }
 
             if (node.type == 'Program') {
-              ASTParser.logEntryToFile(
+              ASTParser.logEntry(
                 `[Info] Finish parsing file: ${parsedFile.path}`
               );
               resolve(parsedFile);
@@ -295,7 +298,7 @@ class ASTParser {
       }
     });
   }
-  public static logEntryToFile(logEntry: string): void {
+  public static logEntry(logEntry: string): void {
     if (ASTParser.log) {
       console.log(logEntry);
     }
