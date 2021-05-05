@@ -60,6 +60,12 @@ Override default configuration by creating `.bratusrc.json` in the root director
 
 ## Changelog
 
+- 2.0.4
+  - Added TreeSearch
+  - Colored components based on the label hash
+  - Added lock icon. Possibility to lock multiple components
+  - Added eye icon. Possibility to open details about component. Currently path and code defining the component
+  - Fixed some bugs
 - 2.0.3
   - Added posibility to set options in `.bratusrc.json` file
   - Handle multiple components
