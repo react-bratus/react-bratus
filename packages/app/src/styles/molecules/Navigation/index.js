@@ -1,24 +1,26 @@
-import { Button, Layout, Menu, message, Typography } from 'antd';
-import React from 'react';
+import { Button, Layout, Menu, message, TreeSelect, Typography } from 'antd';
+import React, { useContext, useEffect, useState } from 'react';
+import { useStoreState, useZoomPanHelper } from 'react-flow-renderer';
 import styled from 'styled-components';
 
 import { recompile } from '../../../api';
+import HighlightedComponentsContext from '../../../contexts/HighlightedComponentsContext';
 import { baseUnit, navigationWidth } from '../../tokens/units';
 import NavigationSection from '../NavigationSection';
-const { Paragraph, Title } = Typography;
+const { Title } = Typography;
 
 const StyledTitle = styled(Title)`
   color: #fff !important;
   text-align: center;
 `;
 
-const InfoParagraph = styled(Paragraph)`
+/* const InfoParagraph = styled(Paragraph)`
   color: #fff;
   line-height: ${baseUnit * 2}px;
   font-size: ${baseUnit + 2}px;
   text-align: right;
   padding: 0 ${baseUnit}px;
-`;
+`; */
 
 const Actions = styled.div`
   display: flex;
@@ -35,9 +37,18 @@ const Actions = styled.div`
     }
   }
 `;
+
 const { Sider } = Layout;
 
 const Navigation = () => {
+  const [searchField, setSearchField] = useState();
+  const [searchOptions, setSearchOptions] = useState([]);
+  const { highlightedComponents, setHighlightedComponents } = useContext(
+    HighlightedComponentsContext
+  );
+  const nodes = useStoreState((store) => store.nodes);
+  const { setCenter } = useZoomPanHelper();
+
   const compile = () => {
     recompile()
       .then(() => {
@@ -52,6 +63,67 @@ const Navigation = () => {
       })
       .catch((error) => console.log('An error occurred ', error));
   };
+
+  const focusNode = (id) => {
+    const index = nodes.findIndex((node) => node.id == id);
+    const node = nodes[index];
+    const x = node.__rf.position.x + node.__rf.width / 2;
+    const y = node.__rf.position.y + node.__rf.height / 2;
+    const zoom = 1;
+
+    setCenter(x, y, zoom);
+  };
+
+  const onChange = (value) => {
+    setSearchField(value);
+    const arr = value.split(':');
+    const componentName = arr[arr.length - 1];
+    const index = highlightedComponents.findIndex(
+      (component) => component.id === value
+    );
+    const array = [...highlightedComponents];
+    array.splice(index, 1);
+    setHighlightedComponents([
+      {
+        id: value,
+        componentName: componentName,
+        locked: true,
+        search: false,
+      },
+    ]);
+    focusNode(value);
+  };
+
+  useEffect(() => {
+    generateTreeNodes();
+  }, [nodes]);
+
+  const getParentId = (id) => {
+    const idSplit = id.split(':');
+    if (idSplit.length == 1) {
+      return null;
+    }
+    idSplit.pop();
+    return idSplit.join(':');
+  };
+  const isLeaf = (node) => {
+    return node.data.outDegree == 0;
+  };
+  const generateTreeNodes = () => {
+    if (nodes.length > 0) {
+      setSearchOptions(
+        nodes.map((node) => {
+          return {
+            id: node.id,
+            pId: getParentId(node.id),
+            title: node.data.label,
+            value: node.id,
+            isLeaf: isLeaf(node),
+          };
+        })
+      );
+    }
+  };
   return (
     <Sider
       width={navigationWidth}
@@ -64,6 +136,22 @@ const Navigation = () => {
     >
       <StyledTitle level={1}>react-bratus</StyledTitle>
       <Menu theme="dark" mode="inline">
+        <NavigationSection title="Search">
+          <TreeSelect
+            showSearch
+            style={{
+              width: '100%',
+              padding: `0 ${baseUnit}px`,
+            }}
+            value={searchField}
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            placeholder="Search components"
+            onChange={onChange}
+            treeDataSimpleMode
+            treeDefaultExpandAll={false}
+            treeData={searchOptions}
+          />
+        </NavigationSection>
         <NavigationSection title="Actions">
           <Actions>
             <Button onClick={compile} ghost>
@@ -91,12 +179,6 @@ const Navigation = () => {
               Suggest new feature
             </Button>
           </Actions>
-        </NavigationSection>
-        <NavigationSection title="Controls">
-          <InfoParagraph>
-            hover components with your mouse to highlight
-          </InfoParagraph>
-          <InfoParagraph>click a component to lock the highlight</InfoParagraph>
         </NavigationSection>
       </Menu>
     </Sider>

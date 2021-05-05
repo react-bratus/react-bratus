@@ -10,6 +10,8 @@ export interface NodeData {
   inDegree: number;
   outDegree: number;
   component: Component;
+  code: string;
+  path: string;
 }
 class Node {
   public id: string;

@@ -1,8 +1,8 @@
 import { Divider, Drawer, Typography } from 'antd';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
-import ReactFlow, { useZoomPanHelper } from 'react-flow-renderer';
+import React, { useContext, useState } from 'react';
+import ReactFlow from 'react-flow-renderer';
 import styled from 'styled-components';
 
 import HighlightedComponentsContext from '../../../contexts/HighlightedComponentsContext';
@@ -11,7 +11,8 @@ import ComponentNode from '../../atoms/ComponentNode';
 
 const Wrapper = styled.div`
   width: 600px;
-  height: 700px;
+  height: 500px;
+  background-color: lightgrey;
 `;
 const { Title, Paragraph, Link } = Typography;
 
@@ -21,32 +22,38 @@ const Help = ({
   setIsHelpVisible,
   setHideHelpOnStartUp,
 }) => {
-  const { setCenter } = useZoomPanHelper();
-  const [ellipsis] = useState(true);
-  const { highlightedComponent, setHighlightedComponent } = useContext(
+  const { highlightedComponents, setHighlightedComponents } = useContext(
     HighlightedComponentsContext
   );
-  const highlightComponent = (node, lock) => {
+  const [ellipsis] = useState(true);
+  const highlightComponent = (node) => {
     const componentName = node ? node.data.label : null;
-    if (lock) {
-      setHighlightedComponent({
+    setHighlightedComponents([
+      ...highlightedComponents.filter((_node) => _node.locked),
+      {
+        id: node.id,
         componentName: componentName,
-        locked: lock,
-      });
-    } else if (!highlightedComponent.locked) {
-      setHighlightedComponent({
-        componentName: componentName,
-        locked: highlightedComponent.locked,
-      });
-    }
+        locked: false,
+        search: false,
+      },
+    ]);
   };
-  const resetHighlight = () => {
-    if (!highlightedComponent.locked) {
-      setHighlightedComponent({ componentName: null, locked: false });
+
+  const removeHighlight = (node) => {
+    const index = highlightedComponents.findIndex(
+      (component) => component.id === node.id
+    );
+    if (index !== -1) {
+      const highlightedComponent = highlightedComponents[index];
+      if (!highlightedComponent.locked) {
+        const array = [...highlightedComponents];
+        array.splice(index, 1);
+        setHighlightedComponents(array);
+      }
     }
   };
 
-  useEffect(() => setCenter(350, 350, 0.7));
+  const resetHighlight = () => setHighlightedComponents([]);
   return (
     <Drawer
       width={720}
@@ -54,12 +61,28 @@ const Help = ({
       visible={isHelpVisible}
       bodyStyle={{ paddingBottom: 80 }}
     >
-      <Title level={3}>Thank you for installing react-bratus</Title>
+      <Title level={3}>Legend</Title>
+      <Paragraph>
+        Below this paragraph you can find the elements that are displayed and
+        what they represent.
+      </Paragraph>
+      <Wrapper>
+        <ReactFlow
+          elements={getLayoutedElements(ELEMENTS)}
+          nodeTypes={{ reactComponent: ComponentNode }}
+          onNodeMouseEnter={(_e, node) => highlightComponent(node)}
+          onNodeMouseLeave={(_e, node) => removeHighlight(node)}
+          onElementClick={(_e, node) => highlightComponent(node)}
+          onPaneClick={() => resetHighlight()}
+          defaultPosition={[150, 0]}
+          defaultZoom={0.5}
+        />
+      </Wrapper>
+      <Divider />
+      <Title level={5}>Thank you for installing react-bratus</Title>
 
       <Paragraph>
-        Hopefully this tool can help you navigate your React.js code base. Below
-        this paragraph you can find the elements that are displayed and what
-        they represent.
+        Hopefully this tool can help you navigate your React.js code base.
       </Paragraph>
       <Paragraph>
         You can always click the Help button in navigation pane on the right to
@@ -80,13 +103,20 @@ const Help = ({
       </Checkbox>
 
       <Divider />
-      <Title>Changelog</Title>
+      <Title level={5}>Changelog</Title>
       <Paragraph
         ellipsis={
           ellipsis ? { rows: 2, expandable: true, symbol: 'more' } : false
         }
       >
-        - <b>2.0.3</b> <br />
+        - <b>2.0.4</b> <br />
+        - Added TreeSearch <br />- Colored components based on the label hash
+        <br /> - Added lock icon. Possibility to lock multiple components <br />{' '}
+        - Added eye icon. Possibility to open details about component. <br /> -
+        Details page showing the path <br />- Clicking on path will open vscode{' '}
+        <br /> - Details page showing the code <br /> - Fixed some bugs <br /> -
+        CLI automatically opens browser when react-bratus is started <br />-
+        Size of MiniMap increased <br />- <b>2.0.3</b> <br />
         - Added posibility to set options in `.bratusrc.json` file
         <br />
         - Handle multiple components - Highlight components feature <br />
@@ -98,19 +128,6 @@ const Help = ({
       </Paragraph>
 
       <Divider />
-      <Title level={3}>Legend</Title>
-      <Wrapper>
-        <ReactFlow
-          elements={getLayoutedElements(ELEMENTS)}
-          nodeTypes={{ reactComponent: ComponentNode }}
-          onNodeMouseEnter={(_e, node) => highlightComponent(node, false)}
-          onNodeMouseLeave={resetHighlight}
-          onElementClick={(_e, node) => highlightComponent(node, true)}
-          onPaneClick={() =>
-            setHighlightedComponent({ componentName: null, locked: false })
-          }
-        />
-      </Wrapper>
     </Drawer>
   );
 };

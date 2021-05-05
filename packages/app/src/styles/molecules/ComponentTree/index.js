@@ -1,44 +1,52 @@
+import ColorHash from 'color-hash';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import ReactFlow, {
-  Controls,
-  useStoreActions,
-  useStoreState,
-} from 'react-flow-renderer';
+import ReactFlow, { Controls } from 'react-flow-renderer';
 
 import HighlightedComponentsContext from '../../../contexts/HighlightedComponentsContext';
 import ComponentNode from '../../atoms/ComponentNode';
 import MiniMap from '../../atoms/MiniMap';
 
 const ComponentTree = ({ elements }) => {
-  const { highlightedComponent, setHighlightedComponent } = useContext(
+  const { highlightedComponents, setHighlightedComponents } = useContext(
     HighlightedComponentsContext
   );
-  const nodes = useStoreState((store) => store.nodes);
-  const setSelectedElements = useStoreActions(
-    (actions) => actions.setSelectedElements
-  );
 
-  const highlightComponent = (node, lock) => {
+  const highlightComponent = (node) => {
     const componentName = node ? node.data.label : null;
-    if (lock) {
-      setHighlightedComponent({
+    setHighlightedComponents([
+      ...highlightedComponents.filter((_node) => _node.locked),
+      {
+        id: node.id,
         componentName: componentName,
-        locked: lock,
-      });
-      setSelectedElements(nodes.filter((_node) => _node.id.includes(node.id)));
-    } else if (!highlightedComponent.locked) {
-      setHighlightedComponent({
-        componentName: componentName,
-        locked: highlightedComponent.locked,
-      });
+        locked: false,
+        search: false,
+      },
+    ]);
+  };
+
+  const removeHighlight = (node) => {
+    const index = highlightedComponents.findIndex(
+      (component) => component.id === node.id
+    );
+    if (index !== -1) {
+      const highlightedComponent = highlightedComponents[index];
+      if (!highlightedComponent.locked) {
+        const array = [...highlightedComponents];
+        array.splice(index, 1);
+        setHighlightedComponents(array);
+      }
     }
   };
 
-  const resetHighlight = () => {
-    if (!highlightedComponent.locked) {
-      setHighlightedComponent({ componentName: null, locked: false });
-    }
+  const resetHighlight = () => setHighlightedComponents([]);
+
+  const isHighlighted = (node) => {
+    return highlightedComponents.some((component) =>
+      node.id.match(
+        `${component.componentName}:+.+|${component.componentName}$`
+      )
+    );
   };
   return (
     <>
@@ -47,23 +55,19 @@ const ComponentTree = ({ elements }) => {
           elements={elements}
           nodeTypes={{ reactComponent: ComponentNode }}
           onNodeMouseEnter={(_e, node) => highlightComponent(node, false)}
-          onNodeMouseLeave={resetHighlight}
-          onElementClick={(_e, node) => highlightComponent(node, true)}
-          onPaneClick={() =>
-            setHighlightedComponent({ componentName: null, locked: false })
-          }
+          onNodeMouseLeave={(_e, node) => removeHighlight(node)}
+          onPaneClick={resetHighlight}
         >
           <MiniMap
+            style={{ minWidth: '300px', minHeight: '300px' }}
             nodeColor={(node) => {
-              if (
-                highlightedComponent.componentName &&
-                node.id.match(
-                  `${highlightedComponent.componentName}:+.+|${highlightedComponent.componentName}$`
-                )
-              ) {
+              if (isHighlighted(node)) {
                 return 'red';
               } else {
-                return 'black';
+                return new ColorHash({
+                  lightness: 0.8,
+                  hue: { min: 0, max: 366 },
+                }).hex(node.data.label);
               }
             }}
           />
