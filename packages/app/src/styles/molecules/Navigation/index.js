@@ -1,10 +1,11 @@
 import { Button, Layout, Menu, message, TreeSelect, Typography } from 'antd';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import { useStoreState } from 'react-flow-renderer';
+import React, { useContext, useEffect, useState } from 'react';
+import { useStoreState, useZoomPanHelper } from 'react-flow-renderer';
 import styled from 'styled-components';
 
 import { recompile } from '../../../api';
+import HighlightedComponentsContext from '../../../contexts/HighlightedComponentsContext';
 import { baseUnit, navigationWidth } from '../../tokens/units';
 import NavigationSection from '../NavigationSection';
 const { Paragraph, Title } = Typography;
@@ -41,11 +42,17 @@ const Actions = styled.div`
     }
   }
 `;
+
 const { Sider } = Layout;
 
 const Navigation = ({ info }) => {
-  const [searchField, setSearchField] = useState({ value: undefined });
+  const [searchField, setSearchField] = useState();
+  const [searchOptions, setSearchOptions] = useState([]);
+  const { highlightedComponents, setHighlightedComponents } = useContext(
+    HighlightedComponentsContext
+  );
   const nodes = useStoreState((store) => store.nodes);
+  const { setCenter } = useZoomPanHelper();
 
   const compile = () => {
     recompile()
@@ -62,11 +69,39 @@ const Navigation = ({ info }) => {
       .catch((error) => console.log('An error occurred ', error));
   };
 
-  const onChange = (value) => {
-    setSearchField({ value });
+  const focusNode = (id) => {
+    const index = nodes.findIndex((node) => node.id == id);
+    const node = nodes[index];
+    const x = node.__rf.position.x + node.__rf.width / 2;
+    const y = node.__rf.position.y + node.__rf.height / 2;
+    const zoom = 1;
+
+    setCenter(x, y, zoom);
   };
 
-  useEffect(() => console.log(nodes));
+  const onChange = (value) => {
+    setSearchField(value);
+    const arr = value.split(':');
+    const componentName = arr[arr.length - 1];
+    const index = highlightedComponents.findIndex(
+      (component) => component.id === value
+    );
+    const array = [...highlightedComponents];
+    array.splice(index, 1);
+    setHighlightedComponents([
+      {
+        id: value,
+        componentName: componentName,
+        locked: true,
+        search: false,
+      },
+    ]);
+    focusNode(value);
+  };
+
+  useEffect(() => {
+    generateTreeNodes();
+  }, [nodes]);
 
   const getParentId = (id) => {
     const idSplit = id.split(':');
@@ -74,24 +109,25 @@ const Navigation = ({ info }) => {
       return null;
     }
     idSplit.pop();
-    return idSplit[idSplit.length - 1];
+    return idSplit.join(':');
   };
   const isLeaf = (node) => {
     return node.data.outDegree == 0;
   };
   const generateTreeNodes = () => {
     if (nodes.length > 0) {
-      return nodes.map((node) => {
-        return {
-          id: node.data.label,
-          pid: getParentId(node.id),
-          title: node.data.label,
-          value: node.id,
-          isLeaf: isLeaf(node),
-        };
-      });
+      setSearchOptions(
+        nodes.map((node) => {
+          return {
+            id: node.id,
+            pId: getParentId(node.id),
+            title: node.data.label,
+            value: node.id,
+            isLeaf: isLeaf(node),
+          };
+        })
+      );
     }
-    return [];
   };
   return (
     <Sider
@@ -112,31 +148,14 @@ const Navigation = ({ info }) => {
               width: '100%',
               padding: `0 ${baseUnit}px`,
             }}
-            value={searchField.value}
+            value={searchField}
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
             placeholder="Search components"
-            allowClear
-            multiple
-            treeDefaultExpandAll
             onChange={onChange}
-            treeData={generateTreeNodes()}
+            treeDataSimpleMode
+            treeDefaultExpandAll={false}
+            treeData={searchOptions}
           />
-          {/* <TreeNode value="parent 1" title="parent 1">
-              <TreeNode value="parent 1-0" title="parent 1-0">
-                <TreeNode value="leaf1" title="my leaf" />
-                <TreeNode value="leaf2" title="your leaf" />
-              </TreeNode>
-              <TreeNode value="parent 1-1" title="parent 1-1">
-                <TreeNode
-                  value="sss"
-                  title={<b style={{ color: '#08c' }}>sss</b>}
-                />
-              </TreeNode>
-            </TreeNode> 
-          </TreeSelect>*/}
-        </NavigationSection>
-        <NavigationSection title="Filters">
-          <InfoParagraph>No filters have been added</InfoParagraph>
         </NavigationSection>
         {info && (
           <NavigationSection title="Info">

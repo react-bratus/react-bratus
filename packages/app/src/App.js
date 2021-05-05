@@ -18,6 +18,7 @@ import { getLayoutedElements } from './utils/graphUtils';
 const App = () => {
   const { locale } = useLocale();
   const [elements, setElements] = useState(null);
+  const [nodeDetail, setNodeDetail] = useState({ visible: false, node: null });
   const [info, setInfo] = useState(null);
 
   useEffect(() => {
@@ -25,12 +26,19 @@ const App = () => {
     getParsedData()
       .then((data) => {
         setInfo(data.info);
-        const test = [...new Set(data.nodes.map((n) => n.data.label))];
-        console.log(test);
         setElements(
           getLayoutedElements(
             [].concat(
-              data.nodes,
+              data.nodes.map((node) => {
+                return {
+                  ...node,
+                  data: {
+                    ...node.data,
+                    onShowNodeDetail: (node) =>
+                      setNodeDetail({ visible: true, node: node }),
+                  },
+                };
+              }),
               data.edges.map((edge) => {
                 return {
                   ...edge,
@@ -55,7 +63,11 @@ const App = () => {
       <I18nWatchLocaleProvider>
         <ThemeProvider>
           <HighlightedComponentsProvider>
-            <DefaultLayout info={info}>
+            <DefaultLayout
+              info={info}
+              nodeDetail={nodeDetail}
+              setNodeDetail={setNodeDetail}
+            >
               {elements ? (
                 <ComponentTree elements={elements} />
               ) : (

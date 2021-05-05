@@ -1,5 +1,5 @@
 export const baseUnit = 12;
-export const navigationWidth = 250;
+export const navigationWidth = 300;
 export const borderRadius = 8;
-export const nodeWidth = 172;
-export const baseNodeHeight = 44;
+export const nodeWidth = 180;
+export const baseNodeHeight = 100;

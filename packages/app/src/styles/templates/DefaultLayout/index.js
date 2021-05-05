@@ -1,5 +1,5 @@
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { Button, Layout } from 'antd';
+import { Button, Drawer, Layout } from 'antd';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { ReactFlowProvider } from 'react-flow-renderer';
@@ -19,7 +19,7 @@ const HelpButton = styled(Button)`
   bottom: ${baseUnit * 2}px;
   left: ${baseUnit * 2}px;
 `;
-const DefaultLayout = ({ children, info }) => {
+const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
   const [hideHelpOnStartUp, setHideHelpOnStartUp] = useStickyState(
     false,
     'react-bratus:hide-help'
@@ -32,6 +32,15 @@ const DefaultLayout = ({ children, info }) => {
       <ReactFlowProvider>
         <Navigation info={info} />
         <ContentWrapper>{children}</ContentWrapper>
+        <Drawer
+          width={600}
+          visible={nodeDetail.visible}
+          closable={true}
+          onClose={() => setNodeDetail({ visible: false, node: null })}
+          title={nodeDetail.node ? nodeDetail.node.data.label : ''}
+        >
+          Yay
+        </Drawer>
       </ReactFlowProvider>
       <ReactFlowProvider>
         <Help
@@ -56,5 +65,7 @@ const DefaultLayout = ({ children, info }) => {
 
 DefaultLayout.propTypes = {
   info: PropTypes.any,
+  nodeDetail: PropTypes.any,
+  setNodeDetail: PropTypes.func,
 };
 export default DefaultLayout;
