@@ -22,7 +22,11 @@ const NodeDetail = ({ nodeDetail }) => {
         <Col>
           <Title level={5}>Path</Title>
 
-          <Text copyable>{nodeDetail.node.data.path}</Text>
+          <Text copyable>
+            <a href={`vscode://file/${nodeDetail.node.data.path}`}>
+              {nodeDetail.node.data.path}
+            </a>
+          </Text>
         </Col>
         <Divider />
 
