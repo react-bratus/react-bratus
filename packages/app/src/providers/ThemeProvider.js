@@ -9,7 +9,8 @@ const THEME = {
 };
 const GlobalStyle = createGlobalStyle`
 .ant-select-tree .ant-select-tree-treenode:not(.ant-select-tree .ant-select-tree-treenode-disabled).filter-node .ant-select-tree-title {
-  background-color: yellow;
+  background-color: red;
+  color: white;
 }
 `;
 

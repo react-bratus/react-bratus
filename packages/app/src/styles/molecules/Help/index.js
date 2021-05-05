@@ -112,9 +112,11 @@ const Help = ({
         - <b>2.0.4</b> <br />
         - Added TreeSearch <br />- Colored components based on the label hash
         <br /> - Added lock icon. Possibility to lock multiple components <br />{' '}
-        - Added eye icon. Possibility to open details about component. Currently
-        path and code defining the component <br /> - Fixed some bugs <br />-{' '}
-        <b>2.0.3</b> <br />
+        - Added eye icon. Possibility to open details about component. <br /> -
+        Details page showing the path <br />- Clicking on path will open vscode{' '}
+        <br /> - Details page showing the code <br /> - Fixed some bugs <br /> -
+        CLI automatically opens browser when react-bratus is started <br />-
+        Size of MiniMap increased <br />- <b>2.0.3</b> <br />
         - Added posibility to set options in `.bratusrc.json` file
         <br />
         - Handle multiple components - Highlight components feature <br />

@@ -90,7 +90,7 @@ const ComponentNode = (node) => {
 
   const getBgColor = () => {
     return isLocked()
-      ? 'red	'
+      ? 'red'
       : new ColorHash({ lightness: 0.8, hue: { min: 0, max: 366 } }).hex(
           node.data.label
         );
@@ -122,12 +122,12 @@ const ComponentNode = (node) => {
           {node.data.component.timesUsed > 1 && (
             <>
               <NumberOutlined
-                style={{ fontSize: '24px', color: getFontColor() }}
+                style={{ fontSize: '18px', color: getFontColor() }}
               />
               <Text
                 style={{
-                  fontSize: '24px',
-                  lineHeight: '24px',
+                  fontSize: '18px',
+                  lineHeight: '18px',
                   color: getFontColor(),
                 }}
               >
