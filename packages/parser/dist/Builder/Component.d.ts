@@ -5,7 +5,8 @@ declare class Component extends ParsableElement {
     private JSXElements;
     private imports;
     timesUsed: number;
-    constructor(path: string);
+    code: string;
+    constructor(path: string, code: string);
     getLinesOfCode(): number;
     addJSXElement(element: JSXElement): void;
     addImport(_import: Import): void;

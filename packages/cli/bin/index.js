@@ -58,7 +58,7 @@ if (options.start) {
         startServer();
     }
 }
-if (options.compile) {
+if (options.parse) {
     parseProject(parserOptions);
 }
 function getConfiguration() {

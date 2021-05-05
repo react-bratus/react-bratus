@@ -92,17 +92,17 @@ class ASTParser {
     async parseFile(path) {
         ASTParser.logEntry(`[Info] Parsing file: ${path}`);
         return new Promise((resolve, reject) => {
-            const parsedFile = new ParsedFile_1.default(path);
-            let component = new Component_1.default(path);
-            const elements = [new JSXElement_1.default(path)];
-            const attributes = [new Attribute_1.default()];
-            let ifStatementLevel = 0;
             try {
                 const fileContent = fs.readFileSync(path, 'utf8');
                 const ast = parser_1.parse(fileContent, {
                     sourceType: 'module',
                     plugins: ['typescript', 'jsx'],
                 });
+                const parsedFile = new ParsedFile_1.default(path);
+                let component = new Component_1.default(path, fileContent);
+                const elements = [new JSXElement_1.default(path)];
+                const attributes = [new Attribute_1.default()];
+                let ifStatementLevel = 0;
                 traverse_1.default(ast, {
                     ImportDeclaration({ node }) {
                         const modulePath = node.source.value;
@@ -234,7 +234,7 @@ class ASTParser {
                                 ASTParser.logEntry(`[Info] Close component: ${component.getElementName()}`);
                                 parsedFile.components.push(component);
                             }
-                            component = new Component_1.default(path);
+                            component = new Component_1.default(path, fileContent);
                         }
                         const jsxElement = ASTParser.peek(elements);
                         if (jsxElement.close(node)) {

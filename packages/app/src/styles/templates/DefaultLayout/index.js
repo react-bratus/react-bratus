@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import useStickyState from '../../../hooks/useStickyState';
 import Help from '../../molecules/Help';
 import Navigation from '../../molecules/Navigation';
+import NodeDetail from '../../molecules/NodeDetail';
 import { baseUnit, navigationWidth } from '../../tokens/units';
 const ContentWrapper = styled(Layout)`
   margin-left: ${navigationWidth}px;
@@ -33,13 +34,13 @@ const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
         <Navigation info={info} />
         <ContentWrapper>{children}</ContentWrapper>
         <Drawer
-          width={600}
+          width={800}
           visible={nodeDetail.visible}
           closable={true}
           onClose={() => setNodeDetail({ visible: false, node: null })}
           title={nodeDetail.node ? nodeDetail.node.data.label : ''}
         >
-          Yay
+          <NodeDetail nodeDetail={nodeDetail} />
         </Drawer>
       </ReactFlowProvider>
       <ReactFlowProvider>

@@ -7,6 +7,7 @@ import {
 import { Col, Row } from 'antd';
 import Text from 'antd/lib/typography/Text';
 import Title from 'antd/lib/typography/Title';
+import ColorHash from 'color-hash';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { Handle, useStoreActions, useStoreState } from 'react-flow-renderer';
@@ -28,10 +29,11 @@ const StyledNode = styled.div`
     if (!isHighlighted) {
       return '1px solid black';
     } else {
-      return locked ? '3px solid black' : '2px dotted red';
+      return locked ? '3px solid black' : '3px dotted red';
     }
   }};
-  background-color: ${({ locked }) => (locked ? 'grey' : 'white')};
+  background-color: ${({ bgColor }) => bgColor};
+  color: ${({ fontColor }) => fontColor};
 `;
 
 const NodeContent = styled(Col)`
@@ -82,31 +84,51 @@ const ComponentNode = ({ id, data }) => {
         id.match(`${component.componentName}:+.+|${component.componentName}$`)
     );
   };
+
+  const getBgColor = () => {
+    return isLocked()
+      ? '#FF6666	'
+      : new ColorHash({ lightness: 0.8, hue: { min: 0, max: 366 } }).hex(
+          data.label
+        );
+  };
+  const getFontColor = () => {
+    const bgColor = getBgColor();
+    const color = bgColor.charAt(0) === '#' ? bgColor.substring(1, 7) : bgColor;
+    const r = parseInt(color.substring(0, 2), 16); // hexToR
+    const g = parseInt(color.substring(2, 4), 16); // hexToG
+    const b = parseInt(color.substring(4, 6), 16); // hexToB
+    return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? '#000' : '#fff';
+  };
   return (
     <StyledNode
       linesOfCode={data.linesOfCode}
       isHighlighted={isHighlighted()}
-      locked={isLocked()}
+      isLocked={isLocked()}
+      bgColor={getBgColor}
+      fontColor={getFontColor()}
     >
       {data.inDegree > 0 && <Handle type="target" position="left" />}
       <NodeContent>
         <Row>
-          <Title level={5}>{data.label}</Title>
+          <Title style={{ color: getFontColor() }} level={5}>
+            {data.label}
+          </Title>
         </Row>
         <Row style={{ flexGrow: 1, paddingTop: '12px' }} justify="center">
           {data.component.timesUsed > 1 && (
             <>
               <NumberOutlined
-                style={{ fontSize: '24px', color: 'lightgrey' }}
+                style={{ fontSize: '24px', color: getFontColor() }}
               />
               <Text
                 style={{
                   fontSize: '24px',
                   lineHeight: '24px',
-                  color: 'lightgrey',
+                  color: getFontColor(),
                 }}
               >
-                {data.component.timesUsed}
+                used: {data.component.timesUsed}
               </Text>
             </>
           )}

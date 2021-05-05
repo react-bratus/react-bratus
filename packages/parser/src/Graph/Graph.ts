@@ -25,6 +25,8 @@ class Graph {
         const root = this.createNode(component.getElementName(), {
           label: component.getElementName(),
           linesOfCode: component.getLinesOfCode(),
+          code: component.code,
+          path: component.getPath(),
           component,
           outDegree: 0,
           inDegree: 0,
@@ -55,6 +57,8 @@ class Graph {
               label: component.getElementName(),
               linesOfCode: component.getLinesOfCode(),
               component: component,
+              code: component.code,
+              path: component.getPath(),
               outDegree: 0,
               inDegree: 0,
             }

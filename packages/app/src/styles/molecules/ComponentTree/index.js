@@ -1,3 +1,4 @@
+import ColorHash from 'color-hash';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import ReactFlow, { Controls } from 'react-flow-renderer';
@@ -62,7 +63,7 @@ const ComponentTree = ({ elements }) => {
               if (isHighlighted(node)) {
                 return 'red';
               } else {
-                return 'black';
+                return new ColorHash({ lightness: 0.5 }).hex(node.data.label);
               }
             }}
           />
