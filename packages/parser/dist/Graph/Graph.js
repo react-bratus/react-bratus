@@ -85,21 +85,8 @@ class Graph {
         target.data.inDegree++;
         return edge;
     }
-    calculateInfo() {
-        const components = [...new Set(this.componentMap.values())];
-        return {
-            uniqueComponents: components.length,
-            averageTimesUsed: components
-                .map((component) => component.timesUsed)
-                .reduce((a, b) => a + b) / components.length,
-            averageLinesOfCode: components
-                .map((component) => component.getLinesOfCode())
-                .reduce((a, b) => a + b) / components.length,
-        };
-    }
     toString() {
         return JSON.stringify({
-            info: this.calculateInfo(),
             nodes: this.nodes,
             edges: this.edges,
         });

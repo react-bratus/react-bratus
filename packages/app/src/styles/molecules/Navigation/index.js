@@ -1,5 +1,4 @@
 import { Button, Layout, Menu, message, TreeSelect, Typography } from 'antd';
-import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { useStoreState, useZoomPanHelper } from 'react-flow-renderer';
 import styled from 'styled-components';
@@ -23,10 +22,6 @@ const InfoParagraph = styled(Paragraph)`
   padding: 0 ${baseUnit}px;
 `;
 
-const HighLightedNumber = styled.span`
-  color: ${({ theme }) => theme.primary};
-`;
-
 const Actions = styled.div`
   display: flex;
   flex-direction: row-reverse;
@@ -45,7 +40,7 @@ const Actions = styled.div`
 
 const { Sider } = Layout;
 
-const Navigation = ({ info }) => {
+const Navigation = () => {
   const [searchField, setSearchField] = useState();
   const [searchOptions, setSearchOptions] = useState([]);
   const { highlightedComponents, setHighlightedComponents } = useContext(
@@ -157,31 +152,6 @@ const Navigation = ({ info }) => {
             treeData={searchOptions}
           />
         </NavigationSection>
-        {info && (
-          <NavigationSection title="Info">
-            <InfoParagraph>
-              your tree contains{' '}
-              <HighLightedNumber>{info.uniqueComponents} </HighLightedNumber>
-              unique components
-            </InfoParagraph>
-            <InfoParagraph>
-              your components are on average reused
-              <HighLightedNumber>
-                {' '}
-                {info.averageTimesUsed.toFixed(2)}{' '}
-              </HighLightedNumber>
-              times
-            </InfoParagraph>
-            <InfoParagraph>
-              your average component consist of
-              <HighLightedNumber>
-                {' '}
-                {info.averageLinesOfCode.toFixed(0)}{' '}
-              </HighLightedNumber>
-              lines of code
-            </InfoParagraph>
-          </NavigationSection>
-        )}
         <NavigationSection title="Actions">
           <Actions>
             <Button onClick={compile} ghost>
@@ -219,9 +189,6 @@ const Navigation = ({ info }) => {
       </Menu>
     </Sider>
   );
-};
-Navigation.propTypes = {
-  info: PropTypes.any,
 };
 
 export default Navigation;

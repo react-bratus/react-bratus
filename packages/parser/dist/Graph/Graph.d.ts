@@ -11,7 +11,6 @@ declare class Graph {
     private buildComponentTree;
     private createNode;
     private createEdge;
-    private calculateInfo;
     toString(): string;
 }
 export default Graph;

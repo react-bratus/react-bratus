@@ -93,6 +93,7 @@ const Help = ({
         - Lock highlighted component and move component including descendants at
         the same time <br />
         - CLI command -c --compile has been changed to -p --parse <br />-{' '}
+        Removed Info section <br />
         <b>2.0.2</b> <br />- First release
       </Paragraph>
 
@@ -189,12 +190,12 @@ const ELEMENTS = [
     position: { x: 0, y: 0 },
   },
   {
-    id: 'node-7',
+    id: 'Hover me to highlight',
     type: 'reactComponent',
     data: {
       label: 'Hover me to highlight',
       component: { timesUsed: 1 },
-      linesOfCode: 10,
+      linesOfCode: 50,
       outDegree: 0,
       inDegree: 0,
     },

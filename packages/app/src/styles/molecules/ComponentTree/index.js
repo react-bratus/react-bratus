@@ -63,7 +63,10 @@ const ComponentTree = ({ elements }) => {
               if (isHighlighted(node)) {
                 return 'red';
               } else {
-                return new ColorHash({ lightness: 0.5 }).hex(node.data.label);
+                return new ColorHash({
+                  lightness: 0.8,
+                  hue: { min: 0, max: 366 },
+                }).hex(node.data.label);
               }
             }}
           />
