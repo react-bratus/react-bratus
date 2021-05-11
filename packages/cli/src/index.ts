@@ -75,6 +75,10 @@ function startServer() {
 }
 
 function parseProject(options: ParserOptions) {
-  const parser = new ASTParser(options);
-  parser.parse();
+  try {
+    const parser = new ASTParser(options);
+    parser.parse();
+  } catch (error: any) {
+    console.log('An error occurred when parsing: ', error.message);
+  }
 }
