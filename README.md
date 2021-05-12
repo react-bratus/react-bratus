@@ -60,6 +60,9 @@ Override default configuration by creating `.bratusrc.json` in the root director
 
 ## Changelog
 
+- 2.0.5
+  - Throws error if a circular reference is  found
+  - Minor bug fixes
 - 2.0.4
   - Added TreeSearch
   - Colored components based on the label hash
