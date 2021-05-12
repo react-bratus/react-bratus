@@ -51,6 +51,13 @@ class Graph {
               source.data.label
             } and ${component.getElementName()}`
           );
+          if (source.id.split(':').includes(component.getElementName())) {
+            throw new Error(
+              `Circular reference found when tring to create a link between ${
+                source.id
+              } to ${component.getElementName()} `
+            );
+          }
           const target = this.createNode(
             `${source.id}:${component.getElementName()}`,
             {
@@ -71,12 +78,12 @@ class Graph {
           }
         } else {
           ASTParser.logEntry(
-            `[Warnig] Node with id: ${targetNodeId} already exist. Not creating duplicate node`
+            `[Warning] Node with id: ${targetNodeId} already exist. Not creating duplicate node`
           );
         }
       }
     } catch (error) {
-      ASTParser.logEntry(`Error thrown: ${error.getMessage()}`);
+      console.log(`Error thrown: ${error}`);
     }
   }
 
