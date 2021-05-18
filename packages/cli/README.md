@@ -30,7 +30,7 @@ Add following scripts to your package.json file:
 
 ```
 
-Test that the tool is installed correctly by running `bratus -V`. You should see the version that you have installed.
+Test that the tool is installed correctly by running `npm run bratus -V`. You should see the version that you have installed.
 
 ### Method 2
 
