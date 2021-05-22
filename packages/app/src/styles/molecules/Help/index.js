@@ -173,7 +173,7 @@ const ELEMENTS = [
     id: 'node-4',
     type: 'reactComponent',
     data: {
-      label: 'Blue dashed connections denote a Route.',
+      label: 'Red dashed connections denote a Route.',
       component: { timesUsed: 1 },
       linesOfCode: 120,
       outDegree: 0,
