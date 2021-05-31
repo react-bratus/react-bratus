@@ -109,7 +109,13 @@ const Help = ({
           ellipsis ? { rows: 2, expandable: true, symbol: 'more' } : false
         }
       >
-        - <b>2.0.4</b> <br />
+        - <b>2.0.5</b> <br />
+        - Throws error if a circular reference is found
+        <br />
+        - Minor bug fixes
+        <br />
+        - Updated README
+        <br />- <b>2.0.4</b> <br />
         - Added TreeSearch <br />- Colored components based on the label hash
         <br /> - Added lock icon. Possibility to lock multiple components <br />{' '}
         - Added eye icon. Possibility to open details about component. <br /> -
@@ -173,7 +179,7 @@ const ELEMENTS = [
     id: 'node-4',
     type: 'reactComponent',
     data: {
-      label: 'Blue dashed connections denote a Route.',
+      label: 'Red dashed connections denote a Route.',
       component: { timesUsed: 1 },
       linesOfCode: 120,
       outDegree: 0,
@@ -227,7 +233,7 @@ const ELEMENTS = [
     id: 'edge-2',
     source: 'node-3',
     target: 'node-4',
-    label: '/route_to_rendered_component',
+    label: '/route',
     animated: true,
     labelBgPadding: [8, 4],
     labelBgBorderRadius: 4,
@@ -236,7 +242,7 @@ const ELEMENTS = [
       fillOpacity: 0.7,
     },
     labelStyle: { fill: '#fff' },
-    style: { stroke: '#00D8FF' },
+    style: { stroke: 'red' },
   },
   {
     id: 'edge-3',
