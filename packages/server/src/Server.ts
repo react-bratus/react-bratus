@@ -45,15 +45,20 @@ class Server {
     this.app.post(
       '/compile',
       (_req: express.Request, res: express.Response) => {
-        const parserOptions: ParserOptions = {
-          rootFolderPath: this.config.rootFolderPath,
-          log: true,
-          rootComponents: this.config.rootComponents,
-          pathToSaveDir: this.config.pathToSaveDir,
-        };
-        const parser = new ASTParser(parserOptions);
-        parser.parse();
-        res.status(200).send();
+        try {
+          const parserOptions: ParserOptions = {
+            rootFolderPath: this.config.rootFolderPath,
+            log: true,
+            rootComponents: this.config.rootComponents,
+            pathToSaveDir: this.config.pathToSaveDir,
+          };
+          const parser = new ASTParser(parserOptions);
+          parser.parse();
+          res.status(200).send();
+        } catch (error: any) {
+          console.log('An error occurred when parsing: ', error.message);
+          res.status(500).send(error.message);
+        }
       }
     );
     this.app.listen(4444);

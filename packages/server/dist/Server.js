@@ -37,15 +37,21 @@ class Server {
                 .send(fs_1.default.readFileSync(`${this.config.pathToSaveDir}/data.json`));
         });
         this.app.post('/compile', (_req, res) => {
-            const parserOptions = {
-                rootFolderPath: this.config.rootFolderPath,
-                log: true,
-                rootComponents: this.config.rootComponents,
-                pathToSaveDir: this.config.pathToSaveDir,
-            };
-            const parser = new parser_1.default(parserOptions);
-            parser.parse();
-            res.status(200).send();
+            try {
+                const parserOptions = {
+                    rootFolderPath: this.config.rootFolderPath,
+                    log: true,
+                    rootComponents: this.config.rootComponents,
+                    pathToSaveDir: this.config.pathToSaveDir,
+                };
+                const parser = new parser_1.default(parserOptions);
+                parser.parse();
+                res.status(200).send();
+            }
+            catch (error) {
+                console.log('An error occurred when parsing: ', error.message);
+                res.status(500).send(error.message);
+            }
         });
         this.app.listen(4444);
         console.log(`React-bratus listening on port http://localhost:${4444}`);

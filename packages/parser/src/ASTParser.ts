@@ -36,7 +36,7 @@ class ASTParser {
     this.getFilesAndDirectories().then(async (files) => {
       ASTParser.logEntry(`[Info] Traversing files: [${files.join(',\n')}]`);
       for (let i = 0; i < files.length; i++) {
-        // TODO: Being able to exclude files in GLOB pattern
+        // Fix to avoid parsing Storybook files
         if (!files[i].includes('stories')) {
           if (fs.existsSync(files[i]) && fs.lstatSync(files[i]).isFile()) {
             const parsedFile = await this.parseFile(files[i]);
@@ -74,7 +74,6 @@ class ASTParser {
     fs.writeFileSync(dir + '/data.json', graphData);
   }
 
-  // TODO: Being able to exclude files in GLOB pattern
   public getFilesAndDirectories(): Promise<string[]> {
     return new Promise((resolve, reject) => {
       glob.glob(
@@ -96,18 +95,17 @@ class ASTParser {
   private async parseFile(path: string): Promise<ParsedFile> {
     ASTParser.logEntry(`[Info] Parsing file: ${path}`);
     return new Promise((resolve, reject) => {
-      const parsedFile: ParsedFile = new ParsedFile(path);
-      let component: Component = new Component(path);
-      const elements: JSXElement[] = [new JSXElement(path)];
-      const attributes: Attribute[] = [new Attribute()];
-      let ifStatementLevel = 0;
-
       try {
         const fileContent: string = fs.readFileSync(path, 'utf8');
         const ast = parse(fileContent, {
           sourceType: 'module',
           plugins: ['typescript', 'jsx'],
         });
+        const parsedFile: ParsedFile = new ParsedFile(path);
+        let component: Component = new Component(path, fileContent);
+        const elements: JSXElement[] = [new JSXElement(path)];
+        const attributes: Attribute[] = [new Attribute()];
+        let ifStatementLevel = 0;
         traverse(ast, {
           ImportDeclaration({ node }) {
             const modulePath = node.source.value;
@@ -158,7 +156,7 @@ class ASTParser {
           },
           Identifier({ node }) {
             if (component.isOpen() && !component.isIdentified()) {
-              ASTParser.logEntry(`[Info] Identify component`);
+              ASTParser.logEntry(`[Info] Identify component ${node.name}`);
               component.identify(node);
             }
           },
@@ -204,10 +202,10 @@ class ASTParser {
             const jsxElement = ASTParser.peek(elements);
             const attribute = ASTParser.peek(attributes);
             if (jsxElement.isOpen() && !jsxElement.isIdentified()) {
-              ASTParser.logEntry(`[Info] Identify jsxElement`);
+              ASTParser.logEntry(`[Info] Identify jsxElement ${node.name}`);
               jsxElement.identify(node);
             } else if (attribute.isOpen() && !attribute.isIdentified()) {
-              ASTParser.logEntry(`[Info] Identify Attribute`);
+              ASTParser.logEntry(`[Info] Identify Attribute ${node.name}`);
               attribute.identify(node);
             }
           },
@@ -236,6 +234,7 @@ class ASTParser {
               ASTParser.logEntry(`[Info] Set value of Attribute`);
               attribute.setValue(node.value);
               if (
+                jsxElement.isOpen() &&
                 jsxElement.isRoute() &&
                 attribute.getElementName() == 'path'
               ) {
@@ -252,7 +251,7 @@ class ASTParser {
                 );
                 parsedFile.components.push(component);
               }
-              component = new Component(path);
+              component = new Component(path, fileContent);
             }
 
             const jsxElement = ASTParser.peek(elements);

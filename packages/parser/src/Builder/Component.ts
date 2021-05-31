@@ -5,8 +5,10 @@ class Component extends ParsableElement {
   private JSXElements: JSXElement[] = [];
   private imports: Import[] = [];
   public timesUsed = 0;
-  constructor(path: string) {
+  public code: string;
+  constructor(path: string, code: string) {
     super(path);
+    this.code = code;
   }
 
   getLinesOfCode(): number {

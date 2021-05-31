@@ -58,7 +58,7 @@ if (options.start) {
         startServer();
     }
 }
-if (options.compile) {
+if (options.parse) {
     parseProject(parserOptions);
 }
 function getConfiguration() {
@@ -74,9 +74,21 @@ function getConfiguration() {
 function startServer() {
     const server = new server_1.default();
     server.listen();
+    const url = 'http://localhost:4444';
+    const start = process.platform == 'darwin'
+        ? 'open'
+        : process.platform == 'win32'
+            ? 'start'
+            : 'xdg-open';
+    require('child_process').exec(start + ' ' + url);
 }
 function parseProject(options) {
-    const parser = new parser_1.default(options);
-    parser.parse();
+    try {
+        const parser = new parser_1.default(options);
+        parser.parse();
+    }
+    catch (error) {
+        console.log('An error occurred when parsing: ', error.message);
+    }
 }
 //# sourceMappingURL=index.js.map

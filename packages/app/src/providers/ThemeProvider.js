@@ -8,6 +8,10 @@ const THEME = {
   secondary: '#001529',
 };
 const GlobalStyle = createGlobalStyle`
+.ant-select-tree .ant-select-tree-treenode:not(.ant-select-tree .ant-select-tree-treenode-disabled).filter-node .ant-select-tree-title {
+  background-color: red;
+  color: white;
+}
 `;
 
 const ThemeProvider = ({ children }) => {

@@ -92,17 +92,17 @@ class ASTParser {
     async parseFile(path) {
         ASTParser.logEntry(`[Info] Parsing file: ${path}`);
         return new Promise((resolve, reject) => {
-            const parsedFile = new ParsedFile_1.default(path);
-            let component = new Component_1.default(path);
-            const elements = [new JSXElement_1.default(path)];
-            const attributes = [new Attribute_1.default()];
-            let ifStatementLevel = 0;
             try {
                 const fileContent = fs.readFileSync(path, 'utf8');
                 const ast = parser_1.parse(fileContent, {
                     sourceType: 'module',
                     plugins: ['typescript', 'jsx'],
                 });
+                const parsedFile = new ParsedFile_1.default(path);
+                let component = new Component_1.default(path, fileContent);
+                const elements = [new JSXElement_1.default(path)];
+                const attributes = [new Attribute_1.default()];
+                let ifStatementLevel = 0;
                 traverse_1.default(ast, {
                     ImportDeclaration({ node }) {
                         const modulePath = node.source.value;
@@ -149,7 +149,7 @@ class ASTParser {
                     },
                     Identifier({ node }) {
                         if (component.isOpen() && !component.isIdentified()) {
-                            ASTParser.logEntry(`[Info] Identify component`);
+                            ASTParser.logEntry(`[Info] Identify component ${node.name}`);
                             component.identify(node);
                         }
                     },
@@ -191,11 +191,11 @@ class ASTParser {
                         const jsxElement = ASTParser.peek(elements);
                         const attribute = ASTParser.peek(attributes);
                         if (jsxElement.isOpen() && !jsxElement.isIdentified()) {
-                            ASTParser.logEntry(`[Info] Identify jsxElement`);
+                            ASTParser.logEntry(`[Info] Identify jsxElement ${node.name}`);
                             jsxElement.identify(node);
                         }
                         else if (attribute.isOpen() && !attribute.isIdentified()) {
-                            ASTParser.logEntry(`[Info] Identify Attribute`);
+                            ASTParser.logEntry(`[Info] Identify Attribute ${node.name}`);
                             attribute.identify(node);
                         }
                     },
@@ -221,7 +221,8 @@ class ASTParser {
                         if (attribute.isOpen() && attribute.isIdentified()) {
                             ASTParser.logEntry(`[Info] Set value of Attribute`);
                             attribute.setValue(node.value);
-                            if (jsxElement.isRoute() &&
+                            if (jsxElement.isOpen() &&
+                                jsxElement.isRoute() &&
                                 attribute.getElementName() == 'path') {
                                 ASTParser.logEntry(`[Info] Set path of Route element`);
                                 jsxElement.routePath = attribute.getValue();
@@ -234,7 +235,7 @@ class ASTParser {
                                 ASTParser.logEntry(`[Info] Close component: ${component.getElementName()}`);
                                 parsedFile.components.push(component);
                             }
-                            component = new Component_1.default(path);
+                            component = new Component_1.default(path, fileContent);
                         }
                         const jsxElement = ASTParser.peek(elements);
                         if (jsxElement.close(node)) {

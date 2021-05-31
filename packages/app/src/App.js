@@ -4,7 +4,6 @@ import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
 import { Alert, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { ReactFlowProvider } from 'react-flow-renderer';
 
 import { getParsedData } from './api';
 import useLocale from './hooks/useLocale';
@@ -19,6 +18,7 @@ import { getLayoutedElements } from './utils/graphUtils';
 const App = () => {
   const { locale } = useLocale();
   const [elements, setElements] = useState(null);
+  const [nodeDetail, setNodeDetail] = useState({ visible: false, node: null });
   const [info, setInfo] = useState(null);
 
   useEffect(() => {
@@ -26,12 +26,19 @@ const App = () => {
     getParsedData()
       .then((data) => {
         setInfo(data.info);
-        const test = [...new Set(data.nodes.map((n) => n.data.label))];
-        console.log(test);
         setElements(
           getLayoutedElements(
             [].concat(
-              data.nodes,
+              data.nodes.map((node) => {
+                return {
+                  ...node,
+                  data: {
+                    ...node.data,
+                    onShowNodeDetail: (node) =>
+                      setNodeDetail({ visible: true, node: node }),
+                  },
+                };
+              }),
               data.edges.map((edge) => {
                 return {
                   ...edge,
@@ -41,8 +48,10 @@ const App = () => {
                     fill: '#001529',
                     fillOpacity: 0.7,
                   },
-                  labelStyle: { fill: '#fff' },
-                  style: { stroke: edge.label ? '#00D8FF' : '#000' },
+                  labelStyle: {
+                    fill: '#fff',
+                  },
+                  style: { stroke: edge.label ? 'red' : '#000' },
                 };
               })
             )
@@ -56,11 +65,13 @@ const App = () => {
       <I18nWatchLocaleProvider>
         <ThemeProvider>
           <HighlightedComponentsProvider>
-            <DefaultLayout info={info}>
+            <DefaultLayout
+              info={info}
+              nodeDetail={nodeDetail}
+              setNodeDetail={setNodeDetail}
+            >
               {elements ? (
-                <ReactFlowProvider>
-                  <ComponentTree elements={elements} />
-                </ReactFlowProvider>
+                <ComponentTree elements={elements} />
               ) : (
                 <Spin spinning={true}>
                   <Alert

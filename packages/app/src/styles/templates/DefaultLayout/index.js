@@ -1,5 +1,5 @@
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { Button, Layout } from 'antd';
+import { Button, Drawer, Layout } from 'antd';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { ReactFlowProvider } from 'react-flow-renderer';
@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import useStickyState from '../../../hooks/useStickyState';
 import Help from '../../molecules/Help';
 import Navigation from '../../molecules/Navigation';
+import NodeDetail from '../../molecules/NodeDetail';
 import { baseUnit, navigationWidth } from '../../tokens/units';
 const ContentWrapper = styled(Layout)`
   margin-left: ${navigationWidth}px;
@@ -19,7 +20,7 @@ const HelpButton = styled(Button)`
   bottom: ${baseUnit * 2}px;
   left: ${baseUnit * 2}px;
 `;
-const DefaultLayout = ({ children, info }) => {
+const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
   const [hideHelpOnStartUp, setHideHelpOnStartUp] = useStickyState(
     false,
     'react-bratus:hide-help'
@@ -29,8 +30,20 @@ const DefaultLayout = ({ children, info }) => {
   );
   return (
     <Layout>
-      <Navigation info={info} />
-      <ContentWrapper>{children}</ContentWrapper>
+      <ReactFlowProvider>
+        <Navigation info={info} />
+        <ContentWrapper>{children}</ContentWrapper>
+        <Drawer
+          width={800}
+          visible={nodeDetail.visible}
+          closable={true}
+          keyboard
+          onClose={() => setNodeDetail({ visible: false, node: null })}
+          title={nodeDetail.node ? nodeDetail.node.data.label : ''}
+        >
+          <NodeDetail nodeDetail={nodeDetail} />
+        </Drawer>
+      </ReactFlowProvider>
       <ReactFlowProvider>
         <Help
           isHelpVisible={isHelpVisible}
@@ -54,5 +67,7 @@ const DefaultLayout = ({ children, info }) => {
 
 DefaultLayout.propTypes = {
   info: PropTypes.any,
+  nodeDetail: PropTypes.any,
+  setNodeDetail: PropTypes.func,
 };
 export default DefaultLayout;

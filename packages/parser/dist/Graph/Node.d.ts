@@ -9,6 +9,8 @@ export interface NodeData {
     inDegree: number;
     outDegree: number;
     component: Component;
+    code: string;
+    path: string;
 }
 declare class Node {
     id: string;

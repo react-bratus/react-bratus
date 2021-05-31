@@ -2,17 +2,37 @@
 
 This is the react-bratus CLI tool. With this tool you can parse your react.js project and have your component tree visualised in a web app.
 
-## Prerequisites
-
-Since this tool is in early development stages, there are some prerequisites for the tool to work properly.
-
-- When running CLI commands, you are in the root directory of your application
-
 ## Disclaimer
 
 This tool is in development. Bugs may therefore occur and the parser might not include all components in your project.
 
 ## Getting started
+
+You can install react-bratus locally (Method 1) or globally (Method 2).
+
+### Method 1
+
+Run: `npm install @react-bratus/cli -D` locally in your project to install react-bratus.
+
+Add following scripts to your package.json file:
+
+```(JSON)
+{
+  //...
+  "scripts": [
+    //...
+    "bratus": "node ./node_modules/@react-bratus/cli/bin",
+    "bratus:start": "node ./node_modules/@react-bratus/cli/bin -s",
+    "bratus:parse": "node ./node_modules/@react-bratus/cli/bin -p",
+  ]
+  //...
+}
+
+```
+
+Test that the tool is installed correctly by running `npm run bratus -V`. You should see the version that you have installed.
+
+### Method 2
 
 Start by installing the tool globally on your computer. This may take a while.
 
@@ -60,6 +80,16 @@ Override default configuration by creating `.bratusrc.json` in the root director
 
 ## Changelog
 
+- 2.0.5
+  - Throws error if a circular reference is  found
+  - Minor bug fixes
+  - Updated README
+- 2.0.4
+  - Added TreeSearch
+  - Colored components based on the label hash
+  - Added lock icon. Possibility to lock multiple components
+  - Added eye icon. Possibility to open details about component. Currently path and code defining the component
+  - Fixed some bugs
 - 2.0.3
   - Added posibility to set options in `.bratusrc.json` file
   - Handle multiple components

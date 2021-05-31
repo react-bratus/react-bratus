@@ -46,7 +46,7 @@ if (options.start) {
   }
 }
 
-if (options.compile) {
+if (options.parse) {
   parseProject(parserOptions);
 }
 
@@ -64,9 +64,21 @@ function getConfiguration() {
 function startServer() {
   const server = new Server();
   server.listen();
+  const url = 'http://localhost:4444';
+  const start =
+    process.platform == 'darwin'
+      ? 'open'
+      : process.platform == 'win32'
+      ? 'start'
+      : 'xdg-open';
+  require('child_process').exec(start + ' ' + url);
 }
 
 function parseProject(options: ParserOptions) {
-  const parser = new ASTParser(options);
-  parser.parse();
+  try {
+    const parser = new ASTParser(options);
+    parser.parse();
+  } catch (error: any) {
+    console.log('An error occurred when parsing: ', error.message);
+  }
 }

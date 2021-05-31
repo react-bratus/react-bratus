@@ -3,13 +3,11 @@ import React, { useState } from 'react';
 import HighlightedComponentsContext from '../contexts/HighlightedComponentsContext';
 
 const HighlightedComponentsProvider = ({ children }) => {
-  const [highlightedComponent, setHighlightedComponent] = useState({
-    componentName: null,
-    locked: false,
-  });
+  const [highlightedComponents, setHighlightedComponents] = useState([]);
+
   return (
     <HighlightedComponentsContext.Provider
-      value={{ highlightedComponent, setHighlightedComponent }}
+      value={{ highlightedComponents, setHighlightedComponents }}
     >
       {children}
     </HighlightedComponentsContext.Provider>
