@@ -109,8 +109,8 @@ const Help = ({
           ellipsis ? { rows: 2, expandable: true, symbol: 'more' } : false
         }
       >
-        - <b>2.0.6</b> <br />- Configurable component backgrounds <br /> -{' '}
-        <b>2.0.5</b> <br />
+        - <b>2.0.6</b> <br />- Configurable component backgrounds <br />
+        - Improved logging <br />- <b>2.0.5</b> <br />
         - Throws error if a circular reference is found
         <br />
         - Minor bug fixes
