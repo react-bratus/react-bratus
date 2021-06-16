@@ -36,7 +36,7 @@ class ASTParser {
     this.getFilesAndDirectories().then(async (files) => {
       ASTParser.logEntry(`[Info] Traversing files: [${files.join(',\n')}]`);
       for (let i = 0; i < files.length; i++) {
-        // TODO: Being able to exclude files in GLOB pattern
+        // Fix to avoid parsing Storybook files
         if (!files[i].includes('stories')) {
           if (fs.existsSync(files[i]) && fs.lstatSync(files[i]).isFile()) {
             const parsedFile = await this.parseFile(files[i]);
@@ -74,7 +74,6 @@ class ASTParser {
     fs.writeFileSync(dir + '/data.json', graphData);
   }
 
-  // TODO: Being able to exclude files in GLOB pattern
   public getFilesAndDirectories(): Promise<string[]> {
     return new Promise((resolve, reject) => {
       glob.glob(
