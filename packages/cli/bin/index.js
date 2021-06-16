@@ -54,8 +54,7 @@ if (options.start) {
         startServer();
     }
     else {
-        parseProject(parserOptions);
-        startServer();
+        parseProject(parserOptions).then(() => startServer());
     }
 }
 if (options.parse) {
@@ -85,10 +84,10 @@ function startServer() {
 function parseProject(options) {
     try {
         const parser = new parser_1.default(options);
-        parser.parse();
+        return parser.parse();
     }
     catch (error) {
-        console.log('An error occurred when parsing: ', error.message);
+        throw new Error('An error occurred when parsing: ' + error.message);
     }
 }
 //# sourceMappingURL=index.js.map

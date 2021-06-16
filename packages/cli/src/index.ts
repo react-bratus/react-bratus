@@ -41,8 +41,7 @@ if (options.start) {
   if (fs.existsSync(`${config.pathToSaveDir}/data.json`)) {
     startServer();
   } else {
-    parseProject(parserOptions);
-    startServer();
+    parseProject(parserOptions).then(() => startServer());
   }
 }
 
@@ -74,11 +73,11 @@ function startServer() {
   require('child_process').exec(start + ' ' + url);
 }
 
-function parseProject(options: ParserOptions) {
+function parseProject(options: ParserOptions): Promise<void> {
   try {
     const parser = new ASTParser(options);
-    parser.parse();
+    return parser.parse();
   } catch (error: any) {
-    console.log('An error occurred when parsing: ', error.message);
+    throw new Error('An error occurred when parsing: ' + error.message);
   }
 }
