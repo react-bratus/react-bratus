@@ -1,9 +1,20 @@
-import { Button, Layout, Menu, message, TreeSelect, Typography } from 'antd';
+import {
+  Button,
+  Input,
+  Layout,
+  Menu,
+  message,
+  Select,
+  TreeSelect,
+  Typography,
+} from 'antd';
+import Paragraph from 'antd/lib/typography/Paragraph';
 import React, { useContext, useEffect, useState } from 'react';
 import { useStoreState, useZoomPanHelper } from 'react-flow-renderer';
 import styled from 'styled-components';
 
 import { recompile } from '../../../api';
+import ComponentBackgroundContext from '../../../contexts/ComponentBackgroundContext';
 import HighlightedComponentsContext from '../../../contexts/HighlightedComponentsContext';
 import { baseUnit, navigationWidth } from '../../tokens/units';
 import NavigationSection from '../NavigationSection';
@@ -14,13 +25,13 @@ const StyledTitle = styled(Title)`
   text-align: center;
 `;
 
-/* const InfoParagraph = styled(Paragraph)`
+const InfoParagraph = styled(Paragraph)`
   color: #fff;
   line-height: ${baseUnit * 2}px;
   font-size: ${baseUnit + 2}px;
   text-align: right;
   padding: 0 ${baseUnit}px;
-`; */
+`;
 
 const Actions = styled.div`
   display: flex;
@@ -45,6 +56,9 @@ const Navigation = () => {
   const [searchOptions, setSearchOptions] = useState([]);
   const { highlightedComponents, setHighlightedComponents } = useContext(
     HighlightedComponentsContext
+  );
+  const { componentBackground, setComponentBackground } = useContext(
+    ComponentBackgroundContext
   );
   const nodes = useStoreState((store) => store.nodes);
   const { setCenter } = useZoomPanHelper();
@@ -179,6 +193,60 @@ const Navigation = () => {
               Suggest new feature
             </Button>
           </Actions>
+        </NavigationSection>
+        <NavigationSection title="Component Background">
+          <InfoParagraph>Determine how to colour the components.</InfoParagraph>
+          <Select
+            defaultValue={
+              !componentBackground.mode ? 'white' : componentBackground.mode
+            }
+            style={{
+              width: '100%',
+              padding: `0 ${baseUnit}px`,
+            }}
+            onChange={(value) =>
+              setComponentBackground({ ...componentBackground, mode: value })
+            }
+          >
+            <Select.Option value="white">White</Select.Option>
+            <Select.Option value="label_hash">
+              Based on Label Hash
+            </Select.Option>
+            <Select.Option value="loc_reference">
+              Based on Lines of Code
+            </Select.Option>
+          </Select>
+
+          {componentBackground.mode === 'loc_reference' && (
+            <div
+              style={{
+                width: '100%',
+                padding: `0 ${baseUnit}px`,
+                marginTop: `${baseUnit}px`,
+              }}
+            >
+              <Input
+                addonBefore={'Baseline'}
+                placeholder={'LOC Reference'}
+                defaultValue={componentBackground.locReference}
+                onChange={(e) => {
+                  if (e.target.value < 1) {
+                    setComponentBackground({
+                      ...componentBackground,
+                      locReference: 1,
+                    });
+                  } else {
+                    setComponentBackground({
+                      ...componentBackground,
+                      locReference: e.target.value,
+                    });
+                  }
+                }}
+                type="number"
+                min="1"
+              />
+            </div>
+          )}
         </NavigationSection>
       </Menu>
     </Sider>

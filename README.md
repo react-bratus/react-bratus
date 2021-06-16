@@ -83,6 +83,7 @@ Override default configuration by creating `.bratusrc.json` in the root director
 ## Changelog
 
 - 2.0.6
+  - Configurable component backgrounds
   - Improved logging
 - 2.0.5
   - Throws error if a circular reference is  found

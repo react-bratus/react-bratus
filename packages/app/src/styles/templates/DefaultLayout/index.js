@@ -15,6 +15,7 @@ const ContentWrapper = styled(Layout)`
   padding: 1rem;
   height: 100vh;
 `;
+
 const HelpButton = styled(Button)`
   position: absolute;
   bottom: ${baseUnit * 2}px;
@@ -52,6 +53,7 @@ const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
           setHideHelpOnStartUp={setHideHelpOnStartUp}
         />
       </ReactFlowProvider>
+
       <HelpButton
         type="primary"
         shape={'round'}
