@@ -15,7 +15,7 @@ class Graph {
   }
 
   public build(rootComponents: string[]): void {
-    ASTParser.logEntry(`[Info] Building graph`);
+    console.log(`[Info] Building graph`);
     rootComponents.forEach((rootComponentName) => {
       const component = this.componentMap.get(rootComponentName);
       if (component) {
@@ -52,10 +52,10 @@ class Graph {
             } and ${component.getElementName()}`
           );
           if (source.id.split(':').includes(component.getElementName())) {
-            throw new Error(
-              `Circular reference found when tring to create a link between ${
+            console.log(
+              `[Warning] Circular reference found when trying to create a link between ${
                 source.id
-              } to ${component.getElementName()} `
+              } to ${component.getElementName()}.`
             );
           }
           const target = this.createNode(
