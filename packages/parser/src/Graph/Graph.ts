@@ -57,24 +57,25 @@ class Graph {
                 source.id
               } to ${component.getElementName()}.`
             );
-          }
-          const target = this.createNode(
-            `${source.id}:${component.getElementName()}`,
-            {
-              label: component.getElementName(),
-              linesOfCode: component.getLinesOfCode(),
-              component: component,
-              code: component.code,
-              path: component.getPath(),
-              outDegree: 0,
-              inDegree: 0,
+          } else {
+            const target = this.createNode(
+              `${source.id}:${component.getElementName()}`,
+              {
+                label: component.getElementName(),
+                linesOfCode: component.getLinesOfCode(),
+                component: component,
+                code: component.code,
+                path: component.getPath(),
+                outDegree: 0,
+                inDegree: 0,
+              }
+            );
+            this.createEdge(source, target, element);
+            if (component.hasJSX()) {
+              component.getJSXElements().forEach((subElement) => {
+                this.buildComponentTree(target, subElement);
+              });
             }
-          );
-          this.createEdge(source, target, element);
-          if (component.hasJSX()) {
-            component.getJSXElements().forEach((subElement) => {
-              this.buildComponentTree(target, subElement);
-            });
           }
         } else {
           ASTParser.logEntry(
