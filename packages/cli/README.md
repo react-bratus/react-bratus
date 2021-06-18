@@ -82,6 +82,8 @@ Override default configuration by creating `.bratusrc.json` in the root director
 
 ## Changelog
 
+- 2.0.7
+  - Bug fix
 - 2.0.6
   - Configurable component backgrounds
   - Improved logging
