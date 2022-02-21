@@ -9,7 +9,7 @@ declare class ASTParser {
     private options;
     private static log;
     constructor(options: ParserOptions);
-    parse(): void;
+    parse(): Promise<void>;
     private writeDataToFile;
     getFilesAndDirectories(): Promise<string[]>;
     static peek<T>(array: T[]): T;

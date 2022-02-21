@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 
 import { getParsedData } from './api';
 import useLocale from './hooks/useLocale';
+import ComponentBackgroundProvider from './providers/ComponentBackgroundProvider';
 import HighlightedComponentsProvider from './providers/HighlightedComponentsProvider';
 import I18nWatchLocaleProvider from './providers/I18nWatchLocaleProvider';
 import ThemeProvider from './providers/ThemeProvider';
@@ -65,23 +66,25 @@ const App = () => {
       <I18nWatchLocaleProvider>
         <ThemeProvider>
           <HighlightedComponentsProvider>
-            <DefaultLayout
-              info={info}
-              nodeDetail={nodeDetail}
-              setNodeDetail={setNodeDetail}
-            >
-              {elements ? (
-                <ComponentTree elements={elements} />
-              ) : (
-                <Spin spinning={true}>
-                  <Alert
-                    message="Nothing to show"
-                    description="Could not find any components to display"
-                    type="warning"
-                  />
-                </Spin>
-              )}
-            </DefaultLayout>
+            <ComponentBackgroundProvider>
+              <DefaultLayout
+                info={info}
+                nodeDetail={nodeDetail}
+                setNodeDetail={setNodeDetail}
+              >
+                {elements ? (
+                  <ComponentTree elements={elements} />
+                ) : (
+                  <Spin spinning={true}>
+                    <Alert
+                      message="Nothing to show"
+                      description="Could not find any components to display"
+                      type="warning"
+                    />
+                  </Spin>
+                )}
+              </DefaultLayout>
+            </ComponentBackgroundProvider>
           </HighlightedComponentsProvider>
         </ThemeProvider>
       </I18nWatchLocaleProvider>

@@ -40,13 +40,15 @@ class Server {
             try {
                 const parserOptions = {
                     rootFolderPath: this.config.rootFolderPath,
-                    log: true,
+                    log: false,
                     rootComponents: this.config.rootComponents,
                     pathToSaveDir: this.config.pathToSaveDir,
                 };
                 const parser = new parser_1.default(parserOptions);
-                parser.parse();
-                res.status(200).send();
+                parser
+                    .parse()
+                    .then(() => res.status(200).send())
+                    .catch(() => res.status(500).send());
             }
             catch (error) {
                 console.log('An error occurred when parsing: ', error.message);

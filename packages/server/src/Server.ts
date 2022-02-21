@@ -48,13 +48,15 @@ class Server {
         try {
           const parserOptions: ParserOptions = {
             rootFolderPath: this.config.rootFolderPath,
-            log: true,
+            log: false,
             rootComponents: this.config.rootComponents,
             pathToSaveDir: this.config.pathToSaveDir,
           };
           const parser = new ASTParser(parserOptions);
-          parser.parse();
-          res.status(200).send();
+          parser
+            .parse()
+            .then(() => res.status(200).send())
+            .catch(() => res.status(500).send());
         } catch (error: any) {
           console.log('An error occurred when parsing: ', error.message);
           res.status(500).send(error.message);

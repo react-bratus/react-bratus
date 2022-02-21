@@ -2,6 +2,8 @@
 
 This is the react-bratus CLI tool. With this tool you can parse your react.js project and have your component tree visualised in a web app.
 
+See a demo of react-bratus [here](https://www.youtube.com/watch?v=GBzsOTrZ304)
+
 ## Disclaimer
 
 This tool is in development. Bugs may therefore occur and the parser might not include all components in your project.
@@ -80,6 +82,11 @@ Override default configuration by creating `.bratusrc.json` in the root director
 
 ## Changelog
 
+- 2.0.7
+  - Bug fix
+- 2.0.6
+  - Configurable component backgrounds
+  - Improved logging
 - 2.0.5
   - Throws error if a circular reference is  found
   - Minor bug fixes
