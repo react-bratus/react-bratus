@@ -4,7 +4,7 @@
 
 ## Code Formatting
 
-- **Prettier**: Main formatter. We discussed and approved that code should be always indented\
+- **Prettier**: Main code formatter. We discussed and approved that code should be always indented\
   before being pushed. In this way you can write consistent code, that everyone will understand.
 
 - **Spacing**: Let code blocks breathe. Always 1 empty line between CSS classes, different\
@@ -24,7 +24,7 @@
   Develop to Main with the working functionality.
 
 - **Individual Branches**:
-  Before working on a task, we will create a New Task in GH Projects, and convert\
+  Before working on a task, we will create a New Task in GitHub Projects, and convert\
   it to an issue. This issue is associated with a number. F.ex., #19. When you create\
   a new branch make sure you do it from Develop.
 
