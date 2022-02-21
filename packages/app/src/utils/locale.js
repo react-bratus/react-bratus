@@ -7,8 +7,16 @@ export const getUserLocale = () => {
     navigator.language ||
     navigator.userLanguage;
 
-  // Returns "en"
-  return languageCode.split('-')[0];
+  // language-code = primary-code ( "-" subcode )*
+  // Subcode is usually the Country Code
+  const langPrimaryCode = languageCode.split('-')[0];
+
+  const defaultEnLanguageFallback =
+    langPrimaryCode !== 'da' || langPrimaryCode !== 'en'
+      ? 'en'
+      : langPrimaryCode;
+
+  return defaultEnLanguageFallback;
 };
 
 export async function activate(locale) {
