@@ -5,8 +5,8 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "lerna run build && lerna link",
-    "link-cli": "cd packages/cli && yarn link"
+    "build": "lerna run build && mv ./packages/bratus-app/build ./packages/bratus-cli/bin/bratus-app && yarn run link-cli",
+    "link-cli": "cd packages/bratus-cli && yarn link"
   },
   "repository": {
     "type": "git",
