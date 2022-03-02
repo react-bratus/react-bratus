@@ -1,5 +1,5 @@
 {
     "extends": "./tsconfig.json",
-    "include": ["./packages/parser/**/*.ts", "./packages/cli/**/*.ts", "./packages/server/**/*.ts", ".eslintrc.js"],
-    "exclude": ["node_modules", "./packages/app/**/*"]
+    "include": ["./packages/bratus-cli/**/*.ts", ".eslintrc.js"],
+    "exclude": ["node_modules", "./packages/bratus-app/**/*"]
 }
