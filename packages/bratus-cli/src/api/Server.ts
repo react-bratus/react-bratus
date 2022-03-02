@@ -1,4 +1,4 @@
-import ASTParser from '@react-bratus/parser';
+import ASTParser from '../parser';
 import cors = require('cors');
 import express = require('express');
 import fs = require('fs');
@@ -23,7 +23,7 @@ class Server {
   public async listen(): Promise<void> {
     this.config = await this.getConfiguration();
     this.app.use(cors());
-    this.app.use(express.static(path.join(__dirname, '../bratus-app/build')));
+    this.app.use(express.static(path.join(__dirname, '../bratus-app')));
 
     this.app.get('/ping', (_req: express.Request, res: express.Response) => {
       const result = {
@@ -32,7 +32,7 @@ class Server {
       res.status(200).send(result);
     });
     this.app.get('/', (_req: express.Request, res: express.Response) => {
-      res.sendFile(path.join(__dirname, '../bratus-app/build', 'index.html'));
+      res.sendFile(path.join(__dirname, '../bratus-app', 'index.html'));
     });
     this.app.get(
       '/parsedData',
