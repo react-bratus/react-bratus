@@ -1,15 +1,26 @@
 import dagre from 'dagre';
 import { isNode } from 'react-flow-renderer';
 
-import { baseNodeHeight, nodeWidth } from '../styles/tokens/units';
+import { baseNodeHeight, nodeWidth } from '../tokens/units';
 
+/**
+ *
+ * @param {*} elements
+ * @param {*} direction The general orientation of the tree hierarchy. LR means that the tree will expand horizontally from Left to Right. Read more here: https://g6.antv.vision/en/docs/api/graphLayout/dagre
+ * @returns
+ */
 export const getLayoutedElements = (elements, direction = 'LR') => {
+  // building the graph
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
+  // boolean condition to identify if it's really horizontal.
   const isHorizontal = direction === 'LR';
+  // align DL was here. Remember to test it again.
+  // Graph is created with a horizontal direction.
   dagreGraph.setGraph({ rankdir: direction });
   const aditionalSpaceMultiplier = 2;
 
+  console.log('elements', elements);
   elements.forEach((el) => {
     if (isNode(el)) {
       dagreGraph.setNode(el.id, {
@@ -26,6 +37,7 @@ export const getLayoutedElements = (elements, direction = 'LR') => {
   return elements.map((el) => {
     if (isNode(el)) {
       const nodeWithPosition = dagreGraph.node(el.id);
+      console.log(isHorizontal);
       el.targetPosition = isHorizontal ? 'left' : 'top';
       el.sourcePosition = isHorizontal ? 'right' : 'bottom';
 

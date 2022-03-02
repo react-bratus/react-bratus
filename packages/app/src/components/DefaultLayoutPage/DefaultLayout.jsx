@@ -1,40 +1,33 @@
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { Button, Drawer, Layout } from 'antd';
+import { Drawer as ComponentDetailsDrawer, Layout } from 'antd';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { ReactFlowProvider } from 'react-flow-renderer';
-import styled from 'styled-components';
 
-import useStickyState from '../../../hooks/useStickyState';
-import Help from '../../molecules/Help';
-import Navigation from '../../molecules/Navigation';
-import NodeDetail from '../../molecules/NodeDetail';
-import { baseUnit, navigationWidth } from '../../tokens/units';
-const ContentWrapper = styled(Layout)`
-  margin-left: ${navigationWidth}px;
-  padding: 1rem;
-  height: 100vh;
-`;
+import useStickyState from '../../hooks/useStickyState';
+import ComponentDetails from '../ComponentDetails/ComponentDetails';
+import HelpPanel from '../HelpPanel/HelpPanel';
+import Navigation from '../NavigationPanel/NavigationPanel';
+import { HelpPanelButton, MainContentWrapper } from './DefaultLayout.sc';
 
-const HelpButton = styled(Button)`
-  position: absolute;
-  bottom: ${baseUnit * 2}px;
-  left: ${baseUnit * 2}px;
-`;
 const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
   const [hideHelpOnStartUp, setHideHelpOnStartUp] = useStickyState(
     false,
     'react-bratus:hide-help'
   );
+
   const [isHelpVisible, setIsHelpVisible] = useState(
     !hideHelpOnStartUp ? true : false
   );
+
   return (
     <Layout>
       <ReactFlowProvider>
         <Navigation info={info} />
-        <ContentWrapper>{children}</ContentWrapper>
-        <Drawer
+
+        <MainContentWrapper>{children}</MainContentWrapper>
+
+        <ComponentDetailsDrawer
           width={800}
           visible={nodeDetail.visible}
           closable={true}
@@ -42,11 +35,12 @@ const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
           onClose={() => setNodeDetail({ visible: false, node: null })}
           title={nodeDetail.node ? nodeDetail.node.data.label : ''}
         >
-          <NodeDetail nodeDetail={nodeDetail} />
-        </Drawer>
+          <ComponentDetails nodeDetail={nodeDetail} />
+        </ComponentDetailsDrawer>
       </ReactFlowProvider>
+
       <ReactFlowProvider>
-        <Help
+        <HelpPanel
           isHelpVisible={isHelpVisible}
           setIsHelpVisible={setIsHelpVisible}
           hideHelpOnStartUp={hideHelpOnStartUp}
@@ -54,7 +48,7 @@ const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
         />
       </ReactFlowProvider>
 
-      <HelpButton
+      <HelpPanelButton
         type="primary"
         shape={'round'}
         size="large"
@@ -62,7 +56,7 @@ const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
         onClick={() => setIsHelpVisible(true)}
       >
         Open help
-      </HelpButton>
+      </HelpPanelButton>
     </Layout>
   );
 };
