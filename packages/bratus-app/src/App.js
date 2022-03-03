@@ -6,13 +6,16 @@ import { Alert, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import { getParsedData } from './api';
+
 import ComponentTree from './components/ComponentTree/ComponentTree';
 import DefaultLayout from './components/DefaultLayoutPage/DefaultLayout';
+
 import useLocale from './hooks/useLocale';
 import ComponentBackgroundProvider from './providers/ComponentBackgroundProvider';
 import HighlightedComponentsProvider from './providers/HighlightedComponentsProvider';
 import I18nWatchLocaleProvider from './providers/I18nWatchLocaleProvider';
 import ThemeProvider from './providers/ThemeProvider';
+
 import { activate } from './utils/functions';
 import { getLayoutedElements } from './utils/functions/graphUtils';
 
