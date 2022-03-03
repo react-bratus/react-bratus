@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-import ASTParser from '@react-bratus/parser';
-import Server from '@react-bratus/server';
 import { program } from 'commander';
 import * as fs from 'fs';
+
+import Server from './api';
+import ASTParser from './parser';
 
 const packageJson = require('../package.json');
 
