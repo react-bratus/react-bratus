@@ -1,54 +1,29 @@
-import {
-  EyeOutlined,
-  LockOutlined,
-  NumberOutlined,
-  UnlockOutlined,
-} from '@ant-design/icons';
-import { Col, Row } from 'antd';
-import Text from 'antd/lib/typography/Text';
-import Title from 'antd/lib/typography/Title';
+import { Row } from 'antd';
 import ColorHash from 'color-hash';
 import React, { useContext } from 'react';
 import { Handle, useStoreActions, useStoreState } from 'react-flow-renderer';
-import styled from 'styled-components';
 
-import ComponentBackgroundContext from '../../../contexts/ComponentBackgroundContext';
-import HighlightedComponentsContext from '../../../contexts/HighlightedComponentsContext';
-import { rgbaToHex } from '../../../utils/rgbaToHex';
+import ComponentBackgroundContext from '../../contexts/ComponentBackgroundContext';
+import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
+import { rgbaToHex } from '../../utils/functions/rgbaToHex';
 import {
-  baseNodeHeight,
-  baseUnit,
-  borderRadius,
-  nodeWidth,
-} from '../../tokens/units';
-const StyledNode = styled.div`
-  height: ${({ linesOfCode }) => baseNodeHeight + linesOfCode}px;
-  width: ${nodeWidth}px;
-  padding: ${baseUnit}px;
-  border-radius: ${borderRadius}px;
-  border: ${({ isHighlighted, isLocked }) => {
-    if (!isHighlighted) {
-      return '1px solid black';
-    } else {
-      return isLocked ? '3px solid black' : '5px solid red';
-    }
-  }};
-  background-color: ${({ bgColor }) => bgColor};
-  color: ${({ fontColor }) => fontColor};
-  position: relative;
-`;
+  EyeIcon,
+  LockIcon,
+  NodeButtonsRow,
+  NodeContentRow,
+  StyledNode,
+  StyledNodeContent,
+  StyledTitle,
+  TimeUsedText,
+  UnlockIcon,
+} from './ComponentNode.sc';
 
-const NodeContent = styled(Col)`
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-`;
 const ComponentNode = (node) => {
   const { highlightedComponents, setHighlightedComponents } = useContext(
     HighlightedComponentsContext
   );
-  const { componentBackground } = useContext(ComponentBackgroundContext);
   const nodes = useStoreState((store) => store.nodes);
+  const { componentBackground } = useContext(ComponentBackgroundContext);
   const setSelectedElements = useStoreActions(
     (actions) => actions.setSelectedElements
   );
@@ -57,6 +32,7 @@ const ComponentNode = (node) => {
     const index = highlightedComponents.findIndex(
       (component) => component.id === node.id
     );
+
     const array = [...highlightedComponents];
     if (index !== -1 && highlightedComponents[index].locked) {
       array.splice(index, 1);
@@ -75,6 +51,7 @@ const ComponentNode = (node) => {
       setSelectedElements(nodes.filter((_node) => _node.id.includes(node.id)));
     }
   };
+
   const isHighlighted = () => {
     return highlightedComponents.some((component) =>
       node.id.match(
@@ -82,6 +59,7 @@ const ComponentNode = (node) => {
       )
     );
   };
+
   const isLocked = () => {
     return highlightedComponents.some(
       (component) =>
@@ -102,7 +80,6 @@ const ComponentNode = (node) => {
         lightness: 0.8,
         hue: { min: 0, max: 366 },
       }).hex(node.data.label);
-
       return hex;
     } else if (componentBackground.mode === 'loc_reference') {
       return rgbaToHex(
@@ -116,6 +93,7 @@ const ComponentNode = (node) => {
       return '#FFFFFFFF';
     }
   };
+
   const getFontColor = () => {
     const bgColor = getBgColor();
     const color =
@@ -127,6 +105,7 @@ const ComponentNode = (node) => {
     const b = parseInt(color.substring(4, 6), 16); // hexToB
     return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? '#000' : '#fff';
   };
+
   return (
     <StyledNode
       linesOfCode={node.data.linesOfCode}
@@ -136,7 +115,7 @@ const ComponentNode = (node) => {
       fontColor={getFontColor()}
     >
       {node.data.inDegree > 0 && <Handle type="target" position="left" />}
-      <div
+      {/* <div
         style={{
           position: 'absolute',
           zIndex: -1,
@@ -146,51 +125,36 @@ const ComponentNode = (node) => {
           width: '100%',
           backgroundColor: 'white',
         }}
-      />
-      <NodeContent>
+      /> */}
+
+      <StyledNodeContent>
         <Row>
-          <Title style={{ color: getFontColor() }} level={5}>
+          <StyledTitle color={getFontColor} level={5}>
             {node.data.label}
-          </Title>
+          </StyledTitle>
         </Row>
-        <Row style={{ flexGrow: 1, paddingTop: '12px' }} justify="center">
+
+        <NodeContentRow>
           {node.data.component.timesUsed > 1 && (
             <>
-              <NumberOutlined
-                style={{ fontSize: '18px', color: getFontColor() }}
-              />
-              <Text
-                style={{
-                  fontSize: '18px',
-                  lineHeight: '18px',
-                  color: getFontColor(),
-                }}
-              >
-                used: {node.data.component.timesUsed}
-              </Text>
+              <TimeUsedText color={getFontColor}>
+                # used: {node.data.component.timesUsed}
+              </TimeUsedText>
             </>
           )}
-        </Row>
+        </NodeContentRow>
+
         {isHighlighted() && (
-          <Row align="middle" justify="space-between">
+          <NodeButtonsRow>
             {isLocked() ? (
-              <LockOutlined
-                onClick={lockComponent}
-                style={{ fontSize: '24px', cursor: 'pointer' }}
-              />
+              <LockIcon onClick={lockComponent} />
             ) : (
-              <UnlockOutlined
-                onClick={lockComponent}
-                style={{ fontSize: '24px', cursor: 'pointer' }}
-              />
+              <UnlockIcon onClick={lockComponent} />
             )}
-            <EyeOutlined
-              onClick={() => node.data.onShowNodeDetail(node)}
-              style={{ fontSize: '24px', cursor: 'pointer' }}
-            />
-          </Row>
+            <EyeIcon onClick={() => node.data.onShowNodeDetail(node)} />
+          </NodeButtonsRow>
         )}
-      </NodeContent>
+      </StyledNodeContent>
 
       {node.data.outDegree > 0 && <Handle type="source" position="right" />}
     </StyledNode>

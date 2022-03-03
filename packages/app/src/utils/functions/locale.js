@@ -20,7 +20,7 @@ export const getUserLocale = () => {
 };
 
 export async function activate(locale) {
-  const { messages } = await import(`../locales/${locale}/messages.js`);
+  const { messages } = await import(`../../locales/${locale}/messages.js`);
   i18n.load(locale, messages);
   i18n.activate(locale);
 }

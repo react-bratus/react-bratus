@@ -1,11 +1,11 @@
-import ColorHash from 'color-hash';
+// import ColorHash from 'color-hash';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import ReactFlow, { Controls } from 'react-flow-renderer';
+import ReactFlow, { Controls as ZoomControlButtons } from 'react-flow-renderer';
 
-import HighlightedComponentsContext from '../../../contexts/HighlightedComponentsContext';
-import ComponentNode from '../../atoms/ComponentNode';
-import MiniMap from '../../atoms/MiniMap';
+// import StyledMiniMap from '../Minimap/Minimap.sc';
+import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
+import ComponentNode from '../ComponentNode/ComponentNode';
 
 const ComponentTree = ({ elements }) => {
   const { highlightedComponents, setHighlightedComponents } = useContext(
@@ -41,13 +41,30 @@ const ComponentTree = ({ elements }) => {
 
   const resetHighlight = () => setHighlightedComponents([]);
 
-  const isHighlighted = (node) => {
-    return highlightedComponents.some((component) =>
-      node.id.match(
-        `${component.componentName}:+.+|${component.componentName}$`
-      )
-    );
-  };
+  // const isHighlighted = (node) => {
+  //   return highlightedComponents.some((component) =>
+  //     node.id.match(
+  //       `${component.componentName}:+.+|${component.componentName}$`
+  //     )
+  //   );
+  // };
+
+  /**
+   * Coloring the minimap nodes.
+   * @param {*} node: Visual Representation of the component nodes
+   * @returns {color} Red if it's highlighted, colorhash otherwise
+   */
+  // const defineMinimapColor = (node) => {
+  //   if (isHighlighted(node)) {
+  //     return 'red';
+  //   } else {
+  //     return new ColorHash({
+  //       lightness: 0.8,
+  //       hue: { min: 0, max: 366 },
+  //     }).hex(node.data.label);
+  //   }
+  // };
+
   return (
     <>
       {elements && (
@@ -58,20 +75,9 @@ const ComponentTree = ({ elements }) => {
           onNodeMouseLeave={(_e, node) => removeHighlight(node)}
           onPaneClick={resetHighlight}
         >
-          <MiniMap
-            style={{ minWidth: '300px', minHeight: '300px' }}
-            nodeColor={(node) => {
-              if (isHighlighted(node)) {
-                return 'red';
-              } else {
-                return new ColorHash({
-                  lightness: 0.8,
-                  hue: { min: 0, max: 366 },
-                }).hex(node.data.label);
-              }
-            }}
-          />
-          <Controls />
+          {/* <StyledMiniMap nodeColor={defineMinimapColor} /> */}
+
+          <ZoomControlButtons />
         </ReactFlow>
       )}
     </>
