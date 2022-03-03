@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { getUserLocale } from '../utils';
+import { getUserLocale } from '../utils/functions';
 
 const LOCAL_STORAGE_KEY = 'react-bratus:settings:locale';
 
