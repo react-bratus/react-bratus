@@ -184,9 +184,19 @@ class ASTParser {
               ASTParser.logEntry(`[Info] Open jsxElement`);
               jsxElement.open(node);
             } else {
+              if (node.name.type === 'JSXIdentifier') {
+                if (
+                  jsxElement.isRoute() &&
+                  attribute.getElementName() === 'element'
+                ) {
+                  jsxElement.isRouteElement = true;
+                  jsxElement.setName(node.name.name);
+                }
+              }
               if (
-                jsxElement.isRoute() &&
-                attribute.getElementName() == 'render'
+                (jsxElement.isRoute() &&
+                  attribute.getElementName() === 'render') ||
+                attribute.getElementName() === 'element'
               ) {
                 ASTParser.logEntry(
                   `[Info] Open jsxElement within render attribute. Resetting identifier`
