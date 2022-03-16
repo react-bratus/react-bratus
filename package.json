@@ -7,7 +7,7 @@
   "scripts": {
     "build": "yarn run remove-builds && lerna run build && yarn run move-app-build ",
     "move-app-build": "mv ./packages/bratus-app/build ./packages/bratus-cli/bin/bratus-app",
-    "remove-builds": "rm -rf ./packages/bratus-cli/bin && rm -rf ./packages/bratus-app/build",
+    "remove-builds": "rm -rf ./packages/bratus-cli/bin/bratus-app && rm -rf ./packages/bratus-app/build",
     "link-cli": "cd packages/bratus-cli && npm link"
   },
   "repository": {
