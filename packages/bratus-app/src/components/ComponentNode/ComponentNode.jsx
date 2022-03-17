@@ -10,11 +10,9 @@ import {
   EyeIcon,
   LockIcon,
   NodeButtonsRow,
-  NodeContentRow,
   StyledNode,
   StyledNodeContent,
   StyledTitle,
-  TimeUsedText,
   UnlockIcon,
 } from './ComponentNode.sc';
 
@@ -133,16 +131,6 @@ const ComponentNode = (node) => {
             {node.data.label}
           </StyledTitle>
         </Row>
-
-        <NodeContentRow>
-          {node.data.component.timesUsed > 1 && (
-            <>
-              <TimeUsedText color={getFontColor}>
-                # used: {node.data.component.timesUsed}
-              </TimeUsedText>
-            </>
-          )}
-        </NodeContentRow>
 
         {isHighlighted() && (
           <NodeButtonsRow>
