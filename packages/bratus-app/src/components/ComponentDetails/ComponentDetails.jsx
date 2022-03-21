@@ -30,7 +30,11 @@ const ComponentDetails = ({ nodeDetail }) => {
 
         <Title level={5}>Code</Title>
 
-        <SyntaxHighlighter style={vscDarkPlus} language="javascript">
+        <SyntaxHighlighter
+          style={vscDarkPlus}
+          showLineNumbers={true}
+          language="javascript"
+        >
           {nodeDetail.node.data.code}
         </SyntaxHighlighter>
       </ComponentDetailsRow>

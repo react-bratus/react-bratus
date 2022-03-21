@@ -28,6 +28,8 @@ const ComponentNode = (node) => {
     (actions) => actions.setSelectedElements
   );
 
+  // console.log(direction);
+
   const lockComponent = () => {
     const index = highlightedComponents.findIndex(
       (component) => component.id === node.id
@@ -114,18 +116,7 @@ const ComponentNode = (node) => {
       bgColor={getBgColor}
       fontColor={getFontColor()}
     >
-      {node.data.inDegree > 0 && <Handle type="target" position="left" />}
-      {/* <div
-        style={{
-          position: 'absolute',
-          zIndex: -1,
-          top: 0,
-          left: 0,
-          height: '100%',
-          width: '100%',
-          backgroundColor: 'white',
-        }}
-      /> */}
+      {node.data.inDegree > 0 && <Handle type="target" position="top" />}
 
       <StyledNodeContent>
         <Row>
@@ -156,7 +147,7 @@ const ComponentNode = (node) => {
         )}
       </StyledNodeContent>
 
-      {node.data.outDegree > 0 && <Handle type="source" position="right" />}
+      {node.data.outDegree > 0 && <Handle type="source" position="bottom" />}
     </StyledNode>
   );
 };

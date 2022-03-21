@@ -5,9 +5,10 @@ import React, { useContext, useState } from 'react';
 import ReactFlow from 'react-flow-renderer';
 
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
-import { getLayoutedElements } from '../../utils/functions/graphUtils';
+// import { getLayoutedElements } from '../../utils/functions/graphUtils';
+// import { GraphLabels } from '../../utils/tokens/constants';
 import ComponentNode from '../ComponentNode/ComponentNode';
-import { Elements } from './HelpPanel.mock-data';
+// import { Elements } from './HelpPanel.mock-data';
 import { HelpPanelTreeWrapper } from './HelpPanel.sc';
 const { Title, Paragraph, Link } = Typography;
 
@@ -65,7 +66,7 @@ const HelpPanel = ({
 
       <HelpPanelTreeWrapper>
         <ReactFlow
-          elements={getLayoutedElements(Elements)}
+          // elements={getLayoutedElements(Elements, GraphLabels.leftToRight)}
           nodeTypes={{ reactComponent: ComponentNode }}
           onNodeMouseEnter={(_e, node) => highlightComponent(node)}
           onNodeMouseLeave={(_e, node) => removeHighlight(node)}

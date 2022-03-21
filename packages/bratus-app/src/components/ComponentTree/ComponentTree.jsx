@@ -1,16 +1,25 @@
+import ReactFlow, {
+  Controls as ZoomControlButtons,
+  ReactFlowProvider,
+} from 'react-flow-renderer';
 // import ColorHash from 'color-hash';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import ReactFlow, { Controls as ZoomControlButtons } from 'react-flow-renderer';
 
 // import StyledMiniMap from '../Minimap/Minimap.sc';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
 import ComponentNode from '../ComponentNode/ComponentNode';
+// import { getLayoutedElements } from '../../utils/functions/graphUtils';
+// import { GraphLabels } from '../../utils/tokens/constants';
 
-const ComponentTree = ({ elements }) => {
+const ComponentTree = ({ nodesAndEdges, direction }) => {
   const { highlightedComponents, setHighlightedComponents } = useContext(
     HighlightedComponentsContext
   );
+
+  console.log(direction);
+
+  const onLoadTree = (reactFlowInstance) => reactFlowInstance.fitView();
 
   const highlightComponent = (node) => {
     const componentName = node ? node.data.label : null;
@@ -67,25 +76,33 @@ const ComponentTree = ({ elements }) => {
 
   return (
     <>
-      {elements && (
-        <ReactFlow
-          elements={elements}
-          nodeTypes={{ reactComponent: ComponentNode }}
-          onNodeMouseEnter={(_e, node) => highlightComponent(node, false)}
-          onNodeMouseLeave={(_e, node) => removeHighlight(node)}
-          onPaneClick={resetHighlight}
-        >
-          {/* <StyledMiniMap nodeColor={defineMinimapColor} /> */}
+      {nodesAndEdges && (
+        <ReactFlowProvider>
+          {/* https://reactflow.dev/docs/api/component-props/ */}
+          <ReactFlow
+            onLoad={onLoadTree}
+            elements={nodesAndEdges}
+            nodeTypes={{ reactComponent: ComponentNode }}
+            onNodeMouseEnter={(_e, node) => highlightComponent(node, false)}
+            onNodeMouseLeave={(_e, node) => removeHighlight(node)}
+            onPaneClick={resetHighlight}
+            panOnScroll={true}
+            minZoom={0}
+            defaultZoom={0}
+          >
+            {/* <StyledMiniMap nodeColor={defineMinimapColor} /> */}
 
-          <ZoomControlButtons />
-        </ReactFlow>
+            <ZoomControlButtons />
+          </ReactFlow>
+        </ReactFlowProvider>
       )}
     </>
   );
 };
 
 ComponentTree.propTypes = {
-  elements: PropTypes.any,
+  nodesAndEdges: PropTypes.any,
+  direction: PropTypes.any,
 };
 
 export default ComponentTree;

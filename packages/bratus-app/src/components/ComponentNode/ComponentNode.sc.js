@@ -7,21 +7,18 @@ import styled, { css } from 'styled-components';
 import {
   baseNodeHeight,
   baseUnit,
-  borderRadius,
+  // borderRadius,
   nodeWidth,
 } from '../../utils/tokens/units';
 
 export const StyledNode = styled.div`
-  height: ${({ linesOfCode }) => baseNodeHeight + linesOfCode}px;
+  /* height: ${({ linesOfCode }) => baseNodeHeight + linesOfCode}px; */
+  height: 100px;
   width: ${nodeWidth}px;
   padding: ${baseUnit}px;
-  border-radius: ${borderRadius}px;
+  border-radius: 100px;
   border: ${({ isHighlighted, isLocked }) => {
-    if (!isHighlighted) {
-      return '1px solid black';
-    } else {
-      return isLocked ? '3px solid black' : '5px solid red';
-    }
+    return isHighlighted || isLocked ? '3px solid black' : '1px solid black';
   }};
   background-color: ${({ bgColor }) => bgColor};
   color: ${({ fontColor }) => fontColor};
@@ -40,6 +37,7 @@ export const StyledNodeContent = styled(Col)`
   height: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 export const NodeContentRow = styled(Row)`
