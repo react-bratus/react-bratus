@@ -1,23 +1,40 @@
 import ReactFlow, {
   Controls as ZoomControlButtons,
   ReactFlowProvider,
+  addEdge,
 } from 'react-flow-renderer';
-// import ColorHash from 'color-hash';
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
-
-// import StyledMiniMap from '../Minimap/Minimap.sc';
+import React, { useContext, useState } from 'react';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
 import ComponentNode from '../ComponentNode/ComponentNode';
-// import { getLayoutedElements } from '../../utils/functions/graphUtils';
-// import { GraphLabels } from '../../utils/tokens/constants';
+// import { getLayoutedGraphElements } from '../../utils/functions/graphUtils';
+// import {
+//   LayoutButton,
+//   LayoutButtonsWrapper,
+//   StyledFontAwesomeIcon,
+// } from './ComponentTree.sc';
+// import {
+//   faGripHorizontal,
+//   faGripVertical,
+// } from '@fortawesome/free-solid-svg-icons';
+import LayoutButtons from './private/LayoutButtons';
 
-const ComponentTree = ({ nodesAndEdges, direction }) => {
+export const GraphDirectionContext = React.createContext(null);
+
+const ComponentTree = ({
+  nodesAndEdges,
+  treeLayoutDirection,
+  setTreeLayoutDirection,
+}) => {
+  const [elements, setElements] = useState(nodesAndEdges);
+
   const { highlightedComponents, setHighlightedComponents } = useContext(
     HighlightedComponentsContext
   );
 
-  console.log(direction);
+  const onConnectElements = (params) => {
+    setElements((elements) => addEdge({ ...params }, elements));
+  };
 
   const onLoadTree = (reactFlowInstance) => reactFlowInstance.fitView();
 
@@ -50,51 +67,33 @@ const ComponentTree = ({ nodesAndEdges, direction }) => {
 
   const resetHighlight = () => setHighlightedComponents([]);
 
-  // const isHighlighted = (node) => {
-  //   return highlightedComponents.some((component) =>
-  //     node.id.match(
-  //       `${component.componentName}:+.+|${component.componentName}$`
-  //     )
-  //   );
-  // };
-
-  /**
-   * Coloring the minimap nodes.
-   * @param {*} node: Visual Representation of the component nodes
-   * @returns {color} Red if it's highlighted, colorhash otherwise
-   */
-  // const defineMinimapColor = (node) => {
-  //   if (isHighlighted(node)) {
-  //     return 'red';
-  //   } else {
-  //     return new ColorHash({
-  //       lightness: 0.8,
-  //       hue: { min: 0, max: 366 },
-  //     }).hex(node.data.label);
-  //   }
-  // };
-
   return (
     <>
       {nodesAndEdges && (
-        <ReactFlowProvider>
-          {/* https://reactflow.dev/docs/api/component-props/ */}
-          <ReactFlow
-            onLoad={onLoadTree}
-            elements={nodesAndEdges}
-            nodeTypes={{ reactComponent: ComponentNode }}
-            onNodeMouseEnter={(_e, node) => highlightComponent(node, false)}
-            onNodeMouseLeave={(_e, node) => removeHighlight(node)}
-            onPaneClick={resetHighlight}
-            panOnScroll={true}
-            minZoom={0}
-            defaultZoom={0}
-          >
-            {/* <StyledMiniMap nodeColor={defineMinimapColor} /> */}
-
-            <ZoomControlButtons />
-          </ReactFlow>
-        </ReactFlowProvider>
+        <GraphDirectionContext.Provider value={treeLayoutDirection}>
+          <ReactFlowProvider>
+            <LayoutButtons
+              setTreeLayoutDirection={setTreeLayoutDirection}
+              elements={elements}
+              setElements={setElements}
+              onLoadtree={onLoadTree}
+            />
+            <ReactFlow
+              onLoad={onLoadTree}
+              elements={elements}
+              onConnect={onConnectElements}
+              nodeTypes={{ reactComponent: ComponentNode }}
+              onNodeMouseEnter={(_e, node) => highlightComponent(node, false)}
+              onNodeMouseLeave={(_e, node) => removeHighlight(node)}
+              onPaneClick={resetHighlight}
+              panOnScroll={true}
+              minZoom={0}
+              defaultZoom={0}
+            >
+              <ZoomControlButtons />
+            </ReactFlow>
+          </ReactFlowProvider>
+        </GraphDirectionContext.Provider>
       )}
     </>
   );
@@ -102,7 +101,8 @@ const ComponentTree = ({ nodesAndEdges, direction }) => {
 
 ComponentTree.propTypes = {
   nodesAndEdges: PropTypes.any,
-  direction: PropTypes.any,
+  treeLayoutDirection: PropTypes.any,
+  setTreeLayoutDirection: PropTypes.any,
 };
 
 export default ComponentTree;

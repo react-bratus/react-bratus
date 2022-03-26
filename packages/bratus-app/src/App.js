@@ -17,7 +17,7 @@ import { activate } from './utils/functions';
 
 import { ReactFlowProvider } from 'react-flow-renderer';
 import { getEdges, getNodes } from './utils/functions/nodes-and-edges';
-import { getLayoutedElements } from './utils/functions/graphUtils';
+import { getLayoutedGraphElements } from './utils/functions/graphUtils';
 import { GraphLabels } from './utils/tokens/constants';
 
 const App = () => {
@@ -25,7 +25,7 @@ const App = () => {
   const [nodesAndEdges, setNodesAndEdges] = useState(null);
   const [nodeDetail, setNodeDetail] = useState({ visible: false, node: null });
   const [info, setInfo] = useState(null);
-  const [direction, setDirection] = useState('');
+  const [treeLayoutDirection, setTreeLayoutDirection] = useState(undefined);
 
   useEffect(() => {
     activate(locale);
@@ -44,17 +44,15 @@ const App = () => {
         let tree = [];
 
         setNodesAndEdges(
-          getLayoutedElements(
+          getLayoutedGraphElements(
             tree.concat(nodes, edges),
             GraphLabels.topToBottom,
-            setDirection
+            setTreeLayoutDirection
           )
         );
       })
       .catch(console.log);
   }, [locale]);
-
-  console.log(direction);
 
   return (
     <I18nProvider i18n={i18n}>
@@ -70,8 +68,9 @@ const App = () => {
                 >
                   {nodesAndEdges ? (
                     <ComponentTree
-                      direction={direction}
+                      treeLayoutDirection={treeLayoutDirection}
                       nodesAndEdges={nodesAndEdges}
+                      setTreeLayoutDirection={setTreeLayoutDirection}
                     />
                   ) : (
                     <Spin spinning={true}>

@@ -1,94 +1,74 @@
 import dagre from 'dagre';
 import { isEdge, isNode } from 'react-flow-renderer';
-
 import { GraphLabels } from '../tokens/constants';
 import { baseNodeHeight, nodeWidth } from '../tokens/units';
 
 var aditionalSpaceMultiplier = 2;
 
+const dagreGraph = new dagre.graphlib.Graph();
+
+dagreGraph.setDefaultEdgeLabel(() => ({}));
+
 /**
- * @param {*} nodesAndEdges are the elements that we need to position
- * @param {*} dagreGraph is the graph that we retrieve
- * @var width is the horizontal spacing between the nodes
- * @var height is the vertical spacing between the nodes
- * @returns
+ * @param {*} nodesAndEdges the nodes and edges of the tree.
+ * @param {*} treeLayoutDirection The layout direction of the tree. Read more here: https://g6.antv.vision/en/docs/api/graphLayout/dagre. It is set to a value, as this is the way JS understands optional params.
+ * @param {*} setTreeLayoutDirection Setting the direction state, to use it for handles positioning
+ * @function setDefaultEdgeLabel Default to assigning a new object as a label for each new edge.
+ * @function setGraph Sets an object for the graph label
+ * @function el.position Stephan: Unfortunately we need this little hack to pass a slighltiy different position to notify react flow about the change. More over we are shifting the dagre node position (anchor=center center) to the top left so it matches the react flow node anchor point (top left).
+ * @returns the node elements.
  */
-const positionElements = (nodesAndEdges, dagreGraph, direction) => {
-  return nodesAndEdges.forEach((el) => {
-    if (isNode(el)) {
-      if (direction === GraphLabels.topToBottom) {
-        dagreGraph.setNode(el.id, {
+export const getLayoutedGraphElements = (
+  nodesAndEdges,
+  treeLayoutDirection = 'TB',
+  setTreeLayoutDirection = () => {}
+) => {
+  dagreGraph.setGraph({ rankdir: treeLayoutDirection });
+
+  const isHorizontalLayout = treeLayoutDirection === 'LR';
+
+  nodesAndEdges.forEach((graphElement) => {
+    if (isNode(graphElement)) {
+      if (treeLayoutDirection === GraphLabels.topToBottom) {
+        dagreGraph.setNode(graphElement.id, {
           width: nodeWidth,
           height: baseNodeHeight * aditionalSpaceMultiplier,
         });
       }
 
-      if (direction == GraphLabels.leftToRight) {
-        dagreGraph.setNode(el.id, {
+      if (treeLayoutDirection == GraphLabels.leftToRight) {
+        dagreGraph.setNode(graphElement.id, {
           width: nodeWidth * aditionalSpaceMultiplier,
           height: baseNodeHeight,
         });
       }
     }
 
-    if (isEdge(el)) {
-      dagreGraph.setEdge(el.source, el.target);
+    if (isEdge(graphElement)) {
+      dagreGraph.setEdge(graphElement.source, graphElement.target);
     }
   });
-};
-
-export const getGraph = () => {
-  const dagreGraph = new dagre.graphlib.Graph(); // building the graph
-  return dagreGraph;
-};
-
-/**
- * @param {*} nodesAndEdges the nodes and edges of the tree.
- * @param {*} direction The scaling direction of the tree. Read more here: https://g6.antv.vision/en/docs/api/graphLayout/dagre
- * @function setDefaultEdgeLabel Default to assigning a new object as a label for each new edge.
- * @function setGraph Sets an object for the graph label
- * @function el.position Stephan: Unfortunately we need this little hack to pass a slighltiy different position to notify react flow about the change. More over we are shifting the dagre node position (anchor=center center) to the top left so it matches the react flow node anchor point (top left).
- * @returns the node elements.
- */
-export const getLayoutedElements = (nodesAndEdges, direction, setDirection) => {
-  const dagreGraph = getGraph();
-
-  dagreGraph.setDefaultEdgeLabel(() => ({}));
-  dagreGraph.setGraph({ rankdir: direction });
-
-  positionElements(nodesAndEdges, dagreGraph, direction);
 
   dagre.layout(dagreGraph);
 
-  // not sure if we need this thingy here
-  setDirection(direction);
+  setTreeLayoutDirection(treeLayoutDirection);
 
-  return nodesAndEdges.map((el) => {
-    if (isNode(el)) {
-      const nodeWithPosition = dagreGraph.node(el.id);
-      // Vertical Layout
-      if (direction == GraphLabels.leftToRight) {
-        el.position = {
-          x:
-            nodeWithPosition.x -
-            (nodeWidth * aditionalSpaceMultiplier) / 2 +
-            Math.random() / 1000,
-          y: nodeWithPosition.y - 36 / 2,
-        };
-      }
+  return nodesAndEdges.map((graphElement) => {
+    if (isNode(graphElement)) {
+      const nodeWithPosition = dagreGraph.node(graphElement.id);
 
-      // Horizontal Layout
-      if (direction == GraphLabels.topToBottom) {
-        el.position = {
-          x:
-            nodeWithPosition.x -
-            (nodeWidth * aditionalSpaceMultiplier) / 2 +
-            Math.random() / 1000,
-          y: nodeWithPosition.y - 36 / 2,
-        };
-      }
+      graphElement.targetPosition = isHorizontalLayout ? 'left' : 'top';
+      graphElement.sourcePosition = isHorizontalLayout ? 'right' : 'bottom';
+
+      graphElement.position = {
+        x:
+          nodeWithPosition.x -
+          (nodeWidth * aditionalSpaceMultiplier) / 2 +
+          Math.random() / 1000,
+        y: nodeWithPosition.y - 36 / 2,
+      };
     }
 
-    return el;
+    return graphElement;
   });
 };
