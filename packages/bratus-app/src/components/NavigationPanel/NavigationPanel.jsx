@@ -88,79 +88,96 @@ const Navigation = () => {
       );
     }
   };
+
+  const [collapsed, setCollapsed] = useState(true);
+
   return (
-    <NavigationSider width={navigationWidth}>
-      <AppTitle level={1}>React-bratus</AppTitle>
+    <>
+      <NavigationSider
+        collapsed={collapsed}
+        collapsedWidth={0}
+        trigger={null}
+        width={navigationWidth}
+      >
+        <AppTitle level={1}>React-bratus</AppTitle>
 
-      <Menu theme="dark" mode="inline">
-        <NavigationSection title="Search">
-          <TreeComponentDropdown
-            showSearch
-            value={searchField}
-            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            placeholder="Search components"
-            onChange={onChange}
-            treeDataSimpleMode
-            treeDefaultExpandAll={false}
-            treeData={searchOptions}
-          />
-        </NavigationSection>
+        <Menu theme="dark" mode="inline">
+          <NavigationSection title="Search">
+            <TreeComponentDropdown
+              showSearch
+              value={searchField}
+              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+              placeholder="Search components"
+              onChange={onChange}
+              treeDataSimpleMode
+              treeDefaultExpandAll={false}
+              treeData={searchOptions}
+            />
+          </NavigationSection>
 
-        <NavigationSection title="Actions">
-          <NavigationActionButtons />
-        </NavigationSection>
+          <NavigationSection title="Actions">
+            <NavigationActionButtons />
+          </NavigationSection>
 
-        <NavigationSection title="Component Background">
-          <ColorInfoParagraph>
-            Determine how to colour the components.
-          </ColorInfoParagraph>
+          <NavigationSection title="Component Background">
+            <ColorInfoParagraph>
+              Determine how to colour the components.
+            </ColorInfoParagraph>
 
-          <DropdownInput
-            defaultValue={
-              !componentBackground.mode ? 'white' : componentBackground.mode
-            }
-            onChange={(value) =>
-              setComponentBackground({ ...componentBackground, mode: value })
-            }
-          >
-            <Select.Option value="white">White</Select.Option>
+            <DropdownInput
+              defaultValue={
+                !componentBackground.mode ? 'white' : componentBackground.mode
+              }
+              onChange={(value) =>
+                setComponentBackground({ ...componentBackground, mode: value })
+              }
+            >
+              <Select.Option value="white">White</Select.Option>
 
-            <Select.Option value="label_hash">
-              Based on Label Hash
-            </Select.Option>
+              <Select.Option value="label_hash">
+                Based on Label Hash
+              </Select.Option>
 
-            <Select.Option value="loc_reference">
-              Based on Lines of Code
-            </Select.Option>
-          </DropdownInput>
+              <Select.Option value="loc_reference">
+                Based on Lines of Code
+              </Select.Option>
+            </DropdownInput>
 
-          {componentBackground.mode === 'loc_reference' && (
-            <BaselineInputWrapper>
-              <Input
-                addonBefore={'Baseline'}
-                placeholder={'LOC Reference'}
-                defaultValue={componentBackground.locReference}
-                onChange={(e) => {
-                  if (e.target.value < 1) {
-                    setComponentBackground({
-                      ...componentBackground,
-                      locReference: 1,
-                    });
-                  } else {
-                    setComponentBackground({
-                      ...componentBackground,
-                      locReference: e.target.value,
-                    });
-                  }
-                }}
-                type="number"
-                min="1"
-              />
-            </BaselineInputWrapper>
-          )}
-        </NavigationSection>
-      </Menu>
-    </NavigationSider>
+            {componentBackground.mode === 'loc_reference' && (
+              <BaselineInputWrapper>
+                <Input
+                  addonBefore={'Baseline'}
+                  placeholder={'LOC Reference'}
+                  defaultValue={componentBackground.locReference}
+                  onChange={(e) => {
+                    if (e.target.value < 1) {
+                      setComponentBackground({
+                        ...componentBackground,
+                        locReference: 1,
+                      });
+                    } else {
+                      setComponentBackground({
+                        ...componentBackground,
+                        locReference: e.target.value,
+                      });
+                    }
+                  }}
+                  type="number"
+                  min="1"
+                />
+              </BaselineInputWrapper>
+            )}
+          </NavigationSection>
+        </Menu>
+      </NavigationSider>
+      <button
+        onClick={() => {
+          setCollapsed(!collapsed);
+        }}
+      >
+        Hello Im a button
+      </button>
+    </>
   );
 };
 
