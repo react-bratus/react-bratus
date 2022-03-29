@@ -131,14 +131,14 @@ const ComponentNode = (node) => {
           </StyledTitle>
         </Row>
 
-          <NodeButtonsRow>
-            {isLocked() ? (
-              <LockIcon onClick={lockComponent} />
-            ) : (
-              <UnlockIcon onClick={lockComponent} />
-            )}
-            <EyeIcon onClick={() => node.data.onShowNodeDetail(node)} />
-          </NodeButtonsRow>
+        <NodeButtonsRow>
+          {isLocked() ? (
+            <LockIcon onClick={lockComponent} />
+          ) : (
+            <UnlockIcon onClick={lockComponent} />
+          )}
+          <EyeIcon onClick={() => node.data.onShowNodeDetail(node)} />
+        </NodeButtonsRow>
       </StyledNodeContent>
 
       {node.data.outDegree > 0 && (

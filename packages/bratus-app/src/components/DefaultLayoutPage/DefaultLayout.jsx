@@ -8,7 +8,6 @@ import ComponentDetails from '../ComponentDetails/ComponentDetails';
 import HelpPanel from '../HelpPanel/HelpPanel';
 import NavigationPanel from '../NavigationPanel/NavigationPanel';
 import {
-  HelpPanelButton,
   MainContentWrapper,
   NavigationTriggerButton,
 } from './DefaultLayout.sc';

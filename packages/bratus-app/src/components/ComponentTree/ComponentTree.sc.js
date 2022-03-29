@@ -16,6 +16,7 @@ export const LayoutButton = styled(Button)`
   &:active {
     transform: translateY(4px);
   }
+`;
 
 export const ZoomControlButtons = styled(Controls)`
   bottom: 70px;

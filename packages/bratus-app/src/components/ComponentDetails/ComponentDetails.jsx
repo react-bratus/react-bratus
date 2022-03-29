@@ -34,16 +34,15 @@ const ComponentDetails = ({ nodeDetail }) => {
         </Col>
         <Divider />
         <Col>
-        <Title level={5}>Code</Title>
+          <Title level={5}>Code</Title>
 
-        <SyntaxHighlighter
-          style={vscDarkPlus}
-          showLineNumbers={true}
-          language="javascript"
-        >
-          {nodeDetail.node.data.code}
-        </SyntaxHighlighter>
-
+          <SyntaxHighlighter
+            style={vscDarkPlus}
+            showLineNumbers={true}
+            language="javascript"
+          >
+            {nodeDetail.node.data.code}
+          </SyntaxHighlighter>
         </Col>
         <Divider />
       </ComponentDetailsRow>
