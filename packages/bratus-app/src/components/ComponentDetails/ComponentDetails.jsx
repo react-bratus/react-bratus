@@ -10,16 +10,22 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { ComponentDetailsRow } from './ComponentDetails.sc';
 
 const ComponentDetails = ({ nodeDetail }) => {
+  console.log(nodeDetail);
   if (!nodeDetail.visible) {
     return <LoadingOutlined spin />;
   }
 
+  const timeUsed = nodeDetail.node.data.component.timesUsed;
   return (
-    <Col>
+    <div>
       <ComponentDetailsRow>
         <Col>
+          <Title level={5}>Frequency</Title>
+          <Text>This component is used: {timeUsed} times.</Text>
+        </Col>
+        <Divider />
+        <Col>
           <Title level={5}>Path</Title>
-
           <Text copyable>
             <a href={`vscode://file/${nodeDetail.node.data.path}`}>
               {nodeDetail.node.data.path}
@@ -27,14 +33,15 @@ const ComponentDetails = ({ nodeDetail }) => {
           </Text>
         </Col>
         <Divider />
-
-        <Title level={5}>Code</Title>
-
-        <SyntaxHighlighter style={vscDarkPlus} language="javascript">
-          {nodeDetail.node.data.code}
-        </SyntaxHighlighter>
+        <Col>
+          <Title level={5}>Code</Title>
+          <SyntaxHighlighter style={vscDarkPlus} language="javascript">
+            {nodeDetail.node.data.code}
+          </SyntaxHighlighter>
+        </Col>
+        <Divider />
       </ComponentDetailsRow>
-    </Col>
+    </div>
   );
 };
 
