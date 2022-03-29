@@ -1,11 +1,12 @@
 // import ColorHash from 'color-hash';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import ReactFlow, { Controls as ZoomControlButtons } from 'react-flow-renderer';
+import ReactFlow from 'react-flow-renderer';
 
 // import StyledMiniMap from '../Minimap/Minimap.sc';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
 import ComponentNode from '../ComponentNode/ComponentNode';
+import { ZoomControlButtons } from './ComponentTree.sc';
 
 const ComponentTree = ({ elements }) => {
   const { highlightedComponents, setHighlightedComponents } = useContext(
