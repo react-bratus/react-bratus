@@ -11,11 +11,9 @@ import {
   EyeIcon,
   LockIcon,
   NodeButtonsRow,
-  NodeContentRow,
   StyledNode,
   StyledNodeContent,
   StyledTitle,
-  TimeUsedText,
   UnlockIcon,
 } from './ComponentNode.sc';
 
@@ -133,24 +131,14 @@ const ComponentNode = (node) => {
           </StyledTitle>
         </Row>
 
-        <NodeContentRow>
-          {node.data.component.timesUsed > 1 && (
-            <>
-              <TimeUsedText color={getFontColor}>
-                # used: {node.data.component.timesUsed}
-              </TimeUsedText>
-            </>
-          )}
-        </NodeContentRow>
-
-        <NodeButtonsRow>
-          {isLocked() ? (
-            <LockIcon onClick={lockComponent} />
-          ) : (
-            <UnlockIcon onClick={lockComponent} />
-          )}
-          <EyeIcon onClick={() => node.data.onShowNodeDetail(node)} />
-        </NodeButtonsRow>
+          <NodeButtonsRow>
+            {isLocked() ? (
+              <LockIcon onClick={lockComponent} />
+            ) : (
+              <UnlockIcon onClick={lockComponent} />
+            )}
+            <EyeIcon onClick={() => node.data.onShowNodeDetail(node)} />
+          </NodeButtonsRow>
       </StyledNodeContent>
 
       {node.data.outDegree > 0 && (

@@ -1,14 +1,17 @@
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { LeftCircleOutlined } from '@ant-design/icons';
 import { Drawer as ComponentDetailsDrawer, Layout } from 'antd';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { ReactFlowProvider } from 'react-flow-renderer';
-
 import useStickyState from '../../hooks/useStickyState';
 import ComponentDetails from '../ComponentDetails/ComponentDetails';
 import HelpPanel from '../HelpPanel/HelpPanel';
 import NavigationPanel from '../NavigationPanel/NavigationPanel';
-import { HelpPanelButton, MainContentWrapper } from './DefaultLayout.sc';
+import {
+  HelpPanelButton,
+  MainContentWrapper,
+  NavigationTriggerButton,
+} from './DefaultLayout.sc';
 
 const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
   const [hideHelpOnStartUp, setHideHelpOnStartUp] = useStickyState(
@@ -20,12 +23,34 @@ const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
     !hideHelpOnStartUp ? true : false
   );
 
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
     <Layout>
       <ReactFlowProvider>
-        <NavigationPanel info={info} />
+        <NavigationPanel
+          setIsHelpVisible={setIsHelpVisible}
+          setCollapsed={setCollapsed}
+          collapsed={collapsed}
+          info={info}
+        />
 
-        <MainContentWrapper>{children}</MainContentWrapper>
+        <NavigationTriggerButton
+          collapsed={collapsed}
+          icon={<LeftCircleOutlined rotate={collapsed && 180} />}
+          type="primary"
+          shape="round"
+          size="large"
+          onClick={() => {
+            setCollapsed(!collapsed);
+          }}
+        >
+          {collapsed ? <span>Show Nav</span> : <span>Hide Nav</span>}
+        </NavigationTriggerButton>
+
+        <MainContentWrapper collapsed={collapsed}>
+          {children}
+        </MainContentWrapper>
 
         <ComponentDetailsDrawer
           width={800}
@@ -47,16 +72,6 @@ const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
           setHideHelpOnStartUp={setHideHelpOnStartUp}
         />
       </ReactFlowProvider>
-
-      <HelpPanelButton
-        type="primary"
-        shape={'round'}
-        size="large"
-        icon={<QuestionCircleOutlined />}
-        onClick={() => setIsHelpVisible(true)}
-      >
-        Open help
-      </HelpPanelButton>
     </Layout>
   );
 };

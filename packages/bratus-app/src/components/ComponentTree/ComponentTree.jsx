@@ -1,9 +1,10 @@
-import ReactFlow, { Controls as ZoomControlButtons } from 'react-flow-renderer';
+import ReactFlow from 'react-flow-renderer';
 import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
 import ComponentNode from '../ComponentNode/ComponentNode';
 import LayoutButtons from './private/LayoutButtons';
+import { ZoomControlButtons } from './ComponentTree.sc';
 
 export const GraphDirectionContext = React.createContext(null);
 
