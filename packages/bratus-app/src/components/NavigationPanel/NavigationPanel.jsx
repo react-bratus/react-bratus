@@ -1,7 +1,6 @@
 import { Input, Menu, Select } from 'antd';
 import React, { useContext, useEffect, useState } from 'react';
 import { useStoreState, useZoomPanHelper } from 'react-flow-renderer';
-
 import ComponentBackgroundContext from '../../contexts/ComponentBackgroundContext';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
 import { navigationWidth } from '../../utils/tokens/units';
@@ -16,7 +15,7 @@ import {
 import NavigationActionButtons from './private/NavigationActionButtons/NavigationActionButtons';
 import NavigationSection from './private/NavigationSection/NavigationSection';
 
-const Navigation = () => {
+const NavigationPanel = () => {
   const [searchField, setSearchField] = useState();
   const [searchOptions, setSearchOptions] = useState([]);
   const { highlightedComponents, setHighlightedComponents } = useContext(
@@ -164,4 +163,4 @@ const Navigation = () => {
   );
 };
 
-export default Navigation;
+export default NavigationPanel;

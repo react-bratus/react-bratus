@@ -1,22 +1,8 @@
-import ReactFlow, {
-  Controls as ZoomControlButtons,
-  ReactFlowProvider,
-  addEdge,
-} from 'react-flow-renderer';
+import ReactFlow, { Controls as ZoomControlButtons } from 'react-flow-renderer';
 import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
 import ComponentNode from '../ComponentNode/ComponentNode';
-// import { getLayoutedGraphElements } from '../../utils/functions/graphUtils';
-// import {
-//   LayoutButton,
-//   LayoutButtonsWrapper,
-//   StyledFontAwesomeIcon,
-// } from './ComponentTree.sc';
-// import {
-//   faGripHorizontal,
-//   faGripVertical,
-// } from '@fortawesome/free-solid-svg-icons';
 import LayoutButtons from './private/LayoutButtons';
 
 export const GraphDirectionContext = React.createContext(null);
@@ -26,15 +12,12 @@ const ComponentTree = ({
   treeLayoutDirection,
   setTreeLayoutDirection,
 }) => {
-  const [elements, setElements] = useState(nodesAndEdges);
+  const [layoutedNodesAndEdges, setLayoutedNodesAndEdges] =
+    useState(nodesAndEdges);
 
   const { highlightedComponents, setHighlightedComponents } = useContext(
     HighlightedComponentsContext
   );
-
-  const onConnectElements = (params) => {
-    setElements((elements) => addEdge({ ...params }, elements));
-  };
 
   const onLoadTree = (reactFlowInstance) => reactFlowInstance.fitView();
 
@@ -69,30 +52,26 @@ const ComponentTree = ({
 
   return (
     <>
-      {nodesAndEdges && (
+      {layoutedNodesAndEdges && (
         <GraphDirectionContext.Provider value={treeLayoutDirection}>
-          <ReactFlowProvider>
-            <LayoutButtons
-              setTreeLayoutDirection={setTreeLayoutDirection}
-              elements={elements}
-              setElements={setElements}
-              onLoadtree={onLoadTree}
-            />
-            <ReactFlow
-              onLoad={onLoadTree}
-              elements={elements}
-              onConnect={onConnectElements}
-              nodeTypes={{ reactComponent: ComponentNode }}
-              onNodeMouseEnter={(_e, node) => highlightComponent(node, false)}
-              onNodeMouseLeave={(_e, node) => removeHighlight(node)}
-              onPaneClick={resetHighlight}
-              panOnScroll={true}
-              minZoom={0}
-              defaultZoom={0}
-            >
-              <ZoomControlButtons />
-            </ReactFlow>
-          </ReactFlowProvider>
+          <LayoutButtons
+            setTreeLayoutDirection={setTreeLayoutDirection}
+            layoutedNodesAndEdges={layoutedNodesAndEdges}
+            setLayoutedNodesAndEdges={setLayoutedNodesAndEdges}
+          />
+          <ReactFlow
+            onLoad={onLoadTree}
+            elements={layoutedNodesAndEdges}
+            nodeTypes={{ reactComponent: ComponentNode }}
+            onNodeMouseEnter={(_e, node) => highlightComponent(node, false)}
+            onNodeMouseLeave={(_e, node) => removeHighlight(node)}
+            onPaneClick={resetHighlight}
+            panOnScroll={true}
+            minZoom={0}
+            defaultZoom={0}
+          >
+            <ZoomControlButtons />
+          </ReactFlow>
         </GraphDirectionContext.Provider>
       )}
     </>

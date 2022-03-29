@@ -10,63 +10,61 @@ import {
   StyledFontAwesomeIcon,
 } from '../ComponentTree.sc';
 import { getLayoutedGraphElements } from '../../../utils/functions/graphUtils';
-import { ReactFlowProvider, useZoomPanHelper } from 'react-flow-renderer';
+import { useZoomPanHelper } from 'react-flow-renderer';
 
 export const LayoutButtons = ({
-  elements,
-  setElements,
+  layoutedNodesAndEdges,
+  setLayoutedNodesAndEdges,
   setTreeLayoutDirection,
 }) => {
   const reactFlowInstance = useZoomPanHelper();
 
   const onChangeTreeLayout = useCallback(
     (treeLayoutDirection) => {
-      const layoutedElements = getLayoutedGraphElements(
-        elements,
+      const els = getLayoutedGraphElements(
+        layoutedNodesAndEdges,
         treeLayoutDirection,
         setTreeLayoutDirection
       );
-      setElements(layoutedElements);
+      setLayoutedNodesAndEdges(els);
     },
-    [elements]
+    [layoutedNodesAndEdges]
   );
 
   return (
-    <ReactFlowProvider>
-      <LayoutButtonsWrapper>
-        <LayoutButton
-          shape="round"
-          type="primary"
-          size="large"
-          onClick={() => {
-            onChangeTreeLayout('TB');
-            reactFlowInstance.fitView();
-          }}
-        >
-          Horizontal Layout
-          <StyledFontAwesomeIcon icon={faGripHorizontal} />
-        </LayoutButton>
-        <LayoutButton
-          shape="round"
-          type="primary"
-          size="large"
-          onClick={() => {
-            onChangeTreeLayout('LR');
-            reactFlowInstance.fitView();
-          }}
-        >
-          Vertical Layout
-          <StyledFontAwesomeIcon icon={faGripVertical} />
-        </LayoutButton>
-      </LayoutButtonsWrapper>
-    </ReactFlowProvider>
+    <LayoutButtonsWrapper>
+      <LayoutButton
+        shape="round"
+        type="primary"
+        size="large"
+        onClick={() => {
+          onChangeTreeLayout('TB');
+          reactFlowInstance.fitView();
+        }}
+      >
+        Horizontal Layout
+        <StyledFontAwesomeIcon icon={faGripHorizontal} />
+      </LayoutButton>
+      <LayoutButton
+        shape="round"
+        type="primary"
+        size="large"
+        onClick={() => {
+          onChangeTreeLayout('LR');
+          reactFlowInstance.fitView();
+        }}
+      >
+        Vertical Layout
+        <StyledFontAwesomeIcon icon={faGripVertical} />
+      </LayoutButton>
+    </LayoutButtonsWrapper>
   );
 };
 
 export default LayoutButtons;
 
 LayoutButtons.propTypes = {
-  elements: PropTypes.any,
-  setElements: PropTypes.any,
+  layoutedNodesAndEdges: PropTypes.any,
+  setLayoutedNodesAndEdges: PropTypes.any,
   setTreeLayoutDirection: PropTypes.any,
 };

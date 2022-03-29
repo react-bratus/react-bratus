@@ -15,7 +15,6 @@ import I18nWatchLocaleProvider from './providers/I18nWatchLocaleProvider';
 import ThemeProvider from './providers/ThemeProvider';
 import { activate } from './utils/functions';
 
-import { ReactFlowProvider } from 'react-flow-renderer';
 import { getEdges, getNodes } from './utils/functions/nodes-and-edges';
 import { getLayoutedGraphElements } from './utils/functions/graphUtils';
 import { GraphLabels } from './utils/tokens/constants';
@@ -60,29 +59,27 @@ const App = () => {
         <ThemeProvider>
           <HighlightedComponentsProvider>
             <ComponentBackgroundProvider>
-              <ReactFlowProvider>
-                <DefaultLayout
-                  info={info}
-                  nodeDetail={nodeDetail}
-                  setNodeDetail={setNodeDetail}
-                >
-                  {nodesAndEdges ? (
-                    <ComponentTree
-                      treeLayoutDirection={treeLayoutDirection}
-                      nodesAndEdges={nodesAndEdges}
-                      setTreeLayoutDirection={setTreeLayoutDirection}
+              <DefaultLayout
+                info={info}
+                nodeDetail={nodeDetail}
+                setNodeDetail={setNodeDetail}
+              >
+                {nodesAndEdges ? (
+                  <ComponentTree
+                    treeLayoutDirection={treeLayoutDirection}
+                    nodesAndEdges={nodesAndEdges}
+                    setTreeLayoutDirection={setTreeLayoutDirection}
+                  />
+                ) : (
+                  <Spin spinning={true}>
+                    <Alert
+                      message="Nothing to show"
+                      description="Could not find any components to display"
+                      type="warning"
                     />
-                  ) : (
-                    <Spin spinning={true}>
-                      <Alert
-                        message="Nothing to show"
-                        description="Could not find any components to display"
-                        type="warning"
-                      />
-                    </Spin>
-                  )}
-                </DefaultLayout>
-              </ReactFlowProvider>
+                  </Spin>
+                )}
+              </DefaultLayout>
             </ComponentBackgroundProvider>
           </HighlightedComponentsProvider>
         </ThemeProvider>

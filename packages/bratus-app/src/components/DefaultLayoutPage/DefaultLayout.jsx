@@ -7,7 +7,7 @@ import { ReactFlowProvider } from 'react-flow-renderer';
 import useStickyState from '../../hooks/useStickyState';
 import ComponentDetails from '../ComponentDetails/ComponentDetails';
 import HelpPanel from '../HelpPanel/HelpPanel';
-import Navigation from '../NavigationPanel/NavigationPanel';
+import NavigationPanel from '../NavigationPanel/NavigationPanel';
 import { HelpPanelButton, MainContentWrapper } from './DefaultLayout.sc';
 
 const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
@@ -23,7 +23,7 @@ const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
   return (
     <Layout>
       <ReactFlowProvider>
-        <Navigation info={info} />
+        <NavigationPanel info={info} />
 
         <MainContentWrapper>{children}</MainContentWrapper>
 
