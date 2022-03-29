@@ -1,7 +1,6 @@
 import { Input, Menu, Select } from 'antd';
 import React, { useContext, useEffect, useState } from 'react';
 import { useStoreState, useZoomPanHelper } from 'react-flow-renderer';
-
 import ComponentBackgroundContext from '../../contexts/ComponentBackgroundContext';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
 import { navigationWidth } from '../../utils/tokens/units';

@@ -6,6 +6,7 @@ import { Handle, useStoreActions, useStoreState } from 'react-flow-renderer';
 import ComponentBackgroundContext from '../../contexts/ComponentBackgroundContext';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
 import { rgbaToHex } from '../../utils/functions/rgbaToHex';
+import { GraphDirectionContext } from '../ComponentTree/ComponentTree';
 import {
   EyeIcon,
   LockIcon,
@@ -25,6 +26,8 @@ const ComponentNode = (node) => {
   const setSelectedElements = useStoreActions(
     (actions) => actions.setSelectedElements
   );
+
+  const treeLayoutDirection = useContext(GraphDirectionContext);
 
   const lockComponent = () => {
     const index = highlightedComponents.findIndex(
@@ -104,6 +107,11 @@ const ComponentNode = (node) => {
     return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? '#000' : '#fff';
   };
 
+  const layoutTargetHandlePosition =
+    treeLayoutDirection === 'LR' ? 'left' : 'top';
+  const layoutSourceHandlePosition =
+    treeLayoutDirection === 'LR' ? 'right' : 'bottom';
+
   return (
     <StyledNode
       linesOfCode={node.data.linesOfCode}
@@ -112,18 +120,9 @@ const ComponentNode = (node) => {
       bgColor={getBgColor}
       fontColor={getFontColor()}
     >
-      {node.data.inDegree > 0 && <Handle type="target" position="left" />}
-      {/* <div
-        style={{
-          position: 'absolute',
-          zIndex: -1,
-          top: 0,
-          left: 0,
-          height: '100%',
-          width: '100%',
-          backgroundColor: 'white',
-        }}
-      /> */}
+      {node.data.inDegree > 0 && (
+        <Handle type="target" position={layoutTargetHandlePosition} />
+      )}
 
       <StyledNodeContent>
         <Row>
@@ -132,7 +131,6 @@ const ComponentNode = (node) => {
           </StyledTitle>
         </Row>
 
-        {isHighlighted() && (
           <NodeButtonsRow>
             {isLocked() ? (
               <LockIcon onClick={lockComponent} />
@@ -141,10 +139,11 @@ const ComponentNode = (node) => {
             )}
             <EyeIcon onClick={() => node.data.onShowNodeDetail(node)} />
           </NodeButtonsRow>
-        )}
       </StyledNodeContent>
 
-      {node.data.outDegree > 0 && <Handle type="source" position="right" />}
+      {node.data.outDegree > 0 && (
+        <Handle type="source" position={layoutSourceHandlePosition} />
+      )}
     </StyledNode>
   );
 };

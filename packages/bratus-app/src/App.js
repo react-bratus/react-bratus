@@ -14,53 +14,45 @@ import HighlightedComponentsProvider from './providers/HighlightedComponentsProv
 import I18nWatchLocaleProvider from './providers/I18nWatchLocaleProvider';
 import ThemeProvider from './providers/ThemeProvider';
 import { activate } from './utils/functions';
-import { getLayoutedElements } from './utils/functions/graphUtils';
+
+import { getEdges, getNodes } from './utils/functions/nodes-and-edges';
+import { getLayoutedGraphElements } from './utils/functions/graphUtils';
+import { GraphLabels } from './utils/tokens/constants';
 
 const App = () => {
   const { locale } = useLocale();
-  const [elements, setElements] = useState(null);
+  const [nodesAndEdges, setNodesAndEdges] = useState(null);
   const [nodeDetail, setNodeDetail] = useState({ visible: false, node: null });
   const [info, setInfo] = useState(null);
+  const [treeLayoutDirection, setTreeLayoutDirection] = useState(undefined);
 
   useEffect(() => {
     activate(locale);
+    /**
+     * @param data is a set of nodes and edges: {nodes: Array, edges: Array}
+     * @param data.nodes returns an array of nodes which have the information below:
+     * {position: {x: 0, y: 0}, type: "reactComponent", id: "App", data: Object}
+     * @param data.edges returns an array of edges which have the information below:
+     * {id: "App:FilteredProducts:Header", source: "App:FilteredProducts", target: "App:FilteredProducts:Header", animated: false}
+     */
     getParsedData()
       .then((data) => {
         setInfo(data.info);
-        setElements(
-          getLayoutedElements(
-            [].concat(
-              data.nodes.map((node) => {
-                return {
-                  ...node,
-                  data: {
-                    ...node.data,
-                    onShowNodeDetail: (node) =>
-                      setNodeDetail({ visible: true, node: node }),
-                  },
-                };
-              }),
-              data.edges.map((edge) => {
-                return {
-                  ...edge,
-                  labelBgPadding: [8, 4],
-                  labelBgBorderRadius: 4,
-                  labelBgStyle: {
-                    fill: '#001529',
-                    fillOpacity: 0.7,
-                  },
-                  labelStyle: {
-                    fill: '#fff',
-                  },
-                  style: { stroke: edge.label ? 'red' : '#000' },
-                };
-              })
-            )
+        const nodes = getNodes(data, setNodeDetail);
+        const edges = getEdges(data);
+        let tree = [];
+
+        setNodesAndEdges(
+          getLayoutedGraphElements(
+            tree.concat(nodes, edges),
+            GraphLabels.topToBottom,
+            setTreeLayoutDirection
           )
         );
       })
       .catch(console.log);
   }, [locale]);
+
   return (
     <I18nProvider i18n={i18n}>
       <I18nWatchLocaleProvider>
@@ -72,8 +64,12 @@ const App = () => {
                 nodeDetail={nodeDetail}
                 setNodeDetail={setNodeDetail}
               >
-                {elements ? (
-                  <ComponentTree elements={elements} />
+                {nodesAndEdges ? (
+                  <ComponentTree
+                    treeLayoutDirection={treeLayoutDirection}
+                    nodesAndEdges={nodesAndEdges}
+                    setTreeLayoutDirection={setTreeLayoutDirection}
+                  />
                 ) : (
                   <Spin spinning={true}>
                     <Alert
