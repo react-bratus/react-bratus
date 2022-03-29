@@ -10,13 +10,17 @@ import {
   BaselineInputWrapper,
   ColorInfoParagraph,
   DropdownInput,
+  HelpPanelButton,
   NavigationSider,
   TreeComponentDropdown,
 } from './NavigationPanel.sc';
+import PropTypes from 'prop-types';
+
 import NavigationActionButtons from './private/NavigationActionButtons/NavigationActionButtons';
 import NavigationSection from './private/NavigationSection/NavigationSection';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
-const Navigation = () => {
+const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
   const [searchField, setSearchField] = useState();
   const [searchOptions, setSearchOptions] = useState([]);
   const { highlightedComponents, setHighlightedComponents } = useContext(
@@ -89,14 +93,11 @@ const Navigation = () => {
     }
   };
 
-  const [collapsed, setCollapsed] = useState(true);
-
   return (
     <>
       <NavigationSider
         collapsed={collapsed}
         collapsedWidth={0}
-        trigger={null}
         width={navigationWidth}
       >
         <AppTitle level={1}>React-bratus</AppTitle>
@@ -167,18 +168,26 @@ const Navigation = () => {
                 />
               </BaselineInputWrapper>
             )}
+
+            <HelpPanelButton
+              type="primary"
+              shape={'round'}
+              size="large"
+              icon={<QuestionCircleOutlined />}
+              onClick={() => setIsHelpVisible(true)}
+            >
+              Open help
+            </HelpPanelButton>
           </NavigationSection>
         </Menu>
       </NavigationSider>
-      <button
-        onClick={() => {
-          setCollapsed(!collapsed);
-        }}
-      >
-        Hello Im a button
-      </button>
     </>
   );
 };
 
-export default Navigation;
+NavigationPanel.propTypes = {
+  collapsed: PropTypes.any,
+  setIsHelpVisible: PropTypes.any,
+};
+
+export default NavigationPanel;

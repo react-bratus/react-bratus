@@ -1,4 +1,4 @@
-import { Select, TreeSelect } from 'antd';
+import { Select, TreeSelect, Button } from 'antd';
 import Sider from 'antd/lib/layout/Sider';
 import Paragraph from 'antd/lib/typography/Paragraph';
 import Title from 'antd/lib/typography/Title';
@@ -40,4 +40,10 @@ export const BaselineInputWrapper = styled.div`
 export const TreeComponentDropdown = styled(TreeSelect)`
   width: 100%;
   padding: 0 ${baseUnit}px;
+`;
+
+export const HelpPanelButton = styled(Button)`
+  position: absolute;
+  bottom: ${baseUnit * 2}px;
+  left: ${baseUnit * 2}px;
 `;
