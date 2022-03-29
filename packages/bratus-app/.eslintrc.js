@@ -21,7 +21,7 @@ module.exports = {
       version: 'detect',
     },
   },
-  plugins: ['react', 'react-hooks', 'prettier', 'simple-import-sort'],
+  plugins: ['react', 'react-hooks', 'prettier'],
   rules: {
     'prettier/prettier': [
       'error',
@@ -29,8 +29,6 @@ module.exports = {
       { usePrettierrc: true },
     ],
     'react/display-name': 'off',
-    'simple-import-sort/imports': 'error',
-    'simple-import-sort/exports': 'error',
     'react/prop-types': ['error', { ignore: ['children'] }],
   },
 };

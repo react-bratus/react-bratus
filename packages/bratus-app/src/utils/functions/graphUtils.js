@@ -20,7 +20,6 @@ export const getLayoutedElements = (elements, direction = 'LR') => {
   dagreGraph.setGraph({ rankdir: direction });
   const aditionalSpaceMultiplier = 2;
 
-  console.log('elements', elements);
   elements.forEach((el) => {
     if (isNode(el)) {
       dagreGraph.setNode(el.id, {
@@ -37,7 +36,6 @@ export const getLayoutedElements = (elements, direction = 'LR') => {
   return elements.map((el) => {
     if (isNode(el)) {
       const nodeWithPosition = dagreGraph.node(el.id);
-      console.log(isHorizontal);
       el.targetPosition = isHorizontal ? 'left' : 'top';
       el.sourcePosition = isHorizontal ? 'right' : 'bottom';
 

@@ -5,7 +5,7 @@ module.exports = {
     es6: true,
   },
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'prettier', 'simple-import-sort'],
+  plugins: ['@typescript-eslint', 'prettier'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/eslint-recommended',
@@ -18,8 +18,6 @@ module.exports = {
       { endOfLine: 'auto' },
       { usePrettierrc: true },
     ],
-    'simple-import-sort/imports': 'error',
-    'simple-import-sort/exports': 'error',
     '@typescript-eslint/no-var-requires': 'off',
   },
 };

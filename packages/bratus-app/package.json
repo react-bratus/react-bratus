@@ -59,7 +59,6 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "eslint-plugin-simple-import-sort": "^7.0.0",
     "prettier": "^2.2.1"
   },
   "gitHead": "6de840ebd664b9cae7defc39031816cb106a62ad"
