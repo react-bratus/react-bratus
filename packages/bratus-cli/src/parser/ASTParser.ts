@@ -117,6 +117,9 @@ class ASTParser {
         const elements: JSXElement[] = [new JSXElement(path)];
         const attributes: Attribute[] = [new Attribute()];
         let ifStatementLevel = 0;
+
+        // Beginning of the traverse function:
+
         traverse(ast, {
           ImportDeclaration({ node }) {
             const modulePath = node.source.value;
@@ -174,6 +177,18 @@ class ASTParser {
           IfStatement() {
             ASTParser.logEntry(
               `[Info] Increment level of depth in if statement: ${ifStatementLevel}`
+            );
+            ifStatementLevel++;
+          },
+          LogicalExpression() {
+            ASTParser.logEntry(
+              `[Info] Conditional rendering by '&&' found for this componenet.`
+            );
+            ifStatementLevel++;
+          },
+          ConditionalExpression() {
+            ASTParser.logEntry(
+              `[Info] Conditional rendering by a ternary operator found for this componenet.`
             );
             ifStatementLevel++;
           },
@@ -298,7 +313,11 @@ class ASTParser {
               if (attributes.length === 0) attributes.push(new Attribute());
             }
 
-            if (node.type == 'IfStatement') {
+            if (
+              node.type == 'IfStatement' ||
+              node.type == 'LogicalExpression' ||
+              node.type == 'ConditionalExpression'
+            ) {
               ASTParser.logEntry(
                 `[Info] Reduce level of depth in if statement: ${ifStatementLevel}`
               );
