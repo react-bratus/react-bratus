@@ -132,8 +132,8 @@ const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
                   ? 'proportional_size'
                   : componentBackground.mode
               }
-              onChange={async (value) =>
-                await setComponentBackground({
+              onChange={(value) =>
+                setComponentBackground({
                   ...componentBackground,
                   mode: value,
                 })
