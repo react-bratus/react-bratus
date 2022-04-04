@@ -4,21 +4,30 @@ import Text from 'antd/lib/typography/Text';
 import Title from 'antd/lib/typography/Title';
 import styled, { css } from 'styled-components';
 
-import {
-  baseNodeHeight,
-  baseUnit,
-  // borderRadius,
-  nodeWidth,
-} from '../../utils/tokens/units';
+import { baseNodeHeight, baseUnit, nodeWidth } from '../../utils/tokens/units';
+const horizontalViewNodeHeight = baseNodeHeight / 2.3;
 
 export const StyledNode = styled.div`
-  /* height: ${({ linesOfCode }) => baseNodeHeight + linesOfCode}px; */
-  height: 100px;
-  width: ${nodeWidth}px;
+  height: ${({ linesOfCode, componentBackground, treeLayoutDirection }) => {
+    if (componentBackground.mode === 'proportional_size') {
+      if (treeLayoutDirection === 'TB') {
+        return `${horizontalViewNodeHeight + linesOfCode}px`;
+      }
+    }
+    return '75px';
+  }};
+  width: ${({ linesOfCode, componentBackground, treeLayoutDirection }) => {
+    if (componentBackground.mode === 'proportional_size') {
+      if (treeLayoutDirection === 'LR') {
+        return `${nodeWidth + linesOfCode}px`;
+      }
+    }
+    return `${nodeWidth}px`;
+  }};
   padding: ${baseUnit}px;
   border-radius: 100px;
-  border: ${({ isHighlighted, isLocked }) => {
-    return isHighlighted || isLocked ? '3px solid black' : '1px solid black';
+  border: ${({ isHighlighted }) => {
+    return isHighlighted ? '1.5px solid black' : '1px solid black';
   }};
   background-color: ${({ bgColor }) => bgColor};
   color: ${({ fontColor }) => fontColor};
@@ -38,6 +47,7 @@ export const StyledNodeContent = styled(Col)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 `;
 
 export const NodeContentRow = styled(Row)`
