@@ -74,6 +74,7 @@ class ASTParser {
       });
     });
   }
+
   private writeDataToFile(graphData: string): void {
     console.log(
       `[Info] Writing data to ${this.options.pathToSaveDir}/data.json`
@@ -117,6 +118,12 @@ class ASTParser {
         const elements: JSXElement[] = [new JSXElement(path)];
         const attributes: Attribute[] = [new Attribute()];
         let ifStatementLevel = 0;
+        let isConditional = false;
+        let conditionKind = '';
+        let conditionIdentifier = '';
+
+        // Beginning of the traverse function:
+
         traverse(ast, {
           ImportDeclaration({ node }) {
             const modulePath = node.source.value;
@@ -170,12 +177,34 @@ class ASTParser {
               ASTParser.logEntry(`[Info] Identify component ${node.name}`);
               component.identify(node);
             }
+            if (isConditional) {
+              conditionIdentifier = conditionKind + ':' + node.name;
+              console.log(
+                `[CURRENT] --> The name of the rendering constant: ${node.name}`
+              );
+            }
           },
           IfStatement() {
             ASTParser.logEntry(
               `[Info] Increment level of depth in if statement: ${ifStatementLevel}`
             );
-            ifStatementLevel++;
+            // ifStatementLevel++;
+            isConditional = true;
+            conditionKind = '[if]';
+          },
+          LogicalExpression() {
+            ASTParser.logEntry(
+              `[CURRENT] Conditional rendering by '&&' found for this componenet.`
+            );
+            isConditional = true;
+            conditionKind = '[&&]';
+          },
+          ConditionalExpression() {
+            ASTParser.logEntry(
+              `[Info] Conditional rendering by a ternary operator found for this componenet.`
+            );
+            isConditional = true;
+            conditionKind = '[ternary]';
           },
           JSXOpeningElement({ node }) {
             const jsxElement = ASTParser.peek(elements);
@@ -280,7 +309,11 @@ class ASTParser {
               ASTParser.logEntry(
                 `[Info] Close Element: ${jsxElement.getElementName()}`
               );
-              jsxElement.setOptional(ifStatementLevel > 0);
+              // jsxElement.setOptional(ifStatementLevel > 0);
+              if (conditionIdentifier) {
+                jsxElement.setConditional();
+                jsxElement.conditionalOperator = conditionIdentifier;
+              }
               component.addJSXElement(jsxElement);
               elements.pop();
               if (elements.length === 0) elements.push(new JSXElement(path));
@@ -298,11 +331,23 @@ class ASTParser {
               if (attributes.length === 0) attributes.push(new Attribute());
             }
 
-            if (node.type == 'IfStatement') {
+            // if (node.type == 'IfStatement') {
+            //   ASTParser.logEntry(
+            //     `[Info] Reduce level of depth in if statement: ${ifStatementLevel}`
+            //   );
+            //   ifStatementLevel--;
+            // }
+
+            if (
+              node.type == 'LogicalExpression' ||
+              node.type == 'ConditionalExpression' ||
+              node.type == 'IfStatement'
+            ) {
               ASTParser.logEntry(
-                `[Info] Reduce level of depth in if statement: ${ifStatementLevel}`
+                `[CURRENT] Resetting the Logical Expression node`
               );
-              ifStatementLevel--;
+              isConditional = false;
+              conditionIdentifier = '';
             }
 
             if (node.type == 'Program') {

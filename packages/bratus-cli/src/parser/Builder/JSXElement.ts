@@ -3,7 +3,9 @@ import ParsableElement from './ParsableElement';
 
 class JSXElement extends ParsableElement {
   private attributes: Map<string, Attribute> = new Map<string, Attribute>();
-  private optional = false;
+  // private optional = false;
+  private conditional = false;
+  public conditionalOperator: string | undefined;
   public routePath: string | undefined;
   public isRouteElement = false;
   constructor(path: string) {
@@ -20,16 +22,24 @@ class JSXElement extends ParsableElement {
     }
   }
 
-  setOptional(isOptional: boolean): void {
-    if (this.isRouteElement) {
-      this.optional = true;
-    } else {
-      this.optional = isOptional;
-    }
+  // setOptional(isOptional: boolean): void {
+  //   if (this.isRouteElement) {
+  //     this.optional = true;
+  //   } else {
+  //     this.optional = isOptional;
+  //   }
+  // }
+
+  setConditional(): void {
+    this.conditional = true;
   }
 
-  isOptional(): boolean {
-    return this.optional;
+  // isOptional(): boolean {
+  //   return this.optional;
+  // }
+
+  isConditional(): boolean {
+    return this.conditional;
   }
 
   getAttribute(key: string): Attribute | undefined {
