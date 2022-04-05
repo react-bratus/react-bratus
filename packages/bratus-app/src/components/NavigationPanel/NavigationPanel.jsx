@@ -73,9 +73,11 @@ const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
     idSplit.pop();
     return idSplit.join(':');
   };
+
   const isLeaf = (node) => {
     return node.data.outDegree == 0;
   };
+
   const generateTreeNodes = () => {
     if (nodes.length > 0) {
       setSearchOptions(
@@ -126,20 +128,25 @@ const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
 
             <DropdownInput
               defaultValue={
-                !componentBackground.mode ? 'white' : componentBackground.mode
+                !componentBackground.mode
+                  ? 'proportional_size'
+                  : componentBackground.mode
               }
               onChange={(value) =>
-                setComponentBackground({ ...componentBackground, mode: value })
+                setComponentBackground({
+                  ...componentBackground,
+                  mode: value,
+                })
               }
             >
               <Select.Option value="white">White</Select.Option>
 
-              <Select.Option value="label_hash">
-                Based on Label Hash
+              <Select.Option value="proportional_size">
+                Proportional Size based on Lines
               </Select.Option>
 
               <Select.Option value="loc_reference">
-                Based on Lines of Code
+                Colorization based on Lines
               </Select.Option>
             </DropdownInput>
 

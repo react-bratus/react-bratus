@@ -1,57 +1,47 @@
-import { Row } from 'antd';
 import ColorHash from 'color-hash';
 import React, { useContext } from 'react';
-import { Handle, useStoreActions, useStoreState } from 'react-flow-renderer';
-
+import { Handle } from 'react-flow-renderer';
 import ComponentBackgroundContext from '../../contexts/ComponentBackgroundContext';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
 import { rgbaToHex } from '../../utils/functions/rgbaToHex';
 import { GraphDirectionContext } from '../ComponentTree/ComponentTree';
-import {
-  EyeIcon,
-  LockIcon,
-  NodeButtonsRow,
-  StyledNode,
-  StyledNodeContent,
-  StyledTitle,
-  UnlockIcon,
-} from './ComponentNode.sc';
+import { StyledNode, StyledNodeContent, StyledTitle } from './ComponentNode.sc';
 
 const ComponentNode = (node) => {
-  const { highlightedComponents, setHighlightedComponents } = useContext(
-    HighlightedComponentsContext
-  );
-  const nodes = useStoreState((store) => store.nodes);
+  const { highlightedComponents } = useContext(HighlightedComponentsContext);
+  // const nodes = useStoreState((store) => store.nodes);
+
   const { componentBackground } = useContext(ComponentBackgroundContext);
-  const setSelectedElements = useStoreActions(
-    (actions) => actions.setSelectedElements
-  );
+
+  // const setSelectedElements = useStoreActions(
+  //   (actions) => actions.setSelectedElements
+  // );
 
   const treeLayoutDirection = useContext(GraphDirectionContext);
 
-  const lockComponent = () => {
-    const index = highlightedComponents.findIndex(
-      (component) => component.id === node.id
-    );
+  // const lockComponent = () => {
+  //   const index = highlightedComponents.findIndex(
+  //     (component) => component.id === node.id
+  //   );
 
-    const array = [...highlightedComponents];
-    if (index !== -1 && highlightedComponents[index].locked) {
-      array.splice(index, 1);
-      setHighlightedComponents(array);
-    } else if (index !== -1) {
-      array.splice(index, 1);
-      setHighlightedComponents([
-        ...array,
-        {
-          id: node.id,
-          componentName: node.data.label,
-          locked: true,
-          search: false,
-        },
-      ]);
-      setSelectedElements(nodes.filter((_node) => _node.id.includes(node.id)));
-    }
-  };
+  //   const array = [...highlightedComponents];
+  //   if (index !== -1 && highlightedComponents[index].locked) {
+  //     array.splice(index, 1);
+  //     setHighlightedComponents(array);
+  //   } else if (index !== -1) {
+  //     array.splice(index, 1);
+  //     setHighlightedComponents([
+  //       ...array,
+  //       {
+  //         id: node.id,
+  //         componentName: node.data.label,
+  //         locked: true,
+  //         search: false,
+  //       },
+  //     ]);
+  //     setSelectedElements(nodes.filter((_node) => _node.id.includes(node.id)));
+  //   }
+  // };
 
   const isHighlighted = () => {
     return highlightedComponents.some((component) =>
@@ -61,22 +51,18 @@ const ComponentNode = (node) => {
     );
   };
 
-  const isLocked = () => {
-    return highlightedComponents.some(
-      (component) =>
-        component.locked &&
-        node.id.match(
-          `${component.componentName}:+.+|${component.componentName}$`
-        )
-    );
-  };
+  // const isLocked = () => {
+  //   return highlightedComponents.some(
+  //     (component) =>
+  //       component.locked &&
+  //       node.id.match(
+  //         `${component.componentName}:+.+|${component.componentName}$`
+  //       )
+  //   );
+  // };
 
   const getBgColor = () => {
-    if (isLocked()) {
-      return 'red';
-    } else if (componentBackground.mode === 'white') {
-      return '#FFFFFFFF';
-    } else if (componentBackground.mode === 'label_hash') {
+    if (componentBackground.mode === 'proportional_size') {
       const hex = new ColorHash({
         lightness: 0.8,
         hue: { min: 0, max: 366 },
@@ -115,30 +101,21 @@ const ComponentNode = (node) => {
   return (
     <StyledNode
       linesOfCode={node.data.linesOfCode}
+      componentBackground={componentBackground}
+      treeLayoutDirection={treeLayoutDirection}
       isHighlighted={isHighlighted()}
-      isLocked={isLocked()}
       bgColor={getBgColor}
       fontColor={getFontColor()}
+      onDoubleClick={() => node.data.onShowNodeDetail(node)}
     >
       {node.data.inDegree > 0 && (
         <Handle type="target" position={layoutTargetHandlePosition} />
       )}
 
       <StyledNodeContent>
-        <Row>
-          <StyledTitle color={getFontColor} level={5}>
-            {node.data.label}
-          </StyledTitle>
-        </Row>
-
-        <NodeButtonsRow>
-          {isLocked() ? (
-            <LockIcon onClick={lockComponent} />
-          ) : (
-            <UnlockIcon onClick={lockComponent} />
-          )}
-          <EyeIcon onClick={() => node.data.onShowNodeDetail(node)} />
-        </NodeButtonsRow>
+        <StyledTitle color={getFontColor} level={5}>
+          {node.data.label}
+        </StyledTitle>
       </StyledNodeContent>
 
       {node.data.outDegree > 0 && (
