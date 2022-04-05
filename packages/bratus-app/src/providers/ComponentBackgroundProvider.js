@@ -1,5 +1,4 @@
 import React from 'react';
-
 import ComponentBackgroundContext from '../contexts/ComponentBackgroundContext';
 import useStickyState from '../hooks/useStickyState';
 

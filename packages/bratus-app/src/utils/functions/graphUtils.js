@@ -21,7 +21,8 @@ dagreGraph.setDefaultEdgeLabel(() => ({}));
 export const getLayoutedGraphElements = (
   nodesAndEdges,
   treeLayoutDirection = 'TB',
-  setTreeLayoutDirection = () => {}
+  setTreeLayoutDirection = () => {},
+  componentBackground
 ) => {
   dagreGraph.setGraph({ rankdir: treeLayoutDirection });
 
@@ -30,15 +31,30 @@ export const getLayoutedGraphElements = (
   nodesAndEdges.forEach((graphElement) => {
     if (isNode(graphElement)) {
       if (treeLayoutDirection === GraphLabels.topToBottom) {
-        dagreGraph.setNode(graphElement.id, {
-          width: nodeWidth,
-          height: baseNodeHeight * aditionalSpaceMultiplier,
-        });
+        if (componentBackground.mode === 'proportional_size') {
+          dagreGraph.setNode(graphElement.id, {
+            width: nodeWidth,
+            height:
+              baseNodeHeight * aditionalSpaceMultiplier +
+              graphElement.data.linesOfCode,
+          });
+        } else {
+          dagreGraph.setNode(graphElement.id, {
+            width: nodeWidth,
+            height: baseNodeHeight * 2.5,
+          });
+        }
       }
 
       if (treeLayoutDirection == GraphLabels.leftToRight) {
+        if (componentBackground.mode === 'proportional_size') {
+          dagreGraph.setNode(graphElement.id, {
+            width: nodeWidth * aditionalSpaceMultiplier,
+            height: baseNodeHeight + graphElement.data.linesOfCode,
+          });
+        }
         dagreGraph.setNode(graphElement.id, {
-          width: nodeWidth * aditionalSpaceMultiplier,
+          width: nodeWidth * 2.5,
           height: baseNodeHeight,
         });
       }
@@ -60,13 +76,38 @@ export const getLayoutedGraphElements = (
       graphElement.targetPosition = isHorizontalLayout ? 'left' : 'top';
       graphElement.sourcePosition = isHorizontalLayout ? 'right' : 'bottom';
 
-      graphElement.position = {
-        x:
-          nodeWithPosition.x -
-          (nodeWidth * aditionalSpaceMultiplier) / 2 +
-          Math.random() / 1000,
-        y: nodeWithPosition.y - 36 / 2,
-      };
+      if (treeLayoutDirection === 'TB') {
+        if (componentBackground.mode === 'proportional_size') {
+          graphElement.position = {
+            x: nodeWithPosition.x - nodeWidth + Math.random() / 1000,
+            y: nodeWithPosition.y - (36 + graphElement.data.linesOfCode) / 3,
+          };
+        } else {
+          graphElement.position = {
+            x: nodeWithPosition.x - nodeWidth,
+            y: nodeWithPosition.y - baseNodeHeight,
+          };
+        }
+      }
+
+      if (treeLayoutDirection === 'LR') {
+        if (componentBackground.mode === 'proportional_size') {
+          graphElement.position = {
+            x:
+              nodeWithPosition.x -
+              (nodeWidth + graphElement.data.linesOfCode) / 3,
+            y: nodeWithPosition.y - baseNodeHeight + Math.random() / 1000,
+          };
+        } else {
+          graphElement.position = {
+            x:
+              nodeWithPosition.x -
+              (nodeWidth * aditionalSpaceMultiplier) / 2 +
+              Math.random() / 1000,
+            y: nodeWithPosition.y,
+          };
+        }
+      }
     }
 
     return graphElement;

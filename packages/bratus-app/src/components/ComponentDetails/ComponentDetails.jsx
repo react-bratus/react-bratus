@@ -10,7 +10,6 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { ComponentDetailsRow } from './ComponentDetails.sc';
 
 const ComponentDetails = ({ nodeDetail }) => {
-  console.log(nodeDetail);
   if (!nodeDetail.visible) {
     return <LoadingOutlined spin />;
   }

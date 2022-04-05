@@ -2,7 +2,7 @@ import {
   faGripHorizontal,
   faGripVertical,
 } from '@fortawesome/free-solid-svg-icons';
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   LayoutButton,
@@ -11,6 +11,7 @@ import {
 } from '../ComponentTree.sc';
 import { getLayoutedGraphElements } from '../../../utils/functions/graphUtils';
 import { useZoomPanHelper } from 'react-flow-renderer';
+import ComponentBackgroundContext from '../../../contexts/ComponentBackgroundContext';
 
 export const LayoutButtons = ({
   layoutedNodesAndEdges,
@@ -19,12 +20,15 @@ export const LayoutButtons = ({
 }) => {
   const reactFlowInstance = useZoomPanHelper();
 
+  const { componentBackground } = useContext(ComponentBackgroundContext);
+
   const onChangeTreeLayout = useCallback(
     (treeLayoutDirection) => {
       const els = getLayoutedGraphElements(
         layoutedNodesAndEdges,
         treeLayoutDirection,
-        setTreeLayoutDirection
+        setTreeLayoutDirection,
+        componentBackground
       );
       setLayoutedNodesAndEdges(els);
     },
@@ -37,20 +41,21 @@ export const LayoutButtons = ({
         shape="round"
         type="primary"
         size="large"
-        onClick={() => {
-          onChangeTreeLayout('TB');
+        onClick={async () => {
+          await onChangeTreeLayout('TB');
           reactFlowInstance.fitView();
         }}
       >
         Horizontal Layout
         <StyledFontAwesomeIcon icon={faGripHorizontal} />
       </LayoutButton>
+
       <LayoutButton
         shape="round"
         type="primary"
         size="large"
-        onClick={() => {
-          onChangeTreeLayout('LR');
+        onClick={async () => {
+          await onChangeTreeLayout('LR');
           reactFlowInstance.fitView();
         }}
       >
