@@ -98,10 +98,14 @@ class Graph {
       target.id,
       source.id,
       target.id,
-      element.isOptional()
+      element.isConditional() || element.isRouteElement
     );
     if (element.isRouteElement && element.routePath) {
       edge.label = element.routePath;
+    }
+    if (element.isConditional()) {
+      edge.conditional = element.conditionalOperator;
+      edge.label = edge.conditional;
     }
     this.edges.push(edge);
     source.data.outDegree++;

@@ -26,7 +26,9 @@ export const getEdges = (data) => {
       labelStyle: {
         fill: '#fff',
       },
-      style: { stroke: edge.label ? 'red' : '#000' },
+      style: {
+        stroke: edge.conditional ? 'green' : edge.label ? 'red' : '#000',
+      },
     };
   });
 
