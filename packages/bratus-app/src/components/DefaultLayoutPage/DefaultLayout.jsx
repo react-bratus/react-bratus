@@ -6,6 +6,7 @@ import { ReactFlowProvider } from 'react-flow-renderer';
 import useStickyState from '../../hooks/useStickyState';
 import ComponentDetails from '../ComponentDetails/ComponentDetails';
 import HelpPanel from '../HelpPanel/HelpPanel';
+import StyledMiniMap from '../Minimap/Minimap.sc';
 import NavigationPanel from '../NavigationPanel/NavigationPanel';
 import {
   MainContentWrapper,
@@ -61,6 +62,7 @@ const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
         >
           <ComponentDetails nodeDetail={nodeDetail} />
         </ComponentDetailsDrawer>
+        <StyledMiniMap />
       </ReactFlowProvider>
 
       <ReactFlowProvider>

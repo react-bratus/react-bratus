@@ -1,4 +1,5 @@
-import { MiniMap } from 'react-flow-renderer';
+//import { MiniMap } from 'react-flow-renderer';
+import MiniMap from './index';
 import styled from 'styled-components';
 
 import { baseUnit } from '../../utils/tokens/units';
