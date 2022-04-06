@@ -1,5 +1,4 @@
-//import { MiniMap } from 'react-flow-renderer';
-import MiniMap from './index';
+import MiniMap from './MiniMap';
 import styled from 'styled-components';
 
 import { baseUnit } from '../../utils/tokens/units';
@@ -10,6 +9,7 @@ const StyledMiniMap = styled(MiniMap)`
   min-height: 300px;
   right: ${baseUnit}px;
   top: ${baseUnit}px;
+  opacity: 0.7;
 `;
 
 export default StyledMiniMap;
