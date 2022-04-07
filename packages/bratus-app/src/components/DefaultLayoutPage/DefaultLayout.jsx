@@ -12,7 +12,14 @@ import {
   NavigationTriggerButton,
 } from './DefaultLayout.sc';
 
-const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
+const DefaultLayout = ({
+  children,
+  info,
+  nodeDetail,
+  setNodeDetail,
+  verticalTreeLayoutAsDefault,
+  setVerticalTreeLayoutAsDefault,
+}) => {
   const [hideHelpOnStartUp, setHideHelpOnStartUp] = useStickyState(
     false,
     'react-bratus:hide-help'
@@ -65,6 +72,8 @@ const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
 
       <ReactFlowProvider>
         <HelpPanel
+          verticalTreeLayoutAsDefault={verticalTreeLayoutAsDefault}
+          setVerticalTreeLayoutAsDefault={setVerticalTreeLayoutAsDefault}
           isHelpVisible={isHelpVisible}
           setIsHelpVisible={setIsHelpVisible}
           hideHelpOnStartUp={hideHelpOnStartUp}
@@ -76,6 +85,8 @@ const DefaultLayout = ({ children, info, nodeDetail, setNodeDetail }) => {
 };
 
 DefaultLayout.propTypes = {
+  verticalTreeLayoutAsDefault: PropTypes.any,
+  setVerticalTreeLayoutAsDefault: PropTypes.any,
   info: PropTypes.any,
   nodeDetail: PropTypes.any,
   setNodeDetail: PropTypes.func,

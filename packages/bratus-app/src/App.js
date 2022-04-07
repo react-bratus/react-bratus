@@ -15,14 +15,27 @@ import { getEdges, getNodes } from './utils/functions/nodes-and-edges';
 import { getLayoutedGraphElements } from './utils/functions/graphUtils';
 import { GraphLabels } from './utils/tokens/constants';
 import ComponentBackgroundContext from './contexts/ComponentBackgroundContext';
+import useStickyState from './hooks/useStickyState';
 
 const App = () => {
   const { locale } = useLocale();
   const [nodesAndEdges, setNodesAndEdges] = useState(null);
   const [nodeDetail, setNodeDetail] = useState({ visible: false, node: null });
   const [info, setInfo] = useState(null);
-  const [treeLayoutDirection, setTreeLayoutDirection] = useState(undefined);
   const { componentBackground } = useContext(ComponentBackgroundContext);
+
+  const [treeLayoutDirection, setTreeLayoutDirection] = useState(undefined);
+
+  //  If the user prefers the vertical layout as favorite, he/she can click it as preferred
+  // in the help panel. The App.js getLayoutedGraphElement() will check the local storage,
+  //  otherwise it will set horizontal as the default.
+  const [verticalTreeLayoutAsDefault, setVerticalTreeLayoutAsDefault] =
+    useStickyState(false, 'bratus:prefer-vertical-layout');
+
+  const treeLayoutOnCompile =
+    verticalTreeLayoutAsDefault === true
+      ? GraphLabels.leftToRight
+      : GraphLabels.topToBottom;
 
   useEffect(() => {
     activate(locale);
@@ -39,7 +52,7 @@ const App = () => {
         setNodesAndEdges(
           getLayoutedGraphElements(
             tree.concat(nodes, edges),
-            GraphLabels.topToBottom,
+            treeLayoutOnCompile,
             setTreeLayoutDirection,
             componentBackground
           )
@@ -57,6 +70,8 @@ const App = () => {
               info={info}
               nodeDetail={nodeDetail}
               setNodeDetail={setNodeDetail}
+              verticalTreeLayoutAsDefault={verticalTreeLayoutAsDefault}
+              setVerticalTreeLayoutAsDefault={setVerticalTreeLayoutAsDefault}
             >
               {nodesAndEdges ? (
                 <ComponentTree

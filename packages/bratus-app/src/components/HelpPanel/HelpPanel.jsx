@@ -1,15 +1,15 @@
 import { Divider, Drawer, Typography } from 'antd';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
-import ReactFlow from 'react-flow-renderer';
+import React, { useState } from 'react';
+// import ReactFlow from 'react-flow-renderer';
 
-import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
+// import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
 // import { getLayoutedElements } from '../../utils/functions/graphUtils';
 // import { GraphLabels } from '../../utils/tokens/constants';
-import ComponentNode from '../ComponentNode/ComponentNode';
+// import ComponentNode from '../ComponentNode/ComponentNode';
 // import { Elements } from './HelpPanel.mock-data';
-import { HelpPanelTreeWrapper } from './HelpPanel.sc';
+// import { HelpPanelTreeWrapper } from './HelpPanel.sc';
 const { Title, Paragraph, Link } = Typography;
 
 const HelpPanel = ({
@@ -17,39 +17,41 @@ const HelpPanel = ({
   hideHelpOnStartUp,
   setIsHelpVisible,
   setHideHelpOnStartUp,
+  verticalTreeLayoutAsDefault,
+  setVerticalTreeLayoutAsDefault,
 }) => {
-  const { highlightedComponents, setHighlightedComponents } = useContext(
-    HighlightedComponentsContext
-  );
+  // const { highlightedComponents, setHighlightedComponents } = useContext(
+  //   HighlightedComponentsContext
+  // );
   const [ellipsis] = useState(true);
-  const highlightComponent = (node) => {
-    const componentName = node ? node.data.label : null;
-    setHighlightedComponents([
-      ...highlightedComponents.filter((_node) => _node.locked),
-      {
-        id: node.id,
-        componentName: componentName,
-        locked: false,
-        search: false,
-      },
-    ]);
-  };
+  // const highlightComponent = (node) => {
+  //   const componentName = node ? node.data.label : null;
+  //   setHighlightedComponents([
+  //     ...highlightedComponents.filter((_node) => _node.locked),
+  //     {
+  //       id: node.id,
+  //       componentName: componentName,
+  //       locked: false,
+  //       search: false,
+  //     },
+  //   ]);
+  // };
 
-  const removeHighlight = (node) => {
-    const index = highlightedComponents.findIndex(
-      (component) => component.id === node.id
-    );
-    if (index !== -1) {
-      const highlightedComponent = highlightedComponents[index];
-      if (!highlightedComponent.locked) {
-        const array = [...highlightedComponents];
-        array.splice(index, 1);
-        setHighlightedComponents(array);
-      }
-    }
-  };
+  // const removeHighlight = (node) => {
+  //   const index = highlightedComponents.findIndex(
+  //     (component) => component.id === node.id
+  //   );
+  //   if (index !== -1) {
+  //     const highlightedComponent = highlightedComponents[index];
+  //     if (!highlightedComponent.locked) {
+  //       const array = [...highlightedComponents];
+  //       array.splice(index, 1);
+  //       setHighlightedComponents(array);
+  //     }
+  //   }
+  // };
 
-  const resetHighlight = () => setHighlightedComponents([]);
+  // const resetHighlight = () => setHighlightedComponents([]);
   return (
     <Drawer
       width={720}
@@ -64,7 +66,7 @@ const HelpPanel = ({
         what they represent.
       </Paragraph>
 
-      <HelpPanelTreeWrapper>
+      {/* <HelpPanelTreeWrapper>
         <ReactFlow
           // elements={getLayoutedElements(Elements, GraphLabels.leftToRight)}
           nodeTypes={{ reactComponent: ComponentNode }}
@@ -75,7 +77,7 @@ const HelpPanel = ({
           defaultPosition={[150, 0]}
           defaultZoom={0.5}
         />
-      </HelpPanelTreeWrapper>
+      </HelpPanelTreeWrapper> */}
 
       <Divider />
 
@@ -107,6 +109,14 @@ const HelpPanel = ({
 
       <Divider />
 
+      <Checkbox
+        checked={verticalTreeLayoutAsDefault}
+        onChange={(e) => setVerticalTreeLayoutAsDefault(e.target.checked)}
+      >
+        {'Set vertical layout as default'}
+      </Checkbox>
+
+      <Divider />
       <Title level={5}>Changelog</Title>
 
       <Paragraph
@@ -140,8 +150,6 @@ const HelpPanel = ({
         Removed Info section <br />
         <b>2.0.2</b> <br />- First release
       </Paragraph>
-
-      <Divider />
     </Drawer>
   );
 };
@@ -151,6 +159,8 @@ HelpPanel.propTypes = {
   hideHelpOnStartUp: PropTypes.bool,
   setIsHelpVisible: PropTypes.func,
   setHideHelpOnStartUp: PropTypes.func,
+  verticalTreeLayoutAsDefault: PropTypes.any,
+  setVerticalTreeLayoutAsDefault: PropTypes.any,
 };
 
 export default HelpPanel;
