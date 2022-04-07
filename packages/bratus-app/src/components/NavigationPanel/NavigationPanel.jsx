@@ -1,99 +1,26 @@
-import { Input, Menu, Select } from 'antd';
-import React, { useContext, useEffect, useState } from 'react';
-import { useStoreState, useZoomPanHelper } from 'react-flow-renderer';
-import ComponentBackgroundContext from '../../contexts/ComponentBackgroundContext';
-import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
+import { Menu } from 'antd';
+import React from 'react';
 import { navigationWidth } from '../../utils/tokens/units';
 import {
   AppTitle,
-  BaselineInputWrapper,
-  ColorInfoParagraph,
-  DropdownInput,
-  HelpPanelButton,
   NavigationSider,
-  TreeComponentDropdown,
+  StyledMenuDivider,
+  StyledSubMenu,
 } from './NavigationPanel.sc';
 import PropTypes from 'prop-types';
-
-import NavigationActionButtons from './private/NavigationActionButtons/NavigationActionButtons';
-import NavigationSection from './private/NavigationSection/NavigationSection';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import {
+  BgColorsOutlined,
+  FileSearchOutlined,
+  GithubOutlined,
+  InteractionOutlined,
+} from '@ant-design/icons';
+import NavigationPrimaryActions from './private/ActionButtons/NavigationPrimaryActions';
+import NavigationGitHubActions from './private/ActionButtons/NavigationGitHubActions';
+import NavSearchComponent from './private/SubMenuSections/NavSearchComponent';
+import NavNodeVisualizationOptions from './private/SubMenuSections/NavNodeVisualizationOptions';
+import { defaultOpenKeys } from '../../utils/tokens/constants';
 
 const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
-  const [searchField, setSearchField] = useState();
-  const [searchOptions, setSearchOptions] = useState([]);
-  const { highlightedComponents, setHighlightedComponents } = useContext(
-    HighlightedComponentsContext
-  );
-  const { componentBackground, setComponentBackground } = useContext(
-    ComponentBackgroundContext
-  );
-  const nodes = useStoreState((store) => store.nodes);
-  const { setCenter } = useZoomPanHelper();
-
-  const focusNode = (id) => {
-    const index = nodes.findIndex((node) => node.id == id);
-    const node = nodes[index];
-    const x = node.__rf.position.x + node.__rf.width / 2;
-    const y = node.__rf.position.y + node.__rf.height / 2;
-    const zoom = 1;
-
-    setCenter(x, y, zoom);
-  };
-
-  const onChange = (value) => {
-    setSearchField(value);
-    const arr = value.split(':');
-    const componentName = arr[arr.length - 1];
-    const index = highlightedComponents.findIndex(
-      (component) => component.id === value
-    );
-    const array = [...highlightedComponents];
-    array.splice(index, 1);
-    setHighlightedComponents([
-      {
-        id: value,
-        componentName: componentName,
-        locked: true,
-        search: false,
-      },
-    ]);
-    focusNode(value);
-  };
-
-  useEffect(() => {
-    generateTreeNodes();
-  }, [nodes]);
-
-  const getParentId = (id) => {
-    const idSplit = id.split(':');
-    if (idSplit.length == 1) {
-      return null;
-    }
-    idSplit.pop();
-    return idSplit.join(':');
-  };
-
-  const isLeaf = (node) => {
-    return node.data.outDegree == 0;
-  };
-
-  const generateTreeNodes = () => {
-    if (nodes.length > 0) {
-      setSearchOptions(
-        nodes.map((node) => {
-          return {
-            id: node.id,
-            pId: getParentId(node.id),
-            title: node.data.label,
-            value: node.id,
-            isLeaf: isLeaf(node),
-          };
-        })
-      );
-    }
-  };
-
   return (
     <>
       <NavigationSider
@@ -103,88 +30,41 @@ const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
       >
         <AppTitle level={1}>React-bratus</AppTitle>
 
-        <Menu theme="dark" mode="inline">
-          <NavigationSection title="Search">
-            <TreeComponentDropdown
-              showSearch
-              value={searchField}
-              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-              placeholder="Search components"
-              onChange={onChange}
-              treeDataSimpleMode
-              treeDefaultExpandAll={false}
-              treeData={searchOptions}
-            />
-          </NavigationSection>
+        <Menu theme="dark" mode="inline" defaultOpenKeys={defaultOpenKeys}>
+          <StyledSubMenu
+            key="search-component"
+            title="Search for component"
+            icon={<FileSearchOutlined />}
+          >
+            <NavSearchComponent />
+          </StyledSubMenu>
 
-          <NavigationSection title="Actions">
-            <NavigationActionButtons />
-          </NavigationSection>
+          <StyledMenuDivider />
 
-          <NavigationSection title="Component Background">
-            <ColorInfoParagraph>
-              Determine how to colour the components.
-            </ColorInfoParagraph>
+          <StyledSubMenu
+            key="node-visualization"
+            title="Node visualization options"
+            icon={<BgColorsOutlined />}
+          >
+            <NavNodeVisualizationOptions />
+          </StyledSubMenu>
 
-            <DropdownInput
-              defaultValue={
-                !componentBackground.mode
-                  ? 'proportional_size'
-                  : componentBackground.mode
-              }
-              onChange={(value) =>
-                setComponentBackground({
-                  ...componentBackground,
-                  mode: value,
-                })
-              }
+          <StyledMenuDivider />
+
+          <StyledSubMenu
+            key="navigation-actions"
+            title="Actions"
+            icon={<InteractionOutlined />}
+          >
+            <NavigationPrimaryActions setIsHelpVisible={setIsHelpVisible} />
+            <StyledSubMenu
+              key="github-actions"
+              title="Contribute"
+              icon={<GithubOutlined />}
             >
-              <Select.Option value="white">White</Select.Option>
-
-              <Select.Option value="proportional_size">
-                Proportional Size based on Lines
-              </Select.Option>
-
-              <Select.Option value="loc_reference">
-                Colorization based on Lines
-              </Select.Option>
-            </DropdownInput>
-
-            {componentBackground.mode === 'loc_reference' && (
-              <BaselineInputWrapper>
-                <Input
-                  addonBefore={'Baseline'}
-                  placeholder={'LOC Reference'}
-                  defaultValue={componentBackground.locReference}
-                  onChange={(e) => {
-                    if (e.target.value < 1) {
-                      setComponentBackground({
-                        ...componentBackground,
-                        locReference: 1,
-                      });
-                    } else {
-                      setComponentBackground({
-                        ...componentBackground,
-                        locReference: e.target.value,
-                      });
-                    }
-                  }}
-                  type="number"
-                  min="1"
-                />
-              </BaselineInputWrapper>
-            )}
-
-            <HelpPanelButton
-              type="primary"
-              shape={'round'}
-              size="large"
-              icon={<QuestionCircleOutlined />}
-              onClick={() => setIsHelpVisible(true)}
-            >
-              Open help
-            </HelpPanelButton>
-          </NavigationSection>
+              <NavigationGitHubActions />
+            </StyledSubMenu>
+          </StyledSubMenu>
         </Menu>
       </NavigationSider>
     </>
