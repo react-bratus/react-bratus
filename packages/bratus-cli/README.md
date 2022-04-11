@@ -82,6 +82,8 @@ Override default configuration by creating `.bratusrc.json` in the root director
 
 ## Changelog
 
+- 3.0.1
+  - Updated Repo URLs
 - 3.0.0
   - Added horizontal layout and dynamic change of tree layout with buttons.
   - Redesigned the navigation panel + made it collapsible.
