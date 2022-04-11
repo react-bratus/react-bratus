@@ -40,7 +40,7 @@ Start by installing the tool globally on your computer. This may take a while.
 
 `npm install -g @react-bratus/cli`
 
-Test that the tool is installed correctly by running `react-bratus --help`. You should see the following message:
+Test that the tool is installed correctly by running `bratus --help`. You should see the following message:
 
 ```(text)
 Usage: bratus [options]
@@ -55,7 +55,7 @@ Options:
   -h, --help     display help for command
 ```
 
-Navigate to your React project and write `react-bratus --start` or `react-bratus -s`. If it is the first time running on that project, it will parse the data before launching the application. This can take a moment.
+Navigate to your React project and write `bratus --start` or `bratus -s`. If it is the first time running on that project, it will parse the data before launching the application. This can take a moment.
 
 It will show `Listening on port 4444` when ready. Open the browser and navigate to [http://localhost:4444](http://localhost:4444)
 
