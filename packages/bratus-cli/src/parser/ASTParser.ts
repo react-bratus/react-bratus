@@ -11,13 +11,7 @@ import Import from './Builder/Import';
 import JSXElement from './Builder/JSXElement';
 import ParsedFile from './Builder/ParsedFile';
 import Graph from './Graph/Graph';
-interface ParserOptions {
-  log: boolean;
-  rootFolderPath: string;
-  rootComponents: string[];
-  pathToSaveDir: string;
-}
-
+import { ParserOptions } from './ParserConfiguration';
 class ASTParser {
   private componentMap: Map<string, Component> = new Map();
   private options: ParserOptions;
@@ -152,14 +146,14 @@ class ASTParser {
           },
           ClassDeclaration({ node }) {
             if (component.isUndefined()) {
-              ASTParser.logEntry(`[Info] Open component by ClassDeclaration`);
+              ASTParser.logEntry('[Info] Open component by ClassDeclaration');
               component.open(node);
             }
           },
           VariableDeclaration({ node }) {
             if (component.isUndefined()) {
               ASTParser.logEntry(
-                `[Info] Open component by VariableDeclaration`
+                '[Info] Open component by VariableDeclaration'
               );
               component.open(node);
             }
@@ -177,10 +171,10 @@ class ASTParser {
               ASTParser.logEntry(`[Info] Identify component ${node.name}`);
               component.identify(node);
             }
-            if (isConditional) {
-              conditionIdentifier = conditionKind + ':' + node.name;
-              console.log(
-                `[CURRENT] --> The name of the rendering constant: ${node.name}`
+            if (isConditional && conditionIdentifier == '') {
+              conditionIdentifier = conditionIdentifier + '.' + node.name;
+              ASTParser.logEntry(
+                `[Parser] Found first condition identifier: ${node.name}`
               );
             }
           },
@@ -190,11 +184,11 @@ class ASTParser {
             );
             // ifStatementLevel++;
             isConditional = true;
-            conditionKind = '[if]';
+            conditionKind = '[IF]';
           },
           LogicalExpression() {
             ASTParser.logEntry(
-              `[CURRENT] Conditional rendering by '&&' found for this componenet.`
+              `[Info] Conditional rendering by '&&' found for this componenet.`
             );
             isConditional = true;
             conditionKind = '[&&]';
@@ -204,7 +198,7 @@ class ASTParser {
               `[Info] Conditional rendering by a ternary operator found for this componenet.`
             );
             isConditional = true;
-            conditionKind = '[ternary]';
+            conditionKind = '[?:]';
           },
           JSXOpeningElement({ node }) {
             const jsxElement = ASTParser.peek(elements);
@@ -312,7 +306,8 @@ class ASTParser {
               // jsxElement.setOptional(ifStatementLevel > 0);
               if (conditionIdentifier) {
                 jsxElement.setConditional();
-                jsxElement.conditionalOperator = conditionIdentifier;
+                jsxElement.conditionalOperator =
+                  conditionKind + conditionIdentifier;
               }
               component.addJSXElement(jsxElement);
               elements.pop();

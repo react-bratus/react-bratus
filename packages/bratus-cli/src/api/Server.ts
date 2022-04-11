@@ -1,21 +1,12 @@
 import ASTParser from '../parser';
+import {
+  ParserOptions,
+  DEFAULT_CONFIGURATION,
+} from '../parser/ParserConfiguration';
 import cors = require('cors');
 import express = require('express');
 import fs = require('fs');
 import path = require('path');
-
-const currentWorkingDirectory = process.cwd();
-const DEFAULT_CONFIGURATION = {
-  pathToSaveDir: `${currentWorkingDirectory}/.react-bratus`,
-  rootFolderPath: `${currentWorkingDirectory}/src`,
-  rootComponents: ['App'],
-};
-interface ParserOptions {
-  log: boolean;
-  rootFolderPath: string;
-  rootComponents: string[];
-  pathToSaveDir: string;
-}
 
 class Server {
   private app = express();
@@ -64,16 +55,23 @@ class Server {
       }
     );
     this.app.listen(4444);
-    console.log(`React-bratus listening on port http://localhost:${4444}`);
+    console.log(
+      `[SERVER] React-bratus listening on port http://localhost:${4444}`
+    );
   }
   private async getConfiguration() {
-    const path = `${currentWorkingDirectory}/.bratusrc.json`;
+    const path = `${DEFAULT_CONFIGURATION.currentWorkingDirectory}/.bratusrc.json`;
     if ((await fs.existsSync(path)) && (await fs.lstatSync(path).isFile())) {
+      console.log(
+        '[SERVER] Found custom configuration file. Root components: ' +
+          DEFAULT_CONFIGURATION.rootComponents
+      );
       return {
         ...DEFAULT_CONFIGURATION,
         ...JSON.parse(await fs.readFileSync(path, 'utf8')),
       };
     }
+    console.log('[SERVER] No custom configuration file found.');
     return DEFAULT_CONFIGURATION;
   }
 }
