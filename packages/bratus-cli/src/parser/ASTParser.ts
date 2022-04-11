@@ -179,7 +179,7 @@ class ASTParser {
             }
             if (isConditional) {
               conditionIdentifier = conditionKind + ':' + node.name;
-              console.log(
+              ASTParser.logEntry(
                 `[CURRENT] --> The name of the rendering constant: ${node.name}`
               );
             }

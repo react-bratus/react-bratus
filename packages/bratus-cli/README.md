@@ -82,6 +82,8 @@ Override default configuration by creating `.bratusrc.json` in the root director
 
 ## Changelog
 
+- 3.0.2
+  - Added glob as dependency to cli
 - 3.0.1
   - Updated Repo URLs
 - 3.0.0
