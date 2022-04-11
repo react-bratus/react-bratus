@@ -21,15 +21,17 @@ class ASTParser {
     this.options = options;
     ASTParser.log = options.log;
     console.log(
-      `[Info] Parser initialized with path: ${this.options.rootFolderPath}`
+      `[ASTParser] Parser initialized with path: ${this.options.rootFolderPath}`
     );
   }
 
   public parse(): Promise<void> {
     return new Promise((resolve) => {
-      console.log(`[Info] Parsing project`);
+      console.log(`[ASTParser] Parsing project`);
       this.getFilesAndDirectories().then(async (files) => {
-        ASTParser.logEntry(`[Info] Traversing files: [${files.join(',\n')}]`);
+        ASTParser.logEntry(
+          `[ASTParser] Traversing files: [${files.join(',\n')}]`
+        );
         for (let i = 0; i < files.length; i++) {
           // Fix to avoid parsing Storybook files
           if (!files[i].includes('stories')) {
@@ -59,9 +61,9 @@ class ASTParser {
           }
         }
         const graph = new Graph(this.componentMap);
-        console.log(`[Info] Parsing finished`);
+        console.log(`[ASTParser] Parsing finished`);
         graph.build(this.options.rootComponents);
-        console.log(`[Info] Building graph finished`);
+        console.log(`[Graph Builder] Building graph finished`);
 
         await this.writeDataToFile(graph.toString());
         resolve();
@@ -69,15 +71,21 @@ class ASTParser {
     });
   }
 
+  /**
+   * The function responsible for saving the graph data to the data.json file.
+   * @param graphData Graph data represented by a string
+   */
+
   private writeDataToFile(graphData: string): void {
-    console.log(
-      `[Info] Writing data to ${this.options.pathToSaveDir}/data.json`
-    );
     const dir = this.options.pathToSaveDir;
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
+      console.log('[ASTParser] Creating the .react-bratus folder.');
     }
-    fs.writeFileSync(dir + '/data.json', graphData);
+    fs.writeFileSync(`${dir}/data.json`, graphData);
+    console.log(
+      `[ASTParser] Writing data to ${this.options.pathToSaveDir}/data.json`
+    );
   }
 
   public getFilesAndDirectories(): Promise<string[]> {
@@ -358,6 +366,7 @@ class ASTParser {
       }
     });
   }
+
   public static logEntry(logEntry: string): void {
     if (ASTParser.log) {
       console.log(logEntry);

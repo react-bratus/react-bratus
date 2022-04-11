@@ -1,14 +1,9 @@
 #!/usr/bin/env node
 
 import { program } from 'commander';
-import * as fs from 'fs';
-
 import ASTParser from './parser';
 import Server from './api';
-import {
-  ParserOptions,
-  DEFAULT_CONFIGURATION,
-} from './parser/ParserConfiguration';
+import { ParserOptions, getConfiguration } from './parser/ParserConfiguration';
 
 const packageJson = require('../package.json');
 
@@ -21,9 +16,7 @@ program
   .parse(process.argv);
 
 const options = program.opts();
-const customConfigurationFile = `${DEFAULT_CONFIGURATION.currentWorkingDirectory}/.bratusrc.json`;
 const config = getConfiguration();
-console.log('Roots from config: ' + config.rootComponents);
 
 const parserOptions: ParserOptions = {
   rootFolderPath: config.rootFolderPath,
@@ -32,32 +25,13 @@ const parserOptions: ParserOptions = {
   pathToSaveDir: config.pathToSaveDir,
 };
 
+// The bratus --start command always parses the project and then starts the server.
 if (options.start) {
   parseProject(parserOptions).then(() => startServer());
-  // if (fs.existsSync(`${config.pathToSaveDir}/data.json`)) {
-  //   startServer();
-  // } else {
-  //   parseProject(parserOptions).then(() => startServer());
-  // }
 }
 
 if (options.parse) {
   parseProject(parserOptions);
-}
-
-function getConfiguration() {
-  if (
-    fs.existsSync(customConfigurationFile) &&
-    fs.lstatSync(customConfigurationFile).isFile()
-  ) {
-    console.log('[COMMANDER] Getting custom configuration from path');
-    return {
-      ...DEFAULT_CONFIGURATION,
-      ...JSON.parse(fs.readFileSync(customConfigurationFile, 'utf8')),
-    };
-  }
-  console.log('[COMMANDER] No custom configuration file found.');
-  return DEFAULT_CONFIGURATION;
 }
 
 function startServer() {
@@ -76,7 +50,6 @@ function startServer() {
 function parseProject(options: ParserOptions): Promise<void> {
   try {
     const parser = new ASTParser(options);
-    console.log('[COMMANDER] Parsing project.');
     return parser.parse();
   } catch (error: any) {
     throw new Error('An error occurred when parsing: ' + error.message);
