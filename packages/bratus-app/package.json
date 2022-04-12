@@ -56,7 +56,6 @@
     "@babel/core": "^7.13.1",
     "@lingui/cli": "^3.6.0",
     "@lingui/macro": "^3.6.0",
-    "@types/color-hash": "^1.0.2",
     "@types/react-syntax-highlighter": "^13.5.2",
     "@types/styled-components": "^5.1.23",
     "eslint": "^7.20.0",
