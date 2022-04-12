@@ -1,23 +1,10 @@
-import { Select, TreeSelect, Button } from 'antd';
+import { Select, TreeSelect } from 'antd';
 import Sider from 'antd/lib/layout/Sider';
-import Paragraph from 'antd/lib/typography/Paragraph';
+import MenuDivider from 'antd/lib/menu/MenuDivider';
+import SubMenu from 'antd/lib/menu/SubMenu';
 import Title from 'antd/lib/typography/Title';
-import styled from 'styled-components';
-
+import styled, { css } from 'styled-components';
 import { baseUnit } from '../../utils/tokens/units';
-
-export const ColorInfoParagraph = styled(Paragraph)`
-  color: #fff;
-  line-height: ${baseUnit * 2}px;
-  font-size: ${baseUnit + 2}px;
-  text-align: right;
-  padding: 0 ${baseUnit}px;
-`;
-
-export const AppTitle = styled(Title)`
-  color: #fff !important;
-  text-align: center;
-`;
 
 export const NavigationSider = styled(Sider)`
   overflow: auto;
@@ -26,24 +13,56 @@ export const NavigationSider = styled(Sider)`
   left: 0;
 `;
 
-export const DropdownInput = styled(Select)`
+export const AppTitle = styled(Title)`
+  color: #fff !important;
+  padding-left: 24px;
+  margin-top: 24px;
+  margin-bottom: 0;
+`;
+
+export const StyledSubMenu = styled(SubMenu)`
+  font-size: 16px;
+
+  .ant-menu-inline.ant-menu-sub {
+    background-color: hsl(209, 100%, 11%);
+  }
+
+  .ant-menu-submenu {
+    background-color: #001529;
+  }
+`;
+
+const navigationDropdownStyles = css`
   width: 100%;
-  padding: 0 ${baseUnit}px;
+  padding: ${baseUnit}px ${baseUnit * 2}px;
+
+  .ant-select-arrow {
+    margin-right: ${baseUnit * 2}px;
+    cursor: pointer;
+    color: #001529;
+  }
+`;
+
+export const DropdownInput = styled(Select)`
+  ${navigationDropdownStyles}
 `;
 
 export const BaselineInputWrapper = styled.div`
-  width: 100%;
-  padding: 0 ${baseUnit}px;
-  margin-top: ${baseUnit}px;
+  ${navigationDropdownStyles}
 `;
 
 export const TreeComponentDropdown = styled(TreeSelect)`
-  width: 100%;
-  padding: 0 ${baseUnit}px;
+  ${navigationDropdownStyles}
 `;
 
-export const HelpPanelButton = styled(Button)`
-  position: absolute;
-  bottom: ${baseUnit * 2}px;
-  left: ${baseUnit * 2}px;
+export const StyledDropDownSelect = {
+  maxHeight: 550,
+  maxWidth: 302,
+  minWidth: 'unset',
+  width: 302,
+  overflow: 'auto',
+};
+
+export const StyledMenuDivider = styled(MenuDivider)`
+  margin: 0 ${baseUnit / 2}px !important;
 `;
