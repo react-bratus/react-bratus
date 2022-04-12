@@ -1,6 +1,6 @@
 import { Button } from 'antd';
 import styled, { css } from 'styled-components';
-import { baseUnit } from '../../../../utils/tokens/units';
+import { baseUnit } from '../../../../utils/constants/units';
 
 const navigationButtonsWrapperStyles = css`
   display: flex;

@@ -1,7 +1,7 @@
 import dagre from 'dagre';
 import { isEdge, isNode } from 'react-flow-renderer';
-import { GraphLabels } from '../tokens/constants';
-import { baseNodeHeight, nodeWidth } from '../tokens/units';
+import { GraphLabels } from '../constants/constants';
+import { baseNodeHeight, nodeWidth } from '../constants/units';
 
 var aditionalSpaceMultiplier = 2;
 

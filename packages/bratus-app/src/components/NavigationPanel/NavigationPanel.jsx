@@ -1,6 +1,6 @@
 import { Menu } from 'antd';
 import React from 'react';
-import { navigationWidth } from '../../utils/tokens/units';
+import { navigationWidth } from '../../utils/constants/units';
 import {
   AppTitle,
   NavigationSider,
@@ -18,7 +18,7 @@ import NavigationPrimaryActions from './private/ActionButtons/NavigationPrimaryA
 import NavigationGitHubActions from './private/ActionButtons/NavigationGitHubActions';
 import NavSearchComponent from './private/SubMenuSections/NavSearchComponent';
 import NavNodeVisualizationOptions from './private/SubMenuSections/NavNodeVisualizationOptions';
-import { defaultOpenKeys } from '../../utils/tokens/constants';
+import { defaultOpenKeys } from '../../utils/constants/constants';
 
 const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
   return (
