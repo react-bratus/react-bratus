@@ -7,3 +7,13 @@ export const recompile = () => {
     method: 'POST',
   });
 };
+
+export const recompileWithInput = (input) => {
+  fetch('http://localhost:4444/compileWithInput', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ rootComponents: input }),
+  });
+};

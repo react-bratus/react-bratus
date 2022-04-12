@@ -19,6 +19,7 @@ import NavigationGitHubActions from './private/ActionButtons/NavigationGitHubAct
 import NavSearchComponent from './private/SubMenuSections/NavSearchComponent';
 import NavNodeVisualizationOptions from './private/SubMenuSections/NavNodeVisualizationOptions';
 import { defaultOpenKeys } from '../../utils/tokens/constants';
+import NavigationRecompileActions from './private/ActionButtons/NavigationRecompileActions';
 
 const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
   return (
@@ -39,6 +40,8 @@ const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
             <NavSearchComponent />
           </StyledSubMenu>
 
+          <StyledMenuDivider />
+          <NavigationRecompileActions />
           <StyledMenuDivider />
 
           <StyledSubMenu

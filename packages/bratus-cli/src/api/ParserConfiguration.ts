@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+
 export interface ParserOptions {
   log: boolean;
   rootFolderPath: string;
@@ -7,7 +8,6 @@ export interface ParserOptions {
 }
 
 export const DEFAULT_CONFIGURATION = {
-  currentWorkingDirectory: process.cwd(),
   pathToSaveDir: `${process.cwd()}/.react-bratus`,
   rootFolderPath: `${process.cwd()}/src`,
   rootComponents: ['App'],
@@ -16,12 +16,22 @@ export const DEFAULT_CONFIGURATION = {
 export function getConfiguration() {
   const path = `${process.cwd()}/.bratusrc.json`;
   if (fs.existsSync(path) && fs.lstatSync(path).isFile()) {
-    console.log('[ParserConfig] Getting custom configuration from file.');
+    console.log('[ParserConfig] Parsing with custom configuration from file.');
     return {
       ...DEFAULT_CONFIGURATION,
       ...JSON.parse(fs.readFileSync(path, 'utf8')),
     };
+  } else {
+    console.log('[ParserConfig] Parsing with default configuration.');
+    return DEFAULT_CONFIGURATION;
   }
-  console.log('[ParserConfig] No custom configuration file found.');
-  return DEFAULT_CONFIGURATION;
+}
+
+export function getConfigurationFromInput(input: string) {
+  console.log('[ParserConfig] Parsing with custom configuration from input.');
+  return {
+    pathToSaveDir: `${process.cwd()}/.react-bratus`,
+    rootFolderPath: `${process.cwd()}/src`,
+    rootComponents: input.split(',').map((i) => i.trim()),
+  };
 }

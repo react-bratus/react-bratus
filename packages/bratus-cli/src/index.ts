@@ -3,7 +3,7 @@
 import { program } from 'commander';
 import ASTParser from './parser';
 import Server from './api';
-import { ParserOptions, getConfiguration } from './parser/ParserConfiguration';
+import { ParserOptions, getConfiguration } from './api/ParserConfiguration';
 
 const packageJson = require('../package.json');
 

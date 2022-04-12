@@ -11,7 +11,7 @@ import Import from './Builder/Import';
 import JSXElement from './Builder/JSXElement';
 import ParsedFile from './Builder/ParsedFile';
 import Graph from './Graph/Graph';
-import { ParserOptions } from './ParserConfiguration';
+import { ParserOptions } from '../api/ParserConfiguration';
 class ASTParser {
   private componentMap: Map<string, Component> = new Map();
   private options: ParserOptions;
@@ -65,7 +65,7 @@ class ASTParser {
         graph.build(this.options.rootComponents);
         console.log(`[Graph Builder] Building graph finished`);
 
-        await this.writeDataToFile(graph.toString());
+        this.writeDataToFile(graph.toString());
         resolve();
       });
     });
@@ -77,12 +77,12 @@ class ASTParser {
    */
 
   private writeDataToFile(graphData: string): void {
-    const dir = this.options.pathToSaveDir;
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir);
+    const path = this.options.pathToSaveDir;
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path);
       console.log('[ASTParser] Creating the .react-bratus folder.');
     }
-    fs.writeFileSync(`${dir}/data.json`, graphData);
+    fs.writeFileSync(`${path}/data.json`, graphData);
     console.log(
       `[ASTParser] Writing data to ${this.options.pathToSaveDir}/data.json`
     );
