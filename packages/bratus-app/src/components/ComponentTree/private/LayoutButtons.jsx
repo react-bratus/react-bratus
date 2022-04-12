@@ -40,7 +40,7 @@ export const LayoutButtons = ({
       <LayoutButton
         shape="round"
         type="primary"
-        size="large"
+        size="middle"
         onClick={async () => {
           await onChangeTreeLayout('TB');
           reactFlowInstance.fitView();
@@ -53,7 +53,7 @@ export const LayoutButtons = ({
       <LayoutButton
         shape="round"
         type="primary"
-        size="large"
+        size="middle"
         onClick={async () => {
           await onChangeTreeLayout('LR');
           reactFlowInstance.fitView();

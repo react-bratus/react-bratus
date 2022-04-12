@@ -28,10 +28,8 @@ export interface MiniMapProps extends HTMLAttributes<SVGSVGElement> {
   maskColor?: string;
 }
 
-// declare const window: any;
-
-const defaultWidth = 200;
-const defaultHeight = 150;
+const defaultWidth = 300;
+const defaultHeight = 220;
 
 const getBoundsOfBoxes = (box1: Box, box2: Box): Box => ({
   x: Math.min(box1.x, box2.x),
@@ -67,7 +65,7 @@ const MiniMap = ({
   nodeClassName = '',
   nodeBorderRadius = 5,
   nodeStrokeWidth = 2,
-  maskColor = 'rgb(240, 242, 243, 0.7)',
+  maskColor = 'rgb(240, 242, 243, 0.5)',
 }: MiniMapProps) => {
   const containerWidth = useStoreState((s) => s.width);
   const containerHeight = useStoreState((s) => s.height);
@@ -156,8 +154,6 @@ const MiniMap = ({
 
   return (
     <svg
-      width={elementWidth}
-      height={elementHeight}
       viewBox={`${x} ${y} ${width} ${height}`}
       style={style}
       className={mapClasses}
