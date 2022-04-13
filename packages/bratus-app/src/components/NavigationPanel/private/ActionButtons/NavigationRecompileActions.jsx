@@ -3,20 +3,19 @@ import { ReloadOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
 import { ActionButton, RecompileActionsWrapper } from './ActionButtons.sc';
 import { useState } from 'react';
-import { recompileWithInput } from '../../../../api';
+import { recompile } from '../../../../api';
 
 export const NavigationRecompileActions = () => {
   const [rootComponents, setRootComponent] = useState('');
 
   const triggerRecompile = (input) => {
-    recompileWithInput(input)
-      .then(window.reload())
+    recompile(input)
+      .then(location.reload())
       .catch((error) => console.log('An error occurred ', error));
   };
 
   function handleChange(e) {
-    const { value } = e.target;
-    setRootComponent(value);
+    setRootComponent(e.target.value);
   }
 
   return (

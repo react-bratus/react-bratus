@@ -1,9 +1,5 @@
 import ASTParser from '../parser';
-import {
-  ParserOptions,
-  getConfiguration,
-  getConfigurationFromInput,
-} from './ParserConfiguration';
+import { ParserOptions, getConfiguration } from './ParserConfiguration';
 import cors = require('cors');
 import express = require('express');
 import fs = require('fs');
@@ -46,32 +42,7 @@ class Server {
       '/compile',
       (_req: express.Request, res: express.Response) => {
         try {
-          this.config = getConfiguration();
-          console.log('[ParserConfig]', this.config);
-          const parserOptions: ParserOptions = {
-            rootFolderPath: this.config.rootFolderPath,
-            log: false,
-            rootComponents: this.config.rootComponents,
-            pathToSaveDir: this.config.pathToSaveDir,
-          };
-          const parser = new ASTParser(parserOptions);
-          parser
-            .parse()
-            .then(() => res.status(200).send())
-            .catch(() => res.status(500).send());
-        } catch (error: any) {
-          console.log('An error occurred when parsing: ', error.message);
-          res.status(500).send(error.message);
-        }
-      }
-    );
-
-    this.app.post(
-      '/compileWithInput',
-      (req: express.Request, res: express.Response) => {
-        console.log('Body:', req.body.rootComponents);
-        try {
-          this.config = getConfigurationFromInput(req.body.rootComponents);
+          this.config = getConfiguration(_req.body.rootComponents);
           console.log('[ParserConfig]', this.config);
           const parserOptions: ParserOptions = {
             rootFolderPath: this.config.rootFolderPath,
