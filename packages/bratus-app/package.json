@@ -1,12 +1,12 @@
 {
   "name": "@react-bratus/app",
-  "version": "2.0.7",
+  "version": "3.0.1",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/stephanboersma/react-bratus.git"
+    "url": "https://github.com/react-bratus/react-bratus.git"
   },
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
