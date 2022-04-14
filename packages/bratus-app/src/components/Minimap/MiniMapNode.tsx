@@ -1,3 +1,6 @@
+// Would be nice to work on this file in the future, and
+// use the library instead of having this kind of duplication
+
 import React from 'react';
 import { CSSProperties } from 'react';
 import cc from 'classcat';
