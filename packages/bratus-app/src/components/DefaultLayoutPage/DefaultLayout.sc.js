@@ -20,3 +20,11 @@ export const NavigationTriggerButton = styled(Button)`
       : `${navigationWidth + baseUnit * 2}px`};
   z-index: 999;
 `;
+
+export const MinimapTriggerButton = styled(Button)`
+  position: absolute;
+  top: ${({ isMinimapVisible }) =>
+    isMinimapVisible === true ? `${baseUnit * 19.2}px` : `${baseUnit}px`};
+  right: ${baseUnit}px;
+  z-index: 999;
+`;
