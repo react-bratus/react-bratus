@@ -82,6 +82,9 @@ Override default configuration by creating `.bratusrc.json` in the root director
 
 ## Changelog
 
+- 3.1.0
+  - Reintroducing help panel.
+  - Now contains information about the different visualizations of the nodes and the edges.
 - 3.0.2
   - Added glob as dependency to cli
 - 3.0.1

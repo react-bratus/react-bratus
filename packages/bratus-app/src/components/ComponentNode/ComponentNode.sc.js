@@ -4,7 +4,11 @@ import Text from 'antd/lib/typography/Text';
 import Title from 'antd/lib/typography/Title';
 import styled, { css } from 'styled-components';
 
-import { baseNodeHeight, baseUnit, nodeWidth } from '../../utils/tokens/units';
+import {
+  baseNodeHeight,
+  baseUnit,
+  nodeWidth,
+} from '../../utils/constants/units';
 const horizontalViewNodeHeight = baseNodeHeight / 2.3;
 
 export const StyledNode = styled.div`
