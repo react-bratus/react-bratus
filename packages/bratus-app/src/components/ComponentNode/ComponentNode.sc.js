@@ -3,7 +3,7 @@ import { Col, Row } from 'antd';
 import Text from 'antd/lib/typography/Text';
 import Title from 'antd/lib/typography/Title';
 import styled, { css } from 'styled-components';
-import { BackgroundLabels } from '../../utils/constants/constants';
+import { BackgroundLabels, GraphLabels } from '../../utils/constants/constants';
 
 import {
   baseNodeHeight,
