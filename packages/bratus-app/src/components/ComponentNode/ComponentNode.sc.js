@@ -3,6 +3,7 @@ import { Col, Row } from 'antd';
 import Text from 'antd/lib/typography/Text';
 import Title from 'antd/lib/typography/Title';
 import styled, { css } from 'styled-components';
+import { BackgroundLabels } from '../../utils/constants/constants';
 
 import {
   baseNodeHeight,
@@ -13,16 +14,16 @@ const horizontalViewNodeHeight = baseNodeHeight / 2.3;
 
 export const StyledNode = styled.div`
   height: ${({ linesOfCode, componentBackground, treeLayoutDirection }) => {
-    if (componentBackground.mode === 'proportional_size') {
-      if (treeLayoutDirection === 'TB') {
+    if (componentBackground.mode === BackgroundLabels.size) {
+      if (treeLayoutDirection === GraphLabels.topToBottom) {
         return `${horizontalViewNodeHeight + linesOfCode}px`;
       }
     }
     return '75px';
   }};
   width: ${({ linesOfCode, componentBackground, treeLayoutDirection }) => {
-    if (componentBackground.mode === 'proportional_size') {
-      if (treeLayoutDirection === 'LR') {
+    if (componentBackground.mode === BackgroundLabels.size) {
+      if (treeLayoutDirection === GraphLabels.leftToRight) {
         return `${nodeWidth + linesOfCode}px`;
       }
     }

@@ -1,6 +1,6 @@
 import dagre from 'dagre';
 import { isEdge, isNode } from 'react-flow-renderer';
-import { GraphLabels } from '../constants/constants';
+import { BackgroundLabels, GraphLabels } from '../constants/constants';
 import { baseNodeHeight, nodeWidth } from '../constants/units';
 
 var aditionalSpaceMultiplier = 2;
@@ -20,18 +20,18 @@ dagreGraph.setDefaultEdgeLabel(() => ({}));
  */
 export const getLayoutedGraphElements = (
   nodesAndEdges,
-  treeLayoutDirection = 'TB',
+  treeLayoutDirection = GraphLabels.topToBottom,
   setTreeLayoutDirection = () => {},
   componentBackground
 ) => {
   dagreGraph.setGraph({ rankdir: treeLayoutDirection });
 
-  const isHorizontalLayout = treeLayoutDirection === 'LR';
+  const isHorizontalLayout = treeLayoutDirection === GraphLabels.leftToRight;
 
   nodesAndEdges.forEach((graphElement) => {
     if (isNode(graphElement)) {
       if (treeLayoutDirection === GraphLabels.topToBottom) {
-        if (componentBackground.mode === 'proportional_size') {
+        if (componentBackground.mode === BackgroundLabels.size) {
           dagreGraph.setNode(graphElement.id, {
             width: nodeWidth,
             height:
@@ -47,7 +47,7 @@ export const getLayoutedGraphElements = (
       }
 
       if (treeLayoutDirection == GraphLabels.leftToRight) {
-        if (componentBackground.mode === 'proportional_size') {
+        if (componentBackground.mode === BackgroundLabels.size) {
           dagreGraph.setNode(graphElement.id, {
             width: nodeWidth * aditionalSpaceMultiplier,
             height: baseNodeHeight + graphElement.data.linesOfCode,
@@ -76,8 +76,8 @@ export const getLayoutedGraphElements = (
       graphElement.targetPosition = isHorizontalLayout ? 'left' : 'top';
       graphElement.sourcePosition = isHorizontalLayout ? 'right' : 'bottom';
 
-      if (treeLayoutDirection === 'TB') {
-        if (componentBackground.mode === 'proportional_size') {
+      if (treeLayoutDirection === GraphLabels.topToBottom) {
+        if (componentBackground.mode === BackgroundLabels.size) {
           graphElement.position = {
             x: nodeWithPosition.x - nodeWidth + Math.random() / 1000,
             y: nodeWithPosition.y - (36 + graphElement.data.linesOfCode) / 3,
@@ -90,8 +90,8 @@ export const getLayoutedGraphElements = (
         }
       }
 
-      if (treeLayoutDirection === 'LR') {
-        if (componentBackground.mode === 'proportional_size') {
+      if (treeLayoutDirection === GraphLabels.leftToRight) {
+        if (componentBackground.mode === BackgroundLabels.size) {
           graphElement.position = {
             x:
               nodeWithPosition.x -

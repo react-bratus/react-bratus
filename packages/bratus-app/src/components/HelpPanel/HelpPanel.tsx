@@ -29,7 +29,7 @@ const HelpPanel = ({
       <Title level={5}>{HelpPanelLabels.thanks}</Title>
       <Paragraph>{HelpPanelLabels.purpose}</Paragraph>
 
-      <Collapse defaultActiveKey={'preferences'}>
+      <Collapse defaultActiveKey={HelpPanelLabels.pref.key}>
         <Panel key={''} header={HelpPanelLabels.nodes.title}>
           <NodesSection />
         </Panel>
@@ -38,7 +38,10 @@ const HelpPanel = ({
           <EdgesSection />
         </Panel>
 
-        <Panel key={'preferences'} header={HelpPanelLabels.pref.title}>
+        <Panel
+          key={HelpPanelLabels.pref.key}
+          header={HelpPanelLabels.pref.title}
+        >
           <PreferencesSection
             isHelpHiddenOnStartUp={isHelpHiddenOnStartUp}
             setIsHelpHiddenOnStartUp={setIsHelpHiddenOnStartUp}

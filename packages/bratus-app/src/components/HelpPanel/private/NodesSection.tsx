@@ -9,8 +9,11 @@ const NodesSection = () => {
     <>
       <Paragraph>{HelpPanelLabels.nodes.text}</Paragraph>
 
-      <Collapse defaultActiveKey={'nodes-color'}>
-        <Panel key={'nodes-color'} header={HelpPanelLabels.nodes.color.header}>
+      <Collapse defaultActiveKey={HelpPanelLabels.nodes.color.key}>
+        <Panel
+          key={HelpPanelLabels.nodes.color.key}
+          header={HelpPanelLabels.nodes.color.header}
+        >
           <Paragraph>{HelpPanelLabels.nodes.color.text}</Paragraph>
           <Image src={HelpPanelLabels.nodes.color.img} />
         </Panel>

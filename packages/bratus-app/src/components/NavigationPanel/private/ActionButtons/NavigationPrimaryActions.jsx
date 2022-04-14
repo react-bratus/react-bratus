@@ -4,6 +4,7 @@ import { message } from 'antd';
 import { recompile } from '../../../../api';
 import PropTypes from 'prop-types';
 import { ActionButton, PrimaryActionsWrapper } from './ActionButtons.sc';
+import { ButtonLabels } from '../../../../utils/constants/constants';
 
 export const NavigationPrimaryActions = ({ setIsHelpVisible }) => {
   const triggerRecompile = () => {
@@ -25,22 +26,22 @@ export const NavigationPrimaryActions = ({ setIsHelpVisible }) => {
     <PrimaryActionsWrapper>
       <ActionButton
         type="primary"
-        shape={'round'}
+        shape="round"
         size="middle"
         icon={<ReloadOutlined />}
         onClick={triggerRecompile}
       >
-        Recompile Project
+        {ButtonLabels.recompile}
       </ActionButton>
 
       <ActionButton
         type="primary"
-        shape={'round'}
+        shape="round"
         size="middle"
         icon={<QuestionCircleOutlined />}
         onClick={() => setIsHelpVisible(true)}
       >
-        Open help
+        {ButtonLabels.help}
       </ActionButton>
     </PrimaryActionsWrapper>
   );
