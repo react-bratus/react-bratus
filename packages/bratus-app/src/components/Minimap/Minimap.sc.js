@@ -1,7 +1,7 @@
 import MiniMap from './MiniMap';
 import styled from 'styled-components';
 
-import { baseUnit } from '../../utils/tokens/units';
+import { baseUnit } from '../../utils/constants/units';
 
 const StyledMiniMap = styled(MiniMap)`
   position: absolute;

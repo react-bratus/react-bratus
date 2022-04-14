@@ -22,16 +22,16 @@ const DefaultLayout = ({
   info,
   nodeDetail,
   setNodeDetail,
-  verticalTreeLayoutAsDefault,
+  isVerticalTreeLayoutAsDefault,
   setVerticalTreeLayoutAsDefault,
 }) => {
-  const [hideHelpOnStartUp, setHideHelpOnStartUp] = useStickyState(
+  const [isHelpHiddenOnStartUp, setIsHelpHiddenOnStartUp] = useStickyState(
     false,
     'react-bratus:hide-help'
   );
   const { highlightedComponents } = useContext(HighlightedComponentsContext);
   const [isHelpVisible, setIsHelpVisible] = useState(
-    !hideHelpOnStartUp ? true : false
+    !isHelpHiddenOnStartUp ? true : false
   );
   const [collapsed, setCollapsed] = useState(false);
   const [isMinimapVisible, setisMinimapVisible] = useState(true);
@@ -115,12 +115,12 @@ const DefaultLayout = ({
 
       <ReactFlowProvider>
         <HelpPanel
-          verticalTreeLayoutAsDefault={verticalTreeLayoutAsDefault}
+          isVerticalTreeLayoutAsDefault={isVerticalTreeLayoutAsDefault}
           setVerticalTreeLayoutAsDefault={setVerticalTreeLayoutAsDefault}
           isHelpVisible={isHelpVisible}
           setIsHelpVisible={setIsHelpVisible}
-          hideHelpOnStartUp={hideHelpOnStartUp}
-          setHideHelpOnStartUp={setHideHelpOnStartUp}
+          isHelpHiddenOnStartUp={isHelpHiddenOnStartUp}
+          setIsHelpHiddenOnStartUp={setIsHelpHiddenOnStartUp}
         />
       </ReactFlowProvider>
     </Layout>
@@ -128,7 +128,7 @@ const DefaultLayout = ({
 };
 
 DefaultLayout.propTypes = {
-  verticalTreeLayoutAsDefault: PropTypes.any,
+  isVerticalTreeLayoutAsDefault: PropTypes.any,
   setVerticalTreeLayoutAsDefault: PropTypes.any,
   info: PropTypes.any,
   nodeDetail: PropTypes.any,

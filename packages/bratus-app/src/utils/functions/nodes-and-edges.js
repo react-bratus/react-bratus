@@ -27,7 +27,8 @@ export const getEdges = (data) => {
         fill: '#fff',
       },
       style: {
-        stroke: edge.conditional ? 'green' : edge.label ? 'red' : '#000',
+        stroke: edge.conditional ? '#348888' : edge.label ? '#FA7F08' : '#000',
+        strokeWidth: '2px',
       },
     };
   });
