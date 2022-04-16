@@ -98,6 +98,14 @@ const ComponentNode = (node) => {
   const layoutSourceHandlePosition =
     treeLayoutDirection === 'LR' ? 'right' : 'bottom';
 
+  const truncateNodeName = (nodeName, nameLength) => {
+    return nodeName.length > nameLength
+      ? nodeName.slice(0, nameLength - 1).concat('...')
+      : nodeName;
+  };
+
+  const truncatedNodeName = truncateNodeName(node.data.label, 13);
+
   return (
     <StyledNode
       linesOfCode={node.data.linesOfCode}
@@ -114,7 +122,7 @@ const ComponentNode = (node) => {
 
       <StyledNodeContent>
         <StyledTitle color={getFontColor} level={5}>
-          {node.data.label}
+          {truncatedNodeName}
         </StyledTitle>
       </StyledNodeContent>
 
