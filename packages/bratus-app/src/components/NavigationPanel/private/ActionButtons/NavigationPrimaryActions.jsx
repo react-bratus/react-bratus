@@ -6,7 +6,9 @@ import PropTypes from 'prop-types';
 import { ActionButton, PrimaryActionsWrapper } from './ActionButtons.sc';
 import { ButtonLabels } from '../../../../utils/constants/constants';
 
+// Buttons on sider to recompile the project and open the help panel.
 export const NavigationPrimaryActions = ({ setIsHelpVisible }) => {
+  // Recompile the project to sync changes.
   const triggerRecompile = () => {
     recompile()
       .then(() => {
