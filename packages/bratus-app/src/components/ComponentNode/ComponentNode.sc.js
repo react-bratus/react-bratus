@@ -1,16 +1,12 @@
-import { EyeOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons';
-import { Col, Row } from 'antd';
-import Text from 'antd/lib/typography/Text';
+import { Col } from 'antd';
 import Title from 'antd/lib/typography/Title';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { BackgroundLabels, GraphLabels } from '../../utils/constants/constants';
-
 import {
-  baseNodeHeight,
   baseUnit,
   nodeWidth,
+  horizontalViewNodeHeight,
 } from '../../utils/constants/units';
-const horizontalViewNodeHeight = baseNodeHeight / 2.3;
 
 // The height and the width of the tree nodes, are dynamically adjusted based on the
 // layout of the tree and the node visualization options that the user chooses.
