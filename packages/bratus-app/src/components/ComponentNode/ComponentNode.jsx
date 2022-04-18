@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import { Handle } from 'react-flow-renderer';
 import ComponentBackgroundContext from '../../contexts/ComponentBackgroundContext';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
+import { nodeNameLength } from '../../utils/constants/units';
 import { rgbaToHex } from '../../utils/functions/rgbaToHex';
 import { GraphDirectionContext } from '../ComponentTree/ComponentTree';
 import { StyledNode, StyledNodeContent, StyledTitle } from './ComponentNode.sc';
@@ -104,7 +105,7 @@ const ComponentNode = (node) => {
       : nodeName;
   };
 
-  const truncatedNodeName = truncateNodeName(node.data.label, 13);
+  const truncatedNodeName = truncateNodeName(node.data.label, nodeNameLength);
 
   return (
     <StyledNode
