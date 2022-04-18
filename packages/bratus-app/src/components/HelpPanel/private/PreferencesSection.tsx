@@ -4,6 +4,7 @@ import { CheckboxWrapper, VerticalDivider } from '../HelpPanel.sc';
 import { HelpPanelLabels } from '../../../utils/constants/constants';
 import { PreferencesProps } from '../../../interfaces/component-interfaces';
 
+// User can disable help on startup and choose vertical layout as default.
 export const PreferencesSection = ({
   isHelpHiddenOnStartUp,
   setIsHelpHiddenOnStartUp,

@@ -4,12 +4,6 @@ const { Link } = Typography;
 import styled from 'styled-components';
 import { baseUnit } from '../../utils/constants/units';
 
-export const HelpPanelTreeWrapper = styled.div`
-  width: 600px;
-  height: 500px;
-  background-color: lightgrey;
-`;
-
 export const VerticalDivider = styled(Divider)`
   height: auto;
   width: 1px;
