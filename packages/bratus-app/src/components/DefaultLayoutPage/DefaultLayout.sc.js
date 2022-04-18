@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { baseUnit, navigationWidth } from '../../utils/constants/units';
 
 export const MainContentWrapper = styled(Layout)`
-  margin-left: ${({ collapsed }) =>
-    collapsed === false ? `${navigationWidth}px` : '0'};
+  margin-left: ${({ isNavCollapsed }) =>
+    isNavCollapsed === false ? `${navigationWidth}px` : '0'};
   padding: 1rem;
   height: 100vh;
   background-color: rgb(240 242 245 / 33%);
@@ -14,8 +14,8 @@ export const MainContentWrapper = styled(Layout)`
 export const NavigationTriggerButton = styled(Button)`
   position: absolute;
   bottom: ${baseUnit * 2}px;
-  left: ${({ collapsed }) =>
-    collapsed === true
+  left: ${({ isNavCollapsed }) =>
+    isNavCollapsed === true
       ? `${baseUnit * 2}px`
       : `${navigationWidth + baseUnit * 2}px`};
   z-index: 999;

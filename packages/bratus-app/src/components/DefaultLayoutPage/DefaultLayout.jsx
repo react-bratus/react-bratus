@@ -26,17 +26,25 @@ const DefaultLayout = ({
   isVerticalTreeLayoutAsDefault,
   setVerticalTreeLayoutAsDefault,
 }) => {
+  // Set hidden help on start up to false in the local storage.
   const [isHelpHiddenOnStartUp, setIsHelpHiddenOnStartUp] = useStickyState(
     false,
     'react-bratus:hide-help'
   );
-  const { highlightedComponents } = useContext(HighlightedComponentsContext);
+
+  // When user clicks the checkbox to hide or display help on startup.
   const [isHelpVisible, setIsHelpVisible] = useState(
     !isHelpHiddenOnStartUp ? true : false
   );
-  const [collapsed, setCollapsed] = useState(false);
+
+  // State to collapse the navigation sider.
+  const [isNavCollapsed, setIsNavCollapsed] = useState(false);
+
+  // State to hide/ show the minimap.
   const [isMinimapVisible, setisMinimapVisible] = useState(true);
 
+  // Highlight the same nodes on minimap when hovering over the nodes of the tree.
+  const { highlightedComponents } = useContext(HighlightedComponentsContext);
   const isMinimapNodeHighlighted = (node) => {
     return highlightedComponents.some((component) =>
       node.id.match(
@@ -45,6 +53,7 @@ const DefaultLayout = ({
     );
   };
 
+  // Color nodes on the minimap differently when highlighted or not.
   const defineMinimapNodeColor = (node) => {
     if (isMinimapNodeHighlighted(node)) {
       return new ColorHash({
@@ -64,29 +73,29 @@ const DefaultLayout = ({
       <ReactFlowProvider>
         <NavigationPanel
           setIsHelpVisible={setIsHelpVisible}
-          setCollapsed={setCollapsed}
-          collapsed={collapsed}
+          setIsNavCollapsed={setIsNavCollapsed}
+          isNavCollapsed={isNavCollapsed}
           info={info}
         />
 
         <NavigationTriggerButton
-          collapsed={collapsed}
-          icon={<LeftCircleOutlined rotate={collapsed && 180} />}
+          isNavCollapsed={isNavCollapsed}
+          icon={<LeftCircleOutlined rotate={isNavCollapsed && 180} />}
           type="primary"
           shape="round"
           size="middle"
           onClick={() => {
-            setCollapsed(!collapsed);
+            setIsNavCollapsed(!isNavCollapsed);
           }}
         >
-          {collapsed ? (
+          {isNavCollapsed ? (
             <span>{ButtonLabels.nav.show}</span>
           ) : (
             <span>{ButtonLabels.nav.hide}</span>
           )}
         </NavigationTriggerButton>
 
-        <MainContentWrapper collapsed={collapsed}>
+        <MainContentWrapper isNavCollapsed={isNavCollapsed}>
           {children}
         </MainContentWrapper>
 
