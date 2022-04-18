@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import { Handle } from 'react-flow-renderer';
 import ComponentBackgroundContext from '../../contexts/ComponentBackgroundContext';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
+import { nodeNameLength } from '../../utils/constants/units';
 import { rgbaToHex } from '../../utils/functions/rgbaToHex';
 import { GraphDirectionContext } from '../ComponentTree/ComponentTree';
 import { StyledNode, StyledNodeContent, StyledTitle } from './ComponentNode.sc';
@@ -98,6 +99,14 @@ const ComponentNode = (node) => {
   const layoutSourceHandlePosition =
     treeLayoutDirection === 'LR' ? 'right' : 'bottom';
 
+  const truncateNodeName = (nodeName, nameLength) => {
+    return nodeName.length > nameLength
+      ? nodeName.slice(0, nameLength - 1).concat('...')
+      : nodeName;
+  };
+
+  const truncatedNodeName = truncateNodeName(node.data.label, nodeNameLength);
+
   return (
     <StyledNode
       linesOfCode={node.data.linesOfCode}
@@ -114,7 +123,7 @@ const ComponentNode = (node) => {
 
       <StyledNodeContent>
         <StyledTitle color={getFontColor} level={5}>
-          {node.data.label}
+          {truncatedNodeName}
         </StyledTitle>
       </StyledNodeContent>
 
