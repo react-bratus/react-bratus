@@ -8,6 +8,7 @@ import {
   GraphLabels,
   HandleLabels,
 } from '../../utils/constants/constants';
+import { nodeNameLength } from '../../utils/constants/units';
 import { rgbaToHex } from '../../utils/functions/rgbaToHex';
 import { GraphDirectionContext } from '../ComponentTree/ComponentTree';
 import { StyledNode, StyledNodeContent, StyledTitle } from './ComponentNode.sc';
@@ -108,6 +109,14 @@ const ComponentNode = (node) => {
       ? HandleLabels.right
       : HandleLabels.bottom;
 
+  const truncateNodeName = (nodeName, nameLength) => {
+    return nodeName.length > nameLength
+      ? nodeName.slice(0, nameLength - 1).concat('...')
+      : nodeName;
+  };
+
+  const truncatedNodeName = truncateNodeName(node.data.label, nodeNameLength);
+
   return (
     <StyledNode
       linesOfCode={node.data.linesOfCode}
@@ -127,7 +136,7 @@ const ComponentNode = (node) => {
 
       <StyledNodeContent>
         <StyledTitle color={getFontColor} level={5}>
-          {node.data.label}
+          {truncatedNodeName}
         </StyledTitle>
       </StyledNodeContent>
 
