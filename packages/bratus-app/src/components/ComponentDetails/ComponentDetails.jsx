@@ -10,19 +10,21 @@ import { DetailsLabels } from '../../utils/constants/constants';
 
 import { ComponentDetailsRow } from './ComponentDetails.sc';
 
+// nodeDetail gives us additional information about the component.
 const ComponentDetails = ({ nodeDetail }) => {
   if (!nodeDetail.visible) {
     return <LoadingOutlined spin />;
   }
 
-  const timeUsed = nodeDetail.node.data.component.timesUsed;
+  const timesUsed = nodeDetail.node.data.component.timesUsed;
+
   return (
     <div>
       <ComponentDetailsRow>
         <Col>
           <Title level={5}>{DetailsLabels.freq.title}</Title>
           <Text>
-            {DetailsLabels.freq.text} {timeUsed} {DetailsLabels.freq.stext}
+            {DetailsLabels.freq.text} {timesUsed} {DetailsLabels.freq.stext}
           </Text>
         </Col>
         <Divider />
