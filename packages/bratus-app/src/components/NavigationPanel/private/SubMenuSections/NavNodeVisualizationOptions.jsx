@@ -2,6 +2,10 @@ import { Select, Input } from 'antd';
 import React, { useContext } from 'react';
 import ComponentBackgroundContext from '../../../../contexts/ComponentBackgroundContext';
 import {
+  BackgroundLabels,
+  DropDownLabels,
+} from '../../../../utils/constants/constants';
+import {
   BaselineInputWrapper,
   DropdownInput,
   StyledDropDownSelect,
@@ -17,7 +21,7 @@ const NavNodeVisualizationOptions = () => {
       <DropdownInput
         defaultValue={
           !componentBackground.mode
-            ? 'proportional_size'
+            ? BackgroundLabels.size
             : componentBackground.mode
         }
         onChange={(value) =>
@@ -28,18 +32,20 @@ const NavNodeVisualizationOptions = () => {
         }
         dropdownStyle={StyledDropDownSelect}
       >
-        <Select.Option value="white">White</Select.Option>
-
-        <Select.Option value="proportional_size">
-          Proportional Size based on Lines
+        <Select.Option value={BackgroundLabels.white}>
+          {DropDownLabels.white}
         </Select.Option>
 
-        <Select.Option value="loc_reference">
-          Colorization based on Lines
+        <Select.Option value={BackgroundLabels.size}>
+          {DropDownLabels.size}
+        </Select.Option>
+
+        <Select.Option value={BackgroundLabels.loc}>
+          {DropDownLabels.color}
         </Select.Option>
       </DropdownInput>
 
-      {componentBackground.mode === 'loc_reference' && (
+      {componentBackground.mode === BackgroundLabels.loc && (
         <BaselineInputWrapper>
           <Input
             addonBefore={'Baseline'}

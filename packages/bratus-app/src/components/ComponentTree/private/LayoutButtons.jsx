@@ -12,6 +12,7 @@ import {
 import { getLayoutedGraphElements } from '../../../utils/functions/graphUtils';
 import { useZoomPanHelper } from 'react-flow-renderer';
 import ComponentBackgroundContext from '../../../contexts/ComponentBackgroundContext';
+import { ButtonLabels, GraphLabels } from '../../../utils/constants/constants';
 
 export const LayoutButtons = ({
   layoutedNodesAndEdges,
@@ -42,11 +43,11 @@ export const LayoutButtons = ({
         type="primary"
         size="middle"
         onClick={async () => {
-          await onChangeTreeLayout('TB');
+          await onChangeTreeLayout(GraphLabels.topToBottom);
           reactFlowInstance.fitView();
         }}
       >
-        Horizontal Layout
+        {ButtonLabels.horizontal}
         <StyledFontAwesomeIcon icon={faGripHorizontal} />
       </LayoutButton>
 
@@ -55,11 +56,11 @@ export const LayoutButtons = ({
         type="primary"
         size="middle"
         onClick={async () => {
-          await onChangeTreeLayout('LR');
+          await onChangeTreeLayout(GraphLabels.leftToRight);
           reactFlowInstance.fitView();
         }}
       >
-        Vertical Layout
+        {ButtonLabels.vertical}
         <StyledFontAwesomeIcon icon={faGripVertical} />
       </LayoutButton>
     </LayoutButtonsWrapper>

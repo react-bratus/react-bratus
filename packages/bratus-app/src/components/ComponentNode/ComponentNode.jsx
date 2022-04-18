@@ -3,6 +3,11 @@ import React, { useContext } from 'react';
 import { Handle } from 'react-flow-renderer';
 import ComponentBackgroundContext from '../../contexts/ComponentBackgroundContext';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
+import {
+  BackgroundLabels,
+  GraphLabels,
+  HandleLabels,
+} from '../../utils/constants/constants';
 import { nodeNameLength } from '../../utils/constants/units';
 import { rgbaToHex } from '../../utils/functions/rgbaToHex';
 import { GraphDirectionContext } from '../ComponentTree/ComponentTree';
@@ -63,13 +68,13 @@ const ComponentNode = (node) => {
   // };
 
   const getBgColor = () => {
-    if (componentBackground.mode === 'proportional_size') {
+    if (componentBackground.mode === BackgroundLabels.size) {
       const hex = new ColorHash({
         lightness: 0.8,
         hue: { min: 0, max: 366 },
       }).hex(node.data.label);
       return hex;
-    } else if (componentBackground.mode === 'loc_reference') {
+    } else if (componentBackground.mode === BackgroundLabels.loc) {
       return rgbaToHex(
         `rgba(255,140,0,${
           node.data.linesOfCode / componentBackground.locReference > 1
@@ -95,9 +100,14 @@ const ComponentNode = (node) => {
   };
 
   const layoutTargetHandlePosition =
-    treeLayoutDirection === 'LR' ? 'left' : 'top';
+    treeLayoutDirection === GraphLabels.leftToRight
+      ? HandleLabels.left
+      : HandleLabels.top;
+
   const layoutSourceHandlePosition =
-    treeLayoutDirection === 'LR' ? 'right' : 'bottom';
+    treeLayoutDirection === GraphLabels.leftToRight
+      ? HandleLabels.right
+      : HandleLabels.bottom;
 
   const truncateNodeName = (nodeName, nameLength) => {
     return nodeName.length > nameLength
@@ -118,7 +128,10 @@ const ComponentNode = (node) => {
       onDoubleClick={() => node.data.onShowNodeDetail(node)}
     >
       {node.data.inDegree > 0 && (
-        <Handle type="target" position={layoutTargetHandlePosition} />
+        <Handle
+          type={HandleLabels.target}
+          position={layoutTargetHandlePosition}
+        />
       )}
 
       <StyledNodeContent>
@@ -128,7 +141,10 @@ const ComponentNode = (node) => {
       </StyledNodeContent>
 
       {node.data.outDegree > 0 && (
-        <Handle type="source" position={layoutSourceHandlePosition} />
+        <Handle
+          type={HandleLabels.source}
+          position={layoutSourceHandlePosition}
+        />
       )}
     </StyledNode>
   );

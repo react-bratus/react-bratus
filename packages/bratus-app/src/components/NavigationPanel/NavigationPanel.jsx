@@ -18,7 +18,10 @@ import NavigationPrimaryActions from './private/ActionButtons/NavigationPrimaryA
 import NavigationGitHubActions from './private/ActionButtons/NavigationGitHubActions';
 import NavSearchComponent from './private/SubMenuSections/NavSearchComponent';
 import NavNodeVisualizationOptions from './private/SubMenuSections/NavNodeVisualizationOptions';
-import { defaultOpenKeys } from '../../utils/constants/constants';
+import {
+  defaultOpenKeys,
+  NavigationLabels,
+} from '../../utils/constants/constants';
 
 const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
   return (
@@ -28,12 +31,12 @@ const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
         collapsedWidth={0}
         width={navigationWidth}
       >
-        <AppTitle level={1}>React-bratus</AppTitle>
+        <AppTitle level={1}>{NavigationLabels.title}</AppTitle>
 
         <Menu theme="dark" mode="inline" defaultOpenKeys={defaultOpenKeys}>
           <StyledSubMenu
-            key="search-component"
-            title="Search for component"
+            key={NavigationLabels.search.key}
+            title={NavigationLabels.search.title}
             icon={<FileSearchOutlined />}
           >
             <NavSearchComponent />
@@ -42,8 +45,8 @@ const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
           <StyledMenuDivider />
 
           <StyledSubMenu
-            key="node-visualization"
-            title="Node visualization options"
+            key={NavigationLabels.node.key}
+            title={NavigationLabels.node.title}
             icon={<BgColorsOutlined />}
           >
             <NavNodeVisualizationOptions />
@@ -52,14 +55,14 @@ const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
           <StyledMenuDivider />
 
           <StyledSubMenu
-            key="navigation-actions"
-            title="Actions"
+            key={NavigationLabels.actions.key}
+            title={NavigationLabels.actions.title}
             icon={<InteractionOutlined />}
           >
             <NavigationPrimaryActions setIsHelpVisible={setIsHelpVisible} />
             <StyledSubMenu
-              key="github-actions"
-              title="Contribute"
+              key={NavigationLabels.github.key}
+              title={NavigationLabels.github.title}
               icon={<GithubOutlined />}
             >
               <NavigationGitHubActions />

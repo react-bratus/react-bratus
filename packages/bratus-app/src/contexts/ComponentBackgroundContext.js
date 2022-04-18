@@ -1,7 +1,8 @@
 import { createContext } from 'react';
+import { BackgroundLabels } from '../utils/constants/constants';
 
 const ComponentBackgroundContext = createContext({
-  mode: 'white',
+  mode: BackgroundLabels.white,
   locReference: 300,
 });
 

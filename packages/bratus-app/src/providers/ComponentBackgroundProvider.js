@@ -1,11 +1,12 @@
 import React from 'react';
 import ComponentBackgroundContext from '../contexts/ComponentBackgroundContext';
 import useStickyState from '../hooks/useStickyState';
+import { BackgroundLabels } from '../utils/constants/constants';
 
 const ComponentBackgroundProvider = ({ children }) => {
   const [componentBackground, setComponentBackground] = useStickyState(
     {
-      mode: 'white',
+      mode: BackgroundLabels.white,
       locReference: 300,
     },
     'componentBackground'

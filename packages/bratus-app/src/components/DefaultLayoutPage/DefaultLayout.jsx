@@ -16,6 +16,7 @@ import {
   NavigationTriggerButton,
 } from './DefaultLayout.sc';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
+import { ButtonLabels } from '../../utils/constants/constants';
 
 const DefaultLayout = ({
   children,
@@ -78,7 +79,11 @@ const DefaultLayout = ({
             setCollapsed(!collapsed);
           }}
         >
-          {collapsed ? <span>Show Nav</span> : <span>Hide Nav</span>}
+          {collapsed ? (
+            <span>{ButtonLabels.nav.show}</span>
+          ) : (
+            <span>{ButtonLabels.nav.hide}</span>
+          )}
         </NavigationTriggerButton>
 
         <MainContentWrapper collapsed={collapsed}>
@@ -106,7 +111,11 @@ const DefaultLayout = ({
             setisMinimapVisible(!isMinimapVisible);
           }}
         >
-          {isMinimapVisible ? <span>Hide Map</span> : <span>Show Map</span>}
+          {isMinimapVisible ? (
+            <span>{ButtonLabels.map.hide}</span>
+          ) : (
+            <span>{ButtonLabels.map.show}</span>
+          )}
         </MinimapTriggerButton>
         {isMinimapVisible && (
           <StyledMiniMap nodeColor={defineMinimapNodeColor} />
