@@ -12,6 +12,7 @@ export const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
   margin-left: 7px;
 `;
 
+// Make button pressing more realistic
 export const LayoutButton = styled(Button)`
   &:active {
     transform: translateY(4px);

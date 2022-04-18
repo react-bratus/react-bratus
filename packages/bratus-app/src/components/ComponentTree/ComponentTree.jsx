@@ -6,6 +6,7 @@ import ComponentNode from '../ComponentNode/ComponentNode';
 import LayoutButtons from './private/LayoutButtons';
 import { ZoomControlButtons } from './ComponentTree.sc';
 
+// Create context to provide the tree layout direction to the children.
 export const GraphDirectionContext = React.createContext(null);
 
 const ComponentTree = ({
@@ -20,8 +21,10 @@ const ComponentTree = ({
     HighlightedComponentsContext
   );
 
+  // Fit tree on the screen
   const onLoadTree = (reactFlowInstance) => reactFlowInstance.fitView();
 
+  // Highlight nodes on hover
   const highlightComponent = (node) => {
     const componentName = node ? node.data.label : null;
     setHighlightedComponents([
@@ -35,6 +38,7 @@ const ComponentTree = ({
     ]);
   };
 
+  // Stop highlighting
   const removeHighlight = (node) => {
     const index = highlightedComponents.findIndex(
       (component) => component.id === node.id
@@ -49,6 +53,7 @@ const ComponentTree = ({
     }
   };
 
+  // Reset highlightComponents (Empty array).
   const resetHighlight = () => setHighlightedComponents([]);
 
   return (
