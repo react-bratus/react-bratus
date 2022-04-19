@@ -49,3 +49,7 @@ Publishing on NPM is done through `lerna`.
       your new branch.
 
 ## Useful links for this process
+
+Lerna: https://lerna.js.org/\
+Publishing info: https://github.com/lerna/lerna/tree/main/commands/publish\
+npm registry: https://docs.npmjs.com/creating-a-new-npm-user-account
