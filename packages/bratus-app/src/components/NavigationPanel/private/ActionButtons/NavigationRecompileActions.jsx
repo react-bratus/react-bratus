@@ -8,8 +8,8 @@ import { recompile } from '../../../../api';
 export const NavigationRecompileActions = () => {
   const [rootComponents, setRootComponent] = useState('');
 
-  const triggerRecompile = (input) => {
-    recompile(input)
+  const triggerRecompile = (newRootName) => {
+    recompile(newRootName)
       .then(location.reload())
       .catch((error) => console.log('An error occurred ', error));
   };

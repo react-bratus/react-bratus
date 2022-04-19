@@ -5,6 +5,7 @@ import {
   StyledDropDownSelect,
   TreeComponentDropdown,
 } from '../../NavigationPanel.sc';
+import { recompile } from '../../../../api';
 
 const NavSearchComponent = () => {
   const { setCenter } = useZoomPanHelper();
@@ -48,6 +49,17 @@ const NavSearchComponent = () => {
     focusNode(value);
   };
 
+  const renderThisNode = (id) => {
+    const index = nodes.findIndex((node) => node.id == id);
+    const node = nodes[index];
+    const label = node.data.label;
+    recompile(label).then(location.reload());
+  };
+
+  const onChangeTwo = (value) => {
+    renderThisNode(value);
+  };
+
   const getParentId = (id) => {
     const idSplit = id.split(':');
     if (idSplit.length == 1) {
@@ -82,16 +94,28 @@ const NavSearchComponent = () => {
   }, [nodes]);
 
   return (
-    <TreeComponentDropdown
-      showSearch
-      value={searchField}
-      dropdownStyle={StyledDropDownSelect}
-      placeholder="Search components"
-      onChange={onChange}
-      treeDataSimpleMode
-      treeDefaultExpandAll={false}
-      treeData={searchOptions}
-    />
+    <>
+      <TreeComponentDropdown
+        showSearch
+        value={searchField}
+        dropdownStyle={StyledDropDownSelect}
+        placeholder="Search components"
+        onChange={onChange}
+        treeDataSimpleMode
+        treeDefaultExpandAll={false}
+        treeData={searchOptions}
+      />
+      <TreeComponentDropdown
+        showSearch
+        value={searchField}
+        dropdownStyle={StyledDropDownSelect}
+        placeholder="Render subtree from given component"
+        onChange={onChangeTwo}
+        treeDataSimpleMode
+        treeDefaultExpandAll={true}
+        treeData={searchOptions}
+      />
+    </>
   );
 };
 
