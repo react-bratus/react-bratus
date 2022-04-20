@@ -23,11 +23,11 @@ import {
   NavigationLabels,
 } from '../../utils/constants/constants';
 
-const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
+const NavigationPanel = ({ isNavCollapsed, setIsHelpVisible }) => {
   return (
     <>
       <NavigationSider
-        collapsed={collapsed}
+        collapsed={isNavCollapsed}
         collapsedWidth={0}
         width={navigationWidth}
       >
@@ -75,7 +75,7 @@ const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
 };
 
 NavigationPanel.propTypes = {
-  collapsed: PropTypes.any,
+  isNavCollapsed: PropTypes.any,
   setIsHelpVisible: PropTypes.any,
 };
 

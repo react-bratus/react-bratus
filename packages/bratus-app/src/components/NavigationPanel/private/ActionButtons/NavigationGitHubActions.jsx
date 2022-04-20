@@ -2,6 +2,7 @@ import React from 'react';
 import { ButtonLabels, UrlLabels } from '../../../../utils/constants/constants';
 import { ActionButton, GitHubActionsWrapper } from './ActionButtons.sc';
 
+// Buttons on sider to submit feedback, bugs and potential features
 const NavigationGitHubActions = () => {
   return (
     <GitHubActionsWrapper>

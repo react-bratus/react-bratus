@@ -19,10 +19,12 @@ export const LayoutButtons = ({
   setLayoutedNodesAndEdges,
   setTreeLayoutDirection,
 }) => {
+  // Get the instance of the tree, so that we can use .fitView().
   const reactFlowInstance = useZoomPanHelper();
 
   const { componentBackground } = useContext(ComponentBackgroundContext);
 
+  // Change the layout of the tree on button click.
   const onChangeTreeLayout = useCallback(
     (treeLayoutDirection) => {
       const els = getLayoutedGraphElements(

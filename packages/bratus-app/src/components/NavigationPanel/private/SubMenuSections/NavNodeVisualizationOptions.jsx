@@ -12,9 +12,25 @@ import {
 } from '../../NavigationPanel.sc';
 
 const NavNodeVisualizationOptions = () => {
+  // Getting-Setting the 3 node visualization options through context.
   const { componentBackground, setComponentBackground } = useContext(
     ComponentBackgroundContext
   );
+
+  // Change the lines of code threshold for the color scale visualization option.
+  const changeLinesOfCodeThreshold = (e) => {
+    if (e.target.value < 1) {
+      setComponentBackground({
+        ...componentBackground,
+        locReference: 1,
+      });
+    } else {
+      setComponentBackground({
+        ...componentBackground,
+        locReference: e.target.value,
+      });
+    }
+  };
 
   return (
     <>
@@ -51,19 +67,7 @@ const NavNodeVisualizationOptions = () => {
             addonBefore={'Baseline'}
             placeholder={'LOC Reference'}
             defaultValue={componentBackground.locReference}
-            onChange={(e) => {
-              if (e.target.value < 1) {
-                setComponentBackground({
-                  ...componentBackground,
-                  locReference: 1,
-                });
-              } else {
-                setComponentBackground({
-                  ...componentBackground,
-                  locReference: e.target.value,
-                });
-              }
-            }}
+            onChange={changeLinesOfCodeThreshold}
             type="number"
             min="1"
           />

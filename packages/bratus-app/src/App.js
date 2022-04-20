@@ -26,9 +26,7 @@ const App = () => {
 
   const [treeLayoutDirection, setTreeLayoutDirection] = useState(undefined);
 
-  //  If the user prefers the vertical layout as favorite, he/she can click it as preferred
-  // in the help panel. The App.js getLayoutedGraphElement() will check the local storage,
-  //  otherwise it will set horizontal as the default.
+  // Set vertical as default through the help panel preferences section.
   const [isVerticalTreeLayoutAsDefault, setVerticalTreeLayoutAsDefault] =
     useStickyState(false, 'bratus:prefer-vertical-layout');
 
@@ -39,10 +37,8 @@ const App = () => {
 
   useEffect(() => {
     activate(locale);
-    /**
-     * @param data is a set of nodes and edges: {nodes: Array, edges: Array}
-     */
     getParsedData()
+      // data comes as a set of nodes and edges from the server.
       .then((data) => {
         setInfo(data.info);
         const nodes = getNodes(data, setNodeDetail);

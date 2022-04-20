@@ -1,17 +1,15 @@
-import { EyeOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons';
-import { Col, Row } from 'antd';
-import Text from 'antd/lib/typography/Text';
+import { Col } from 'antd';
 import Title from 'antd/lib/typography/Title';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { BackgroundLabels, GraphLabels } from '../../utils/constants/constants';
-
 import {
-  baseNodeHeight,
   baseUnit,
   nodeWidth,
+  horizontalViewNodeHeight,
 } from '../../utils/constants/units';
-const horizontalViewNodeHeight = baseNodeHeight / 2.3;
 
+// The height and the width of the tree nodes, are dynamically adjusted based on the
+// layout of the tree and the node visualization options that the user chooses.
 export const StyledNode = styled.div`
   height: ${({ linesOfCode, componentBackground, treeLayoutDirection }) => {
     if (componentBackground.mode === BackgroundLabels.size) {
@@ -53,37 +51,4 @@ export const StyledNodeContent = styled(Col)`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
-
-export const NodeContentRow = styled(Row)`
-  flex-grow: 1;
-  padding-bottom: 12px;
-  justify-content: center;
-`;
-
-export const NodeButtonsRow = styled(Row)`
-  align-items: center;
-  justify-content: space-between;
-`;
-
-export const TimeUsedText = styled(Text)`
-  font-size: 18px;
-  line-height: 18px;
-  color: ${({ color }) => color};
-`;
-
-const antDesignIconStyles = css`
-  font-size: 24px;
-`;
-
-export const LockIcon = styled(LockOutlined)`
-  ${antDesignIconStyles}
-`;
-
-export const UnlockIcon = styled(UnlockOutlined)`
-  ${antDesignIconStyles}
-`;
-
-export const EyeIcon = styled(EyeOutlined)`
-  ${antDesignIconStyles}
 `;

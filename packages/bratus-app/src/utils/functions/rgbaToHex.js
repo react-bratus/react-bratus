@@ -7,6 +7,7 @@ export const rgbaToHex = (rgba) => {
     a = parseFloat(
       trim(inParts[3].substring(0, inParts[3].length - 1))
     ).toFixed(2);
+
   var outParts = [
     r.toString(16),
     g.toString(16),
@@ -25,6 +26,7 @@ export const rgbaToHex = (rgba) => {
 
   return '#' + outParts.join('');
 };
+
 const trim = (str) => {
   return str.replace(/^\s+|\s+$/gm, '');
 };
