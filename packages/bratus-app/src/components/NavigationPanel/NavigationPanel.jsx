@@ -13,9 +13,11 @@ import {
   FileSearchOutlined,
   GithubOutlined,
   InteractionOutlined,
+  ExperimentOutlined,
 } from '@ant-design/icons';
 import NavigationPrimaryActions from './private/ActionButtons/NavigationPrimaryActions';
 import NavigationGitHubActions from './private/ActionButtons/NavigationGitHubActions';
+import NavExperimentalActions from './private/Experimental/NavExperimentalActions';
 import NavSearchComponent from './private/SubMenuSections/NavSearchComponent';
 import NavNodeVisualizationOptions from './private/SubMenuSections/NavNodeVisualizationOptions';
 import {
@@ -43,8 +45,6 @@ const NavigationPanel = ({ isNavCollapsed, setIsHelpVisible }) => {
           </StyledSubMenu>
 
           <StyledMenuDivider />
-          <NavigationRecompileActions />
-          <StyledMenuDivider />
 
           <StyledSubMenu
             key={NavigationLabels.node.key}
@@ -69,6 +69,16 @@ const NavigationPanel = ({ isNavCollapsed, setIsHelpVisible }) => {
             >
               <NavigationGitHubActions />
             </StyledSubMenu>
+          </StyledSubMenu>
+
+          {/* Experimental input below:............................................ */}
+          <StyledMenuDivider />
+          <StyledSubMenu
+            key={'experimental-actions'}
+            title={'Experimental actions'}
+            icon={<ExperimentOutlined />}
+          >
+            <NavExperimentalActions />
           </StyledSubMenu>
         </Menu>
       </NavigationSider>

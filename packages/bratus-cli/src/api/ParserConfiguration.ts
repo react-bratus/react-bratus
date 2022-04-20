@@ -8,7 +8,7 @@ export interface ParserOptions {
   pathToSaveDir: string;
 }
 
-// Default parser configuration - one root component: 'App'
+// Default parser configuration with single root component 'App'.
 export const DEFAULT_PARSER_CONFIGURATION = {
   pathToSaveDir: `${process.cwd()}/.react-bratus`,
   rootFolderPath: `${process.cwd()}/src`,
@@ -18,20 +18,12 @@ export const DEFAULT_PARSER_CONFIGURATION = {
 /**
  * This function generates parser configuration based on either manual input from the website,
  * an extra configuration file or just returns a default configuration.
- * @param input An input string with custom root components, separated by comma.
+ *
  * @returns Parser configuration depending on the input
  */
-export function getConfiguration(input?: string) {
-  const path = `${process.cwd()}/.bratusrc.json`;
-  if (input) {
-    console.log('[ParserConfig] Parsing with custom configuration from input.');
-    const roots = input == '' ? 'App' : input.split(',').map((i) => i.trim());
-    return {
-      pathToSaveDir: `${process.cwd()}/.react-bratus`,
-      rootFolderPath: `${process.cwd()}/src`,
-      rootComponents: roots,
-    };
-  } else if (fs.existsSync(path) && fs.lstatSync(path).isFile()) {
+export function getConfiguration() {
+  const path = `${process.cwd()}/.react-bratus/bratusrc.json`;
+  if (fs.existsSync(path) && fs.lstatSync(path).isFile()) {
     console.log('[ParserConfig] Parsing with custom configuration from file.');
     return {
       ...DEFAULT_PARSER_CONFIGURATION,
@@ -41,4 +33,28 @@ export function getConfiguration(input?: string) {
     console.log('[ParserConfig] Parsing with default configuration.');
     return DEFAULT_PARSER_CONFIGURATION;
   }
+}
+
+/**
+ * Create a custom configuration file 'bratusrc.json' with custom root components in the '.react-bratus' folder.
+ * @param input An input string with custom root components, separated by comma.
+ */
+export function makeConfiguration(input: string) {
+  const filePath = `${process.cwd()}/.react-bratus/bratusrc.json`;
+  const rootsToArray =
+    input == '' ? 'App' : input.split(',').map((word) => word.trim());
+  const customRootsObject = {
+    rootComponents: rootsToArray,
+  };
+  fs.writeFileSync(filePath, JSON.stringify(customRootsObject));
+}
+
+/**
+ * Check if the project has been parsed before by the existence of 'data.json' file in the '.react-bratus' folder.
+ * @returns A boolean true or false whether the project has been parsed before.
+ */
+export function isProjectParsed() {
+  return fs.existsSync(
+    `${DEFAULT_PARSER_CONFIGURATION.pathToSaveDir}/data.json`
+  );
 }

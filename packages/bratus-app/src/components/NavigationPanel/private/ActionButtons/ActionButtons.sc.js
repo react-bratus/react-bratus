@@ -24,6 +24,9 @@ export const GitHubActionsWrapper = styled.div`
 export const RecompileActionsWrapper = styled.div`
   ${navigationButtonsWrapperStyles};
   padding: ${baseUnit}px ${baseUnit * 2}px;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
 `;
 
 export const ActionButton = styled(Button)`

@@ -21,7 +21,7 @@ const NavSearchComponent = () => {
   const [searchField, setSearchField] = useState();
 
   // Setting the nodes that appear in the searchbar.
-  const [nodesInSearch, setNodesInSearch] = useState([]);
+  const [searchOptions, setSearchOptions] = useState([]);
 
   // Bring selected node in the center of the screen.
   const focusNode = (id) => {
@@ -37,7 +37,7 @@ const NavSearchComponent = () => {
 
   // Sets the in searchbar selected node. Finds the name of the component,
   // highlights its subtree and focuses its root.
-  const onChangeSelectedNodeInSearch = (value) => {
+  const onChange = (value) => {
     setSearchField(value);
     const arr = value.split(':');
     const componentName = arr[arr.length - 1];
@@ -86,7 +86,7 @@ const NavSearchComponent = () => {
   // Returns a list of node objects, used in the TreeComponentDropdown.
   const generateTreeNodes = () => {
     if (nodes.length > 0) {
-      setNodesInSearch(
+      setSearchOptions(
         nodes.map((node) => {
           return {
             id: node.id,
@@ -116,6 +116,7 @@ const NavSearchComponent = () => {
         treeDefaultExpandAll={false}
         treeData={searchOptions}
       />
+      Chosen component renders as root:
       <TreeComponentDropdown
         showSearch
         value={searchField}
@@ -123,7 +124,7 @@ const NavSearchComponent = () => {
         placeholder="Render subtree from given component"
         onChange={onChangeTwo}
         treeDataSimpleMode
-        treeDefaultExpandAll={true}
+        treeDefaultExpandAll={false}
         treeData={searchOptions}
       />
     </>

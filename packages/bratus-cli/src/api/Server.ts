@@ -1,5 +1,9 @@
 import ASTParser from '../parser';
-import { ParserOptions, getConfiguration } from './ParserConfiguration';
+import {
+  ParserOptions,
+  getConfiguration,
+  makeConfiguration,
+} from './ParserConfiguration';
 import cors = require('cors');
 import express = require('express');
 import fs = require('fs');
@@ -39,11 +43,14 @@ class Server {
 
     // The server recompiles the project.
     this.app.post(
-      '/compile',
+      '/recompile',
       (_req: express.Request, res: express.Response) => {
         try {
-          this.config = getConfiguration(_req.body.rootComponents);
-          console.log('[ParserConfig]', this.config);
+          this.config = getConfiguration();
+          console.log(
+            '[ParserConfig] Recompiling with configuration:',
+            this.config
+          );
           const parserOptions: ParserOptions = {
             rootFolderPath: this.config.rootFolderPath,
             log: false,
@@ -61,6 +68,17 @@ class Server {
         }
       }
     );
+
+    // The server creates a custom configuration file based on user's input on the React website.
+    this.app.post('/makeConfiguration', (_req, res) => {
+      try {
+        makeConfiguration(_req.body.rootComponents);
+        res.status(200).send();
+      } catch (error: any) {
+        console.log('An error occurred when parsing: ', error.message);
+        res.status(500).send(error.message);
+      }
+    });
 
     this.app.listen(4444);
     console.log(

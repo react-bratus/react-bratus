@@ -3,31 +3,48 @@
 import { program } from 'commander';
 import ASTParser from './parser';
 import Server from './api';
-import { ParserOptions, getConfiguration } from './api/ParserConfiguration';
+import {
+  ParserOptions,
+  isProjectParsed,
+  DEFAULT_PARSER_CONFIGURATION,
+} from './api/ParserConfiguration';
 
 const packageJson = require('../package.json');
 
+// If user does not specify any flag, bratus will run 'help' as the default.
+if (process.argv.length === 2) {
+  process.argv.push('-h');
+}
+
 program
-  .version(packageJson.version)
   .description('React Bratus CLI')
   .option('-s, --start', 'Start react-bratus app')
   .option('-p, --parse', 'Parse repository')
   .option('-l, --log', 'Show logs while parsing')
+  .version(
+    packageJson.version,
+    '-v, --version',
+    'Show current version of React-bratus'
+  )
   .parse(process.argv);
 
 const options = program.opts();
-const config = getConfiguration();
 
 const parserOptions: ParserOptions = {
-  rootFolderPath: config.rootFolderPath,
+  ...DEFAULT_PARSER_CONFIGURATION,
   log: options.log,
-  rootComponents: config.rootComponents,
-  pathToSaveDir: config.pathToSaveDir,
 };
 
 // The bratus --start command always parses the project and then starts the server.
 if (options.start) {
-  parseProject(parserOptions).then(() => startServer());
+  if (isProjectParsed()) {
+    startServer();
+  } else {
+    console.log(
+      '[Program] No data.json found. Initializing the first parsing of this project.'
+    );
+    parseProject(parserOptions).then(() => startServer());
+  }
 }
 
 if (options.parse) {
