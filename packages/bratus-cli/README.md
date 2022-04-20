@@ -82,6 +82,16 @@ Override default configuration by creating `.bratusrc.json` in the root director
 
 ## Changelog
 
+- 3.2.1
+  - Fix: Node names no longer break the design. Display ... if the name is long.
+- 3.2.0
+  - Implemented Interactive Minimap
+  - Supports scroll and drag.
+  - Components are highlighted when hovering over them.
+  - Minimap can be hidden or displayed with a button click.
+- 3.1.0
+  - Reintroducing help panel.
+  - Now contains information about the different visualizations of the nodes and the edges.
 - 3.0.2
   - Added glob as dependency to cli
 - 3.0.1

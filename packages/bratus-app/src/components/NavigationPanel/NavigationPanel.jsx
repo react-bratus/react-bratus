@@ -1,6 +1,6 @@
 import { Menu } from 'antd';
 import React from 'react';
-import { navigationWidth } from '../../utils/tokens/units';
+import { navigationWidth } from '../../utils/constants/units';
 import {
   AppTitle,
   NavigationSider,
@@ -18,23 +18,25 @@ import NavigationPrimaryActions from './private/ActionButtons/NavigationPrimaryA
 import NavigationGitHubActions from './private/ActionButtons/NavigationGitHubActions';
 import NavSearchComponent from './private/SubMenuSections/NavSearchComponent';
 import NavNodeVisualizationOptions from './private/SubMenuSections/NavNodeVisualizationOptions';
-import { defaultOpenKeys } from '../../utils/tokens/constants';
-import NavigationRecompileActions from './private/ActionButtons/NavigationRecompileActions';
+import {
+  defaultOpenKeys,
+  NavigationLabels,
+} from '../../utils/constants/constants';
 
-const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
+const NavigationPanel = ({ isNavCollapsed, setIsHelpVisible }) => {
   return (
     <>
       <NavigationSider
-        collapsed={collapsed}
+        collapsed={isNavCollapsed}
         collapsedWidth={0}
         width={navigationWidth}
       >
-        <AppTitle level={1}>React-bratus</AppTitle>
+        <AppTitle level={1}>{NavigationLabels.title}</AppTitle>
 
         <Menu theme="dark" mode="inline" defaultOpenKeys={defaultOpenKeys}>
           <StyledSubMenu
-            key="search-component"
-            title="Search for component"
+            key={NavigationLabels.search.key}
+            title={NavigationLabels.search.title}
             icon={<FileSearchOutlined />}
           >
             <NavSearchComponent />
@@ -45,8 +47,8 @@ const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
           <StyledMenuDivider />
 
           <StyledSubMenu
-            key="node-visualization"
-            title="Node visualization options"
+            key={NavigationLabels.node.key}
+            title={NavigationLabels.node.title}
             icon={<BgColorsOutlined />}
           >
             <NavNodeVisualizationOptions />
@@ -55,14 +57,14 @@ const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
           <StyledMenuDivider />
 
           <StyledSubMenu
-            key="navigation-actions"
-            title="Actions"
+            key={NavigationLabels.actions.key}
+            title={NavigationLabels.actions.title}
             icon={<InteractionOutlined />}
           >
             <NavigationPrimaryActions setIsHelpVisible={setIsHelpVisible} />
             <StyledSubMenu
-              key="github-actions"
-              title="Contribute"
+              key={NavigationLabels.github.key}
+              title={NavigationLabels.github.title}
               icon={<GithubOutlined />}
             >
               <NavigationGitHubActions />
@@ -75,7 +77,7 @@ const NavigationPanel = ({ collapsed, setIsHelpVisible }) => {
 };
 
 NavigationPanel.propTypes = {
-  collapsed: PropTypes.any,
+  isNavCollapsed: PropTypes.any,
   setIsHelpVisible: PropTypes.any,
 };
 

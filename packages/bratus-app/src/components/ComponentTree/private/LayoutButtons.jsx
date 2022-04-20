@@ -12,16 +12,19 @@ import {
 import { getLayoutedGraphElements } from '../../../utils/functions/graphUtils';
 import { useZoomPanHelper } from 'react-flow-renderer';
 import ComponentBackgroundContext from '../../../contexts/ComponentBackgroundContext';
+import { ButtonLabels, GraphLabels } from '../../../utils/constants/constants';
 
 export const LayoutButtons = ({
   layoutedNodesAndEdges,
   setLayoutedNodesAndEdges,
   setTreeLayoutDirection,
 }) => {
+  // Get the instance of the tree, so that we can use .fitView().
   const reactFlowInstance = useZoomPanHelper();
 
   const { componentBackground } = useContext(ComponentBackgroundContext);
 
+  // Change the layout of the tree on button click.
   const onChangeTreeLayout = useCallback(
     (treeLayoutDirection) => {
       const els = getLayoutedGraphElements(
@@ -40,26 +43,26 @@ export const LayoutButtons = ({
       <LayoutButton
         shape="round"
         type="primary"
-        size="large"
+        size="middle"
         onClick={async () => {
-          await onChangeTreeLayout('TB');
+          await onChangeTreeLayout(GraphLabels.topToBottom);
           reactFlowInstance.fitView();
         }}
       >
-        Horizontal Layout
+        {ButtonLabels.horizontal}
         <StyledFontAwesomeIcon icon={faGripHorizontal} />
       </LayoutButton>
 
       <LayoutButton
         shape="round"
         type="primary"
-        size="large"
+        size="middle"
         onClick={async () => {
-          await onChangeTreeLayout('LR');
+          await onChangeTreeLayout(GraphLabels.leftToRight);
           reactFlowInstance.fitView();
         }}
       >
-        Vertical Layout
+        {ButtonLabels.vertical}
         <StyledFontAwesomeIcon icon={faGripVertical} />
       </LayoutButton>
     </LayoutButtonsWrapper>

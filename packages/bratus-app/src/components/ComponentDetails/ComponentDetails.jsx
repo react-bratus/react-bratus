@@ -6,25 +6,30 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { DetailsLabels } from '../../utils/constants/constants';
 
 import { ComponentDetailsRow } from './ComponentDetails.sc';
 
+// nodeDetail gives us additional information about the component.
 const ComponentDetails = ({ nodeDetail }) => {
   if (!nodeDetail.visible) {
     return <LoadingOutlined spin />;
   }
 
-  const timeUsed = nodeDetail.node.data.component.timesUsed;
+  const timesUsed = nodeDetail.node.data.component.timesUsed;
+
   return (
     <div>
       <ComponentDetailsRow>
         <Col>
-          <Title level={5}>Frequency</Title>
-          <Text>This component is used: {timeUsed} times.</Text>
+          <Title level={5}>{DetailsLabels.freq.title}</Title>
+          <Text>
+            {DetailsLabels.freq.text} {timesUsed} {DetailsLabels.freq.stext}
+          </Text>
         </Col>
         <Divider />
         <Col>
-          <Title level={5}>Path</Title>
+          <Title level={5}>{DetailsLabels.path}</Title>
           <Text copyable>
             <a href={`vscode://file/${nodeDetail.node.data.path}`}>
               {nodeDetail.node.data.path}
@@ -33,7 +38,7 @@ const ComponentDetails = ({ nodeDetail }) => {
         </Col>
         <Divider />
         <Col>
-          <Title level={5}>Code</Title>
+          <Title level={5}>{DetailsLabels.code}</Title>
 
           <SyntaxHighlighter
             style={vscDarkPlus}

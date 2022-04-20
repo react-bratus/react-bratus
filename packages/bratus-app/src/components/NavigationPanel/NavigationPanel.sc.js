@@ -4,7 +4,7 @@ import MenuDivider from 'antd/lib/menu/MenuDivider';
 import SubMenu from 'antd/lib/menu/SubMenu';
 import Title from 'antd/lib/typography/Title';
 import styled, { css } from 'styled-components';
-import { baseUnit } from '../../utils/tokens/units';
+import { baseUnit } from '../../utils/constants/units';
 
 export const NavigationSider = styled(Sider)`
   overflow: auto;

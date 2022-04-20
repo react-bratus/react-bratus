@@ -1,3 +1,4 @@
+// Get the nodes from data and set their information.
 export const getNodes = (data, setNodeDetail) => {
   const nodes = data.nodes.map((node) => {
     return {
@@ -13,6 +14,7 @@ export const getNodes = (data, setNodeDetail) => {
   return nodes;
 };
 
+// Get the edges from data & style them.
 export const getEdges = (data) => {
   const edges = data.edges.map((edge) => {
     return {
@@ -27,7 +29,9 @@ export const getEdges = (data) => {
         fill: '#fff',
       },
       style: {
-        stroke: edge.conditional ? 'green' : edge.label ? 'red' : '#000',
+        // Edge color & thickness
+        stroke: edge.conditional ? '#348888' : edge.label ? '#FA7F08' : '#000',
+        strokeWidth: '2px',
       },
     };
   });

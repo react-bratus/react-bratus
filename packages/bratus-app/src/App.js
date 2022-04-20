@@ -13,7 +13,7 @@ import ThemeProvider from './providers/ThemeProvider';
 import { activate } from './utils/functions';
 import { getEdges, getNodes } from './utils/functions/nodes-and-edges';
 import { getLayoutedGraphElements } from './utils/functions/graphUtils';
-import { GraphLabels } from './utils/tokens/constants';
+import { GraphLabels } from './utils/constants/constants';
 import ComponentBackgroundContext from './contexts/ComponentBackgroundContext';
 import useStickyState from './hooks/useStickyState';
 
@@ -26,23 +26,19 @@ const App = () => {
 
   const [treeLayoutDirection, setTreeLayoutDirection] = useState(undefined);
 
-  //  If the user prefers the vertical layout as favorite, he/she can click it as preferred
-  // in the help panel. The App.js getLayoutedGraphElement() will check the local storage,
-  //  otherwise it will set horizontal as the default.
-  const [verticalTreeLayoutAsDefault, setVerticalTreeLayoutAsDefault] =
+  // Set vertical as default through the help panel preferences section.
+  const [isVerticalTreeLayoutAsDefault, setVerticalTreeLayoutAsDefault] =
     useStickyState(false, 'bratus:prefer-vertical-layout');
 
   const treeLayoutOnCompile =
-    verticalTreeLayoutAsDefault === true
+    isVerticalTreeLayoutAsDefault === true
       ? GraphLabels.leftToRight
       : GraphLabels.topToBottom;
 
   useEffect(() => {
     activate(locale);
-    /**
-     * @param data is a set of nodes and edges: {nodes: Array, edges: Array}
-     */
     getParsedData()
+      // data comes as a set of nodes and edges from the server.
       .then((data) => {
         setInfo(data.info);
         const nodes = getNodes(data, setNodeDetail);
@@ -70,7 +66,7 @@ const App = () => {
               info={info}
               nodeDetail={nodeDetail}
               setNodeDetail={setNodeDetail}
-              verticalTreeLayoutAsDefault={verticalTreeLayoutAsDefault}
+              isVerticalTreeLayoutAsDefault={isVerticalTreeLayoutAsDefault}
               setVerticalTreeLayoutAsDefault={setVerticalTreeLayoutAsDefault}
             >
               {nodesAndEdges ? (

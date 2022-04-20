@@ -3,45 +3,23 @@ import React, { useContext } from 'react';
 import { Handle } from 'react-flow-renderer';
 import ComponentBackgroundContext from '../../contexts/ComponentBackgroundContext';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
+import {
+  BackgroundLabels,
+  GraphLabels,
+  HandleLabels,
+} from '../../utils/constants/constants';
+import { nodeNameLength } from '../../utils/constants/units';
 import { rgbaToHex } from '../../utils/functions/rgbaToHex';
 import { GraphDirectionContext } from '../ComponentTree/ComponentTree';
 import { StyledNode, StyledNodeContent, StyledTitle } from './ComponentNode.sc';
 
 const ComponentNode = (node) => {
   const { highlightedComponents } = useContext(HighlightedComponentsContext);
-  // const nodes = useStoreState((store) => store.nodes);
 
   const { componentBackground } = useContext(ComponentBackgroundContext);
 
-  // const setSelectedElements = useStoreActions(
-  //   (actions) => actions.setSelectedElements
-  // );
-
+  // We need the layout to pass it as props to the styled component.
   const treeLayoutDirection = useContext(GraphDirectionContext);
-
-  // const lockComponent = () => {
-  //   const index = highlightedComponents.findIndex(
-  //     (component) => component.id === node.id
-  //   );
-
-  //   const array = [...highlightedComponents];
-  //   if (index !== -1 && highlightedComponents[index].locked) {
-  //     array.splice(index, 1);
-  //     setHighlightedComponents(array);
-  //   } else if (index !== -1) {
-  //     array.splice(index, 1);
-  //     setHighlightedComponents([
-  //       ...array,
-  //       {
-  //         id: node.id,
-  //         componentName: node.data.label,
-  //         locked: true,
-  //         search: false,
-  //       },
-  //     ]);
-  //     setSelectedElements(nodes.filter((_node) => _node.id.includes(node.id)));
-  //   }
-  // };
 
   const isHighlighted = () => {
     return highlightedComponents.some((component) =>
@@ -51,24 +29,15 @@ const ComponentNode = (node) => {
     );
   };
 
-  // const isLocked = () => {
-  //   return highlightedComponents.some(
-  //     (component) =>
-  //       component.locked &&
-  //       node.id.match(
-  //         `${component.componentName}:+.+|${component.componentName}$`
-  //       )
-  //   );
-  // };
-
+  // Getting the background of the node, depending on the background mode.
   const getBgColor = () => {
-    if (componentBackground.mode === 'proportional_size') {
+    if (componentBackground.mode === BackgroundLabels.size) {
       const hex = new ColorHash({
         lightness: 0.8,
         hue: { min: 0, max: 366 },
       }).hex(node.data.label);
       return hex;
-    } else if (componentBackground.mode === 'loc_reference') {
+    } else if (componentBackground.mode === BackgroundLabels.loc) {
       return rgbaToHex(
         `rgba(255,140,0,${
           node.data.linesOfCode / componentBackground.locReference > 1
@@ -81,6 +50,7 @@ const ComponentNode = (node) => {
     }
   };
 
+  // Getting the font color of the node, depending on the background color.
   const getFontColor = () => {
     const bgColor = getBgColor();
     const color =
@@ -93,10 +63,26 @@ const ComponentNode = (node) => {
     return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? '#000' : '#fff';
   };
 
+  // Dynamically change the position of the handles depending on
+  // the layout of the tree.
   const layoutTargetHandlePosition =
-    treeLayoutDirection === 'LR' ? 'left' : 'top';
+    treeLayoutDirection === GraphLabels.leftToRight
+      ? HandleLabels.left
+      : HandleLabels.top;
+
   const layoutSourceHandlePosition =
-    treeLayoutDirection === 'LR' ? 'right' : 'bottom';
+    treeLayoutDirection === GraphLabels.leftToRight
+      ? HandleLabels.right
+      : HandleLabels.bottom;
+
+  // Display the 13 first chars of the node name, for those that are long.
+  const truncateNodeName = (nodeName, nameLength) => {
+    return nodeName.length > nameLength
+      ? nodeName.slice(0, nameLength - 1).concat('...')
+      : nodeName;
+  };
+
+  const truncatedNodeName = truncateNodeName(node.data.label, nodeNameLength);
 
   return (
     <StyledNode
@@ -109,17 +95,23 @@ const ComponentNode = (node) => {
       onDoubleClick={() => node.data.onShowNodeDetail(node)}
     >
       {node.data.inDegree > 0 && (
-        <Handle type="target" position={layoutTargetHandlePosition} />
+        <Handle
+          type={HandleLabels.target}
+          position={layoutTargetHandlePosition}
+        />
       )}
 
       <StyledNodeContent>
         <StyledTitle color={getFontColor} level={5}>
-          {node.data.label}
+          {truncatedNodeName}
         </StyledTitle>
       </StyledNodeContent>
 
       {node.data.outDegree > 0 && (
-        <Handle type="source" position={layoutSourceHandlePosition} />
+        <Handle
+          type={HandleLabels.source}
+          position={layoutSourceHandlePosition}
+        />
       )}
     </StyledNode>
   );
