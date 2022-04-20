@@ -5,12 +5,14 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "lerna run build && lerna link",
-    "link-cli": "cd packages/cli && yarn link"
+    "build": "yarn run remove-builds && lerna run build && yarn run move-app-build ",
+    "move-app-build": "mv ./packages/bratus-app/build ./packages/bratus-cli/bin/bratus-app",
+    "remove-builds": "rm -rf ./packages/bratus-cli/bin/bratus-app && rm -rf ./packages/bratus-app/build",
+    "link-cli": "cd packages/bratus-cli && npm link"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/stephanboersma/react-bratus.git"
+    "url": "https://github.com/react-bratus/react-bratus.git"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -24,10 +26,13 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "eslint-plugin-simple-import-sort": "^7.0.0",
     "lerna": "^3.22.1",
     "prettier": "^2.2.1",
     "typescript": "^4.1.5"
   },
-  "version": "1.1.5"
+  "version": "1.1.5",
+  "dependencies": {
+    "@use-gesture/react": "^10.2.11",
+    "classcat": "^5.0.3"
+  }
 }
