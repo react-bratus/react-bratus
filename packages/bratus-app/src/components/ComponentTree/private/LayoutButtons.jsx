@@ -46,7 +46,9 @@ export const LayoutButtons = ({
         size="middle"
         onClick={async () => {
           await onChangeTreeLayout(GraphLabels.topToBottom);
-          reactFlowInstance.fitView();
+          setTimeout(() => {
+            reactFlowInstance.fitView();
+          }, 500);
         }}
       >
         {ButtonLabels.horizontal}
@@ -59,7 +61,9 @@ export const LayoutButtons = ({
         size="middle"
         onClick={async () => {
           await onChangeTreeLayout(GraphLabels.leftToRight);
-          reactFlowInstance.fitView();
+          setTimeout(() => {
+            reactFlowInstance.fitView();
+          }, 500);
         }}
       >
         {ButtonLabels.vertical}
