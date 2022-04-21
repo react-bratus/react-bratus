@@ -41,7 +41,7 @@ const DefaultLayout = ({
   const [isNavCollapsed, setIsNavCollapsed] = useState(false);
 
   // State to hide/ show the minimap.
-  const [isMinimapVisible, setisMinimapVisible] = useState(true);
+  const [isMinimapVisible, setisMinimapVisible] = useState(false);
 
   // Highlight the same nodes on minimap when hovering over the nodes of the tree.
   const { highlightedComponents } = useContext(HighlightedComponentsContext);

@@ -21,7 +21,6 @@ const App = () => {
   const { locale } = useLocale();
   const [nodesAndEdges, setNodesAndEdges] = useState(null);
   const [nodeDetail, setNodeDetail] = useState({ visible: false, node: null });
-  const [info, setInfo] = useState(null);
   const { componentBackground } = useContext(ComponentBackgroundContext);
 
   const [treeLayoutDirection, setTreeLayoutDirection] = useState(undefined);
@@ -40,7 +39,7 @@ const App = () => {
     getParsedData()
       // data comes as a set of nodes and edges from the server.
       .then((data) => {
-        setInfo(data.info);
+        console.log('Incoming data:', data);
         const nodes = getNodes(data, setNodeDetail);
         const edges = getEdges(data);
         let tree = [];
@@ -63,7 +62,6 @@ const App = () => {
         <ThemeProvider>
           <HighlightedComponentsProvider>
             <DefaultLayout
-              info={info}
               nodeDetail={nodeDetail}
               setNodeDetail={setNodeDetail}
               isVerticalTreeLayoutAsDefault={isVerticalTreeLayoutAsDefault}
