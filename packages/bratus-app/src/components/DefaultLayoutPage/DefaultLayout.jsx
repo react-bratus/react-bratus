@@ -20,7 +20,6 @@ import { ButtonLabels } from '../../utils/constants/constants';
 
 const DefaultLayout = ({
   children,
-  info,
   nodeDetail,
   setNodeDetail,
   isVerticalTreeLayoutAsDefault,
@@ -75,7 +74,6 @@ const DefaultLayout = ({
           setIsHelpVisible={setIsHelpVisible}
           setIsNavCollapsed={setIsNavCollapsed}
           isNavCollapsed={isNavCollapsed}
-          info={info}
         />
 
         <NavigationTriggerButton
@@ -148,7 +146,6 @@ const DefaultLayout = ({
 DefaultLayout.propTypes = {
   isVerticalTreeLayoutAsDefault: PropTypes.any,
   setVerticalTreeLayoutAsDefault: PropTypes.any,
-  info: PropTypes.any,
   nodeDetail: PropTypes.any,
   setNodeDetail: PropTypes.func,
 };
