@@ -4,7 +4,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { getParsedData } from './api';
 import ComponentTree from './components/ComponentTree/ComponentTree';
 import DefaultLayout from './components/DefaultLayoutPage/DefaultLayout';
-import HighlightedComponentsProvider from './providers/HighlightedComponentsProvider';
 import { getEdges, getNodes } from './utils/functions/nodes-and-edges';
 import { getLayoutedGraphElements } from './utils/functions/graphUtils';
 import { GraphLabels } from './utils/constants/constants';
@@ -48,30 +47,28 @@ const App = () => {
   }, []);
 
   return (
-    <HighlightedComponentsProvider>
-      <DefaultLayout
-        nodeDetail={nodeDetail}
-        setNodeDetail={setNodeDetail}
-        isVerticalTreeLayoutAsDefault={isVerticalTreeLayoutAsDefault}
-        setVerticalTreeLayoutAsDefault={setVerticalTreeLayoutAsDefault}
-      >
-        {nodesAndEdges ? (
-          <ComponentTree
-            treeLayoutDirection={treeLayoutDirection}
-            nodesAndEdges={nodesAndEdges}
-            setTreeLayoutDirection={setTreeLayoutDirection}
+    <DefaultLayout
+      nodeDetail={nodeDetail}
+      setNodeDetail={setNodeDetail}
+      isVerticalTreeLayoutAsDefault={isVerticalTreeLayoutAsDefault}
+      setVerticalTreeLayoutAsDefault={setVerticalTreeLayoutAsDefault}
+    >
+      {nodesAndEdges ? (
+        <ComponentTree
+          treeLayoutDirection={treeLayoutDirection}
+          nodesAndEdges={nodesAndEdges}
+          setTreeLayoutDirection={setTreeLayoutDirection}
+        />
+      ) : (
+        <Spin spinning={true}>
+          <Alert
+            message="Nothing to show"
+            description="Could not find any components to display"
+            type="warning"
           />
-        ) : (
-          <Spin spinning={true}>
-            <Alert
-              message="Nothing to show"
-              description="Could not find any components to display"
-              type="warning"
-            />
-          </Spin>
-        )}
-      </DefaultLayout>
-    </HighlightedComponentsProvider>
+        </Spin>
+      )}
+    </DefaultLayout>
   );
 };
 
