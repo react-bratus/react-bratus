@@ -5,7 +5,6 @@ import {
   StyledDropDownSelect,
   TreeComponentDropdown,
 } from '../../NavigationPanel.sc';
-import { recompile } from '../../../../api';
 
 const NavSearchComponent = () => {
   const { setCenter } = useZoomPanHelper();
@@ -57,15 +56,11 @@ const NavSearchComponent = () => {
     focusNode(value);
   };
 
-  const renderThisNode = (id) => {
+  const onChangeExperimental = (id) => {
     const index = nodes.findIndex((node) => node.id == id);
     const node = nodes[index];
     const label = node.data.label;
-    recompile(label).then(location.reload());
-  };
-
-  const onChangeTwo = (value) => {
-    renderThisNode(value);
+    alert(`Clicked node: '${label}'`);
   };
 
   // Node names are in form of Parent:Children.
@@ -102,7 +97,7 @@ const NavSearchComponent = () => {
 
   useEffect(() => {
     generateTreeNodes();
-  }, [nodes]);
+  }, [nodes]); // deleted dependancy 'nodes'
 
   return (
     <>
@@ -116,15 +111,13 @@ const NavSearchComponent = () => {
         treeDefaultExpandAll={false}
         treeData={searchOptions}
       />
-      Chosen component renders as root:
       <TreeComponentDropdown
-        showSearch
         value={searchField}
         dropdownStyle={StyledDropDownSelect}
-        placeholder="Render subtree from given component"
-        onChange={onChangeTwo}
+        placeholder="Get name of the component"
+        onChange={onChangeExperimental}
         treeDataSimpleMode
-        treeDefaultExpandAll={false}
+        treeDefaultExpandAll={true}
         treeData={searchOptions}
       />
     </>
