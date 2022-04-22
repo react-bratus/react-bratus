@@ -39,7 +39,6 @@ const App = () => {
     getParsedData()
       // data comes as a set of nodes and edges from the server.
       .then((data) => {
-        console.log('Incoming data:', data);
         const nodes = getNodes(data, setNodeDetail);
         const edges = getEdges(data);
         let tree = [];

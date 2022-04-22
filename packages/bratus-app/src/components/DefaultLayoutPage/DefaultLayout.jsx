@@ -20,7 +20,6 @@ import { ButtonLabels } from '../../utils/constants/constants';
 
 const DefaultLayout = ({
   children,
-  info,
   nodeDetail,
   setNodeDetail,
   isVerticalTreeLayoutAsDefault,
@@ -75,7 +74,6 @@ const DefaultLayout = ({
           setIsHelpVisible={setIsHelpVisible}
           setIsNavCollapsed={setIsNavCollapsed}
           isNavCollapsed={isNavCollapsed}
-          info={info}
         />
 
         <NavigationTriggerButton
