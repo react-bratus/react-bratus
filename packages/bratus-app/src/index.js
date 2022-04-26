@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import ComponentBackgroundProvider from './providers/ComponentBackgroundProvider';
+import Providers from './providers/Providers';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <ComponentBackgroundProvider>
+    <Providers>
       <App />
-    </ComponentBackgroundProvider>
+    </Providers>
   </React.StrictMode>,
   document.getElementById('root')
 );

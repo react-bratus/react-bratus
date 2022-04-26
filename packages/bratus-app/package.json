@@ -36,9 +36,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src",
-    "lint:fix": "eslint --fix src",
-    "i18n:extract": "lingui extract --clean",
-    "i18n:compile": "lingui compile"
+    "lint:fix": "eslint --fix src"
   },
   "browserslist": {
     "production": [
