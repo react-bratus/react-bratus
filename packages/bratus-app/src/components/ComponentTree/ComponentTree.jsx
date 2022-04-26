@@ -20,17 +20,23 @@ const ComponentTree = ({
 }) => {
   const [layoutedNodesAndEdges, setLayoutedNodesAndEdges] =
     useState(nodesAndEdges);
+  console.log('[State] layoutedNodesAndEdges:', layoutedNodesAndEdges);
 
-  // EXPERIMENT FROM HERE
-  console.log('Layouted Nodes and Edges:', layoutedNodesAndEdges);
+  // FILTERING LOGIC:
+  const [useFilter, setUseFilter] = useState(false);
+  const [filteredNodesAndEdges, setFilteredNodesAndEdges] = useState([]);
+  console.log('[State] filteredNodesAndEdges:', filteredNodesAndEdges);
 
-  const [treeFilter, setTreeFilter] = useState(false);
-
-  const nodes = layoutedNodesAndEdges.filter((obj) => {
+  const nodesForDropdown = layoutedNodesAndEdges.filter((obj) => {
     return obj.type == 'reactComponent';
   });
+  const firstRootComponentLabel = nodesForDropdown
+    ? nodesForDropdown[0].data.label
+    : 'undefined';
 
-  const [filteredNodesAndEdges, setFilteredNodesAndEdges] = useState('App');
+  const [searchField, setSearchField] = useState(firstRootComponentLabel);
+  const [searchOptions, setSearchOptions] = useState([]);
+  const reactFlowInstance = useZoomPanHelper();
 
   function filterByName(array, filterName) {
     const result = array.filter((obj) => {
@@ -43,23 +49,15 @@ const ComponentTree = ({
     setFilteredNodesAndEdges(result);
   }
 
-  console.log('Filtered:', filteredNodesAndEdges);
-  const reactFlowInstance = useZoomPanHelper();
-
-  // Selected node in searchbar.
-  const [searchField, setSearchField] = useState();
-  // Setting the nodes that appear in the searchbar.
-  const [searchOptions, setSearchOptions] = useState([]);
-
-  const onChange = (id) => {
-    const index = nodes.findIndex((node) => node.id == id);
-    const node = nodes[index];
+  const onSelectNode = (id) => {
+    const index = nodesForDropdown.findIndex((node) => node.id == id);
+    const node = nodesForDropdown[index];
     const label = node.data.label;
-    filterByName(layoutedNodesAndEdges, label);
     setSearchField(label);
+    filterByName(layoutedNodesAndEdges, label);
     setTimeout(() => reactFlowInstance.fitView(), 0);
   };
-  // Node names are in form of Parent:Children.
+
   const getParentId = (id) => {
     const idSplit = id.split(':');
     if (idSplit.length == 1) {
@@ -69,15 +67,14 @@ const ComponentTree = ({
     return idSplit.join(':');
   };
 
-  // outDegree is 0 if the node has no descendants. Look at Graph.ts.
   const isLeaf = (node) => {
     return node.data.outDegree == 0;
   };
-  // Returns a list of node objects, used in the TreeComponentDropdown.
+
   const generateTreeNodes = () => {
-    if (nodes.length > 0) {
+    if (nodesForDropdown.length > 0) {
       setSearchOptions(
-        nodes.map((node) => {
+        nodesForDropdown.map((node) => {
           return {
             id: node.id,
             pId: getParentId(node.id),
@@ -89,9 +86,10 @@ const ComponentTree = ({
       );
     }
   };
+
   useEffect(() => {
     generateTreeNodes();
-  }, [layoutedNodesAndEdges]); // deleted dependancy 'nodes'
+  }, []);
 
   const { highlightedComponents, setHighlightedComponents } = useContext(
     HighlightedComponentsContext
@@ -132,9 +130,11 @@ const ComponentTree = ({
   // Reset highlightComponents (Empty array).
   const resetHighlight = () => setHighlightedComponents([]);
 
-  const renderElements = treeFilter
-    ? filteredNodesAndEdges
-    : layoutedNodesAndEdges;
+  // const renderElements = useFilter
+  //    filteredNodesAndEdges
+  //   : layoutedNodesAndEdges;
+
+  console.log('[Rendered] ComponentTree.jsx');
 
   return (
     <>
@@ -143,15 +143,15 @@ const ComponentTree = ({
         <input
           id="filter"
           type="checkbox"
-          checked={treeFilter}
+          checked={useFilter}
           onChange={() => {
-            filterByName(layoutedNodesAndEdges, 'App');
-            setTreeFilter(!treeFilter);
+            setUseFilter(!useFilter);
+            filterByName(layoutedNodesAndEdges, searchField);
             setTimeout(() => reactFlowInstance.fitView(), 0);
           }}
         />
       </label>
-      {renderElements && (
+      {layoutedNodesAndEdges && (
         <GraphDirectionContext.Provider value={treeLayoutDirection}>
           <LayoutButtons
             setTreeLayoutDirection={setTreeLayoutDirection}
@@ -162,14 +162,14 @@ const ComponentTree = ({
             value={searchField}
             dropdownStyle={StyledDropDownSelect}
             placeholder="Chose component"
-            onChange={onChange}
+            onChange={onSelectNode}
             treeDataSimpleMode
             treeDefaultExpandAll={true}
             treeData={searchOptions}
           />
           <ReactFlow
             onLoad={onLoadTree}
-            elements={renderElements}
+            elements={useFilter ? filteredNodesAndEdges : layoutedNodesAndEdges}
             nodeTypes={{ reactComponent: ComponentNode }}
             onNodeMouseEnter={(_e, node) => highlightComponent(node, false)}
             onNodeMouseLeave={(_e, node) => removeHighlight(node)}
