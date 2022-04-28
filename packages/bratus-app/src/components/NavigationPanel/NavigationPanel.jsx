@@ -28,10 +28,8 @@ const NavigationPanel = ({ isNavCollapsed, setIsHelpVisible }) => {
   const reactFlowInstance = useZoomPanHelper();
 
   useEffect(() => {
-    console.log('useEffect()');
     setTimeout(() => {
       reactFlowInstance.fitView();
-      console.log('fitView()');
     }, 200);
   }, [isNavCollapsed, reactFlowInstance.fitView()]);
 
