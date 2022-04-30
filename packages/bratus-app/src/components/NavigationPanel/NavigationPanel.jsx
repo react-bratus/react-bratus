@@ -29,9 +29,9 @@ const NavigationPanel = ({ isNavCollapsed, setIsHelpVisible }) => {
 
   useEffect(() => {
     setTimeout(() => {
-      reactFlowInstance.fitView();
-    }, 200);
-  }, [isNavCollapsed, reactFlowInstance.fitView()]);
+      reactFlowInstance.fitView({ duration: 700 });
+    }, 0);
+  }, [isNavCollapsed]);
 
   return (
     <>
