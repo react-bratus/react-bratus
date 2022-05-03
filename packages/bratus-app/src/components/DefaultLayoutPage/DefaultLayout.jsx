@@ -146,7 +146,6 @@ const DefaultLayout = ({
 DefaultLayout.propTypes = {
   isVerticalTreeLayoutAsDefault: PropTypes.any,
   setVerticalTreeLayoutAsDefault: PropTypes.any,
-  info: PropTypes.any,
   nodeDetail: PropTypes.any,
   setNodeDetail: PropTypes.func,
 };

@@ -1,5 +1,5 @@
 import { Menu } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { navigationWidth } from '../../utils/constants/units';
 import {
   AppTitle,
@@ -24,8 +24,17 @@ import {
   defaultOpenKeys,
   NavigationLabels,
 } from '../../utils/constants/constants';
+import { useZoomPanHelper } from 'react-flow-renderer';
 
 const NavigationPanel = ({ isNavCollapsed, setIsHelpVisible }) => {
+  const reactFlowInstance = useZoomPanHelper();
+
+  useEffect(() => {
+    setTimeout(() => {
+      reactFlowInstance.fitView({ duration: 700 });
+    }, 0);
+  }, [isNavCollapsed]);
+
   return (
     <>
       <NavigationSider
