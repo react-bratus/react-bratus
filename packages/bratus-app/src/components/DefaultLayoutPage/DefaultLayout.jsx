@@ -1,12 +1,12 @@
 import { LeftCircleOutlined } from '@ant-design/icons';
 import ColorHash from 'color-hash';
 
-import { Drawer as ComponentDetailsDrawer, Layout } from 'antd';
+import { Drawer as ComponentCodeDrawer, Layout } from 'antd';
 import PropTypes from 'prop-types';
 import React, { useState, useContext } from 'react';
 import { ReactFlowProvider } from 'react-flow-renderer';
 import useStickyState from '../../hooks/useStickyState';
-import ComponentDetails from '../ComponentDetails/ComponentDetails';
+import ComponentCode from '../ComponentCode/ComponentCode';
 import HelpPanel from '../HelpPanel/HelpPanel';
 import StyledMiniMap from '../Minimap/Minimap.sc';
 import NavigationPanel from '../NavigationPanel/NavigationPanel';
@@ -97,7 +97,7 @@ const DefaultLayout = ({
           {children}
         </MainContentWrapper>
 
-        <ComponentDetailsDrawer
+        <ComponentCodeDrawer
           width={800}
           visible={nodeDetail.visible}
           closable={true}
@@ -105,8 +105,8 @@ const DefaultLayout = ({
           onClose={() => setNodeDetail({ visible: false, node: null })}
           title={nodeDetail.node ? nodeDetail.node.data.label : ''}
         >
-          <ComponentDetails nodeDetail={nodeDetail} />
-        </ComponentDetailsDrawer>
+          <ComponentCode nodeDetail={nodeDetail} />
+        </ComponentCodeDrawer>
 
         <MinimapTriggerButton
           isMinimapVisible={isMinimapVisible}

@@ -1,5 +1,6 @@
+import { Popover, Divider, Button } from 'antd';
 import ColorHash from 'color-hash';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Handle } from 'react-flow-renderer';
 import ComponentBackgroundContext from '../../contexts/ComponentBackgroundContext';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
@@ -20,6 +21,8 @@ const ComponentNode = (node) => {
 
   // We need the layout to pass it as props to the styled component.
   const treeLayoutDirection = useContext(GraphDirectionContext);
+
+  const [isPopoverVisible, setisPopoverVisible] = useState(false);
 
   const isHighlighted = () => {
     return highlightedComponents.some((component) =>
@@ -82,38 +85,65 @@ const ComponentNode = (node) => {
       : nodeName;
   };
 
+  const content = (
+    <div>
+      <p>This component is used {node.data.component.timesUsed} times.</p>
+      <Divider />
+      <div style={{ display: 'flex', gap: '10px' }}>
+        <Button type="primary" href={`vscode://file/${node.data.path}`}>
+          Go To Code
+        </Button>
+        <Button
+          onClick={() => {
+            node.data.onShowNodeDetail(node);
+            setisPopoverVisible(false);
+          }}
+          type="primary"
+        >
+          View Code
+        </Button>
+      </div>
+    </div>
+  );
+
   const truncatedNodeName = truncateNodeName(node.data.label, nodeNameLength);
-
   return (
-    <StyledNode
-      linesOfCode={node.data.linesOfCode}
-      componentBackground={componentBackground}
-      treeLayoutDirection={treeLayoutDirection}
-      isHighlighted={isHighlighted()}
-      bgColor={getBgColor}
-      fontColor={getFontColor()}
-      onDoubleClick={() => node.data.onShowNodeDetail(node)}
+    <Popover
+      visible={isPopoverVisible}
+      title={node.data.label}
+      trigger={'click'}
+      content={content}
+      onClick={() => setisPopoverVisible(true)}
     >
-      {node.data.inDegree > 0 && (
-        <Handle
-          type={HandleLabels.target}
-          position={layoutTargetHandlePosition}
-        />
-      )}
+      <StyledNode
+        linesOfCode={node.data.linesOfCode}
+        componentBackground={componentBackground}
+        treeLayoutDirection={treeLayoutDirection}
+        isHighlighted={isHighlighted()}
+        bgColor={getBgColor}
+        fontColor={getFontColor()}
+      >
+        {node.data.inDegree > 0 && (
+          <Handle
+            type={HandleLabels.target}
+            position={layoutTargetHandlePosition}
+          />
+        )}
 
-      <StyledNodeContent>
-        <StyledTitle color={getFontColor} level={5}>
-          {truncatedNodeName}
-        </StyledTitle>
-      </StyledNodeContent>
+        <StyledNodeContent>
+          <StyledTitle color={getFontColor} level={5}>
+            {truncatedNodeName}
+          </StyledTitle>
+        </StyledNodeContent>
 
-      {node.data.outDegree > 0 && (
-        <Handle
-          type={HandleLabels.source}
-          position={layoutSourceHandlePosition}
-        />
-      )}
-    </StyledNode>
+        {node.data.outDegree > 0 && (
+          <Handle
+            type={HandleLabels.source}
+            position={layoutSourceHandlePosition}
+          />
+        )}
+      </StyledNode>
+    </Popover>
   );
 };
 
