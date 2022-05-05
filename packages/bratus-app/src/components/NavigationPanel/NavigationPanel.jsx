@@ -26,7 +26,11 @@ import {
 } from '../../utils/constants/constants';
 import { useZoomPanHelper } from 'react-flow-renderer';
 
-const NavigationPanel = ({ isNavCollapsed, setIsHelpVisible }) => {
+const NavigationPanel = ({
+  isNavCollapsed,
+  setIsHelpVisible,
+  setComponentLabelFilter,
+}) => {
   const reactFlowInstance = useZoomPanHelper();
 
   useEffect(() => {
@@ -50,7 +54,9 @@ const NavigationPanel = ({ isNavCollapsed, setIsHelpVisible }) => {
             title={NavigationLabels.search.title}
             icon={<FileSearchOutlined />}
           >
-            <NavSearchComponent />
+            <NavSearchComponent
+              setComponentLabelFilter={setComponentLabelFilter}
+            />
           </StyledSubMenu>
 
           <StyledMenuDivider />
@@ -80,7 +86,6 @@ const NavigationPanel = ({ isNavCollapsed, setIsHelpVisible }) => {
             </StyledSubMenu>
           </StyledSubMenu>
 
-          {/* Experimental input below:............................................ */}
           <StyledMenuDivider />
           <StyledSubMenu
             key={'experimental-actions'}
@@ -98,6 +103,7 @@ const NavigationPanel = ({ isNavCollapsed, setIsHelpVisible }) => {
 NavigationPanel.propTypes = {
   isNavCollapsed: PropTypes.any,
   setIsHelpVisible: PropTypes.any,
+  setComponentLabelFilter: PropTypes.func,
 };
 
 export default NavigationPanel;

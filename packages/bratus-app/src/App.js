@@ -10,11 +10,25 @@ import { GraphLabels } from './utils/constants/constants';
 import ComponentBackgroundContext from './contexts/ComponentBackgroundContext';
 import useStickyState from './hooks/useStickyState';
 
+// Preserving the initial nodes to display them in the dropdowns even after filtering.
+export const InitialNodesContext = React.createContext([]);
+
 const App = () => {
   const [nodesAndEdges, setNodesAndEdges] = useState(null);
+
+  // State for Drawer holding the code panel of the selected node..
   const [nodeDetail, setNodeDetail] = useState({ visible: false, node: null });
+
+  // Storing initial nodes to assign them to InitialNodesContext
+  const [initialNodes, setInitialNodes] = useState([]);
+
+  // Node visualization options (size, color, white). See NavNodeVisualizationOptions.jsx
   const { componentBackground } = useContext(ComponentBackgroundContext);
 
+  // Dropdown value that filters by component label (name) on click.
+  const [componentLabelFilter, setComponentLabelFilter] = useState(null);
+
+  // Inform the application about the tree direction at all times.
   const [treeLayoutDirection, setTreeLayoutDirection] = useState(undefined);
 
   // Set vertical as default through the help panel preferences section.
@@ -30,7 +44,7 @@ const App = () => {
     getParsedData()
       // data comes as a set of nodes and edges from the server.
       .then((data) => {
-        const nodes = getNodes(data, setNodeDetail);
+        const nodes = getNodes(data, setNodeDetail, setInitialNodes);
         const edges = getEdges(data);
         let tree = [];
 
@@ -47,28 +61,32 @@ const App = () => {
   }, []);
 
   return (
-    <DefaultLayout
-      nodeDetail={nodeDetail}
-      setNodeDetail={setNodeDetail}
-      isVerticalTreeLayoutAsDefault={isVerticalTreeLayoutAsDefault}
-      setVerticalTreeLayoutAsDefault={setVerticalTreeLayoutAsDefault}
-    >
-      {nodesAndEdges ? (
-        <ComponentTree
-          treeLayoutDirection={treeLayoutDirection}
-          nodesAndEdges={nodesAndEdges}
-          setTreeLayoutDirection={setTreeLayoutDirection}
-        />
-      ) : (
-        <Spin spinning={true}>
-          <Alert
-            message="Nothing to show"
-            description="Could not find any components to display"
-            type="warning"
+    <InitialNodesContext.Provider value={initialNodes}>
+      <DefaultLayout
+        nodeDetail={nodeDetail}
+        setComponentLabelFilter={setComponentLabelFilter}
+        setNodeDetail={setNodeDetail}
+        isVerticalTreeLayoutAsDefault={isVerticalTreeLayoutAsDefault}
+        setVerticalTreeLayoutAsDefault={setVerticalTreeLayoutAsDefault}
+      >
+        {nodesAndEdges ? (
+          <ComponentTree
+            componentLabelFilter={componentLabelFilter}
+            treeLayoutDirection={treeLayoutDirection}
+            nodesAndEdges={nodesAndEdges}
+            setTreeLayoutDirection={setTreeLayoutDirection}
           />
-        </Spin>
-      )}
-    </DefaultLayout>
+        ) : (
+          <Spin spinning={true}>
+            <Alert
+              message="Nothing to show"
+              description="Could not find any components to display"
+              type="warning"
+            />
+          </Spin>
+        )}
+      </DefaultLayout>
+    </InitialNodesContext.Provider>
   );
 };
 

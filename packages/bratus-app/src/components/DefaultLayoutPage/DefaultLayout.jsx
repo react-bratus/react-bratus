@@ -22,6 +22,7 @@ const DefaultLayout = ({
   children,
   nodeDetail,
   setNodeDetail,
+  setComponentLabelFilter,
   isVerticalTreeLayoutAsDefault,
   setVerticalTreeLayoutAsDefault,
 }) => {
@@ -74,6 +75,7 @@ const DefaultLayout = ({
           setIsHelpVisible={setIsHelpVisible}
           setIsNavCollapsed={setIsNavCollapsed}
           isNavCollapsed={isNavCollapsed}
+          setComponentLabelFilter={setComponentLabelFilter}
         />
 
         <NavigationTriggerButton
@@ -148,5 +150,6 @@ DefaultLayout.propTypes = {
   setVerticalTreeLayoutAsDefault: PropTypes.any,
   nodeDetail: PropTypes.any,
   setNodeDetail: PropTypes.func,
+  setComponentLabelFilter: PropTypes.func,
 };
 export default DefaultLayout;

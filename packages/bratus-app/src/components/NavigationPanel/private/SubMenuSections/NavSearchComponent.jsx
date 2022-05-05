@@ -1,13 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useStoreState, useZoomPanHelper } from 'react-flow-renderer';
 import HighlightedComponentsContext from '../../../../contexts/HighlightedComponentsContext';
+import PropTypes from 'prop-types';
+
 import {
   StyledDropDownSelect,
   TreeComponentDropdown,
 } from '../../NavigationPanel.sc';
+import { InitialNodesContext } from '../../../../App';
 
-const NavSearchComponent = () => {
+const NavSearchComponent = ({ setComponentLabelFilter }) => {
   const { setCenter } = useZoomPanHelper();
+
+  // Preserving the initial nodes in memory.
+  const initialNodesContext = useContext(InitialNodesContext);
 
   const { highlightedComponents, setHighlightedComponents } = useContext(
     HighlightedComponentsContext
@@ -56,11 +62,11 @@ const NavSearchComponent = () => {
     focusNode(value);
   };
 
-  const onChangeExperimental = (id) => {
-    const index = nodes.findIndex((node) => node.id == id);
-    const node = nodes[index];
+  const onChangeSubtreeRootNode = (id) => {
+    const index = initialNodesContext.findIndex((node) => node.id == id);
+    const node = initialNodesContext[index];
     const label = node.data.label;
-    alert(`Clicked node: '${label}'`);
+    setComponentLabelFilter(label);
   };
 
   // Node names are in form of Parent:Children.
@@ -80,9 +86,9 @@ const NavSearchComponent = () => {
 
   // Returns a list of node objects, used in the TreeComponentDropdown.
   const generateTreeNodes = () => {
-    if (nodes.length > 0) {
+    if (initialNodesContext.length > 0) {
       setSearchOptions(
-        nodes.map((node) => {
+        initialNodesContext.map((node) => {
           return {
             id: node.id,
             pId: getParentId(node.id),
@@ -97,7 +103,7 @@ const NavSearchComponent = () => {
 
   useEffect(() => {
     generateTreeNodes();
-  }, [nodes]); // deleted dependancy 'nodes'
+  }, [nodes]);
 
   return (
     <>
@@ -111,17 +117,24 @@ const NavSearchComponent = () => {
         treeDefaultExpandAll={false}
         treeData={searchOptions}
       />
+
       <TreeComponentDropdown
+        showSearch
         value={searchField}
         dropdownStyle={StyledDropDownSelect}
-        placeholder="Get name of the component"
-        onChange={onChangeExperimental}
+        placeholder="Define Subtree Root"
+        onChange={onChangeSubtreeRootNode}
         treeDataSimpleMode
         treeDefaultExpandAll={true}
         treeData={searchOptions}
       />
     </>
   );
+};
+
+NavSearchComponent.propTypes = {
+  setComponentLabelFilter: PropTypes.func,
+  nodesAndEdges: PropTypes.any,
 };
 
 export default NavSearchComponent;

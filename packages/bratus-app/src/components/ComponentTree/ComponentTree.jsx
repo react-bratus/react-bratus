@@ -1,46 +1,49 @@
-import ReactFlow, { useZoomPanHelper } from 'react-flow-renderer';
+import ReactFlow, { isNode, useZoomPanHelper } from 'react-flow-renderer';
 import PropTypes from 'prop-types';
 import React, { useContext, useState, useEffect } from 'react';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
 import ComponentNode from '../ComponentNode/ComponentNode';
 import LayoutButtons from './private/LayoutButtons';
 import { ZoomControlButtons } from './ComponentTree.sc';
-import {
-  TreeComponentDropdown,
-  StyledDropDownSelect,
-} from '../NavigationPanel/NavigationPanel.sc';
 
 // Create context to provide the tree layout direction to the children.
 export const GraphDirectionContext = React.createContext(null);
 
 const ComponentTree = ({
   nodesAndEdges,
+  componentLabelFilter,
   treeLayoutDirection,
   setTreeLayoutDirection,
 }) => {
   const [layoutedNodesAndEdges, setLayoutedNodesAndEdges] =
     useState(nodesAndEdges);
-  console.log('[State] layoutedNodesAndEdges:', layoutedNodesAndEdges);
+
+  // Will run when the component is mounted.
+  useEffect(() => {
+    filterByName(layoutedNodesAndEdges, rootComponentLabel);
+    setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
+  }, []);
+
+  // Will run every time the componentFilter changes.
+  useEffect(() => {
+    filterByName(layoutedNodesAndEdges, componentLabelFilter);
+    setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
+  }, [componentLabelFilter]);
 
   // FILTERING LOGIC:
   const [useFilter, setUseFilter] = useState(false);
-  const [filteredNodesAndEdges, setFilteredNodesAndEdges] = useState([]);
-  console.log('[State] filteredNodesAndEdges:', filteredNodesAndEdges);
+  const [filteredNodesAndEdges, setFilteredNodesAndEdges] = useState(null);
 
-  const nodesForDropdown = layoutedNodesAndEdges.filter((obj) => {
-    return obj.type == 'reactComponent';
-  });
-  const firstRootComponentLabel = nodesForDropdown
-    ? nodesForDropdown[0].data.label
-    : 'undefined';
+  // The first node of data is always the root component.
+  const rootComponentLabel = layoutedNodesAndEdges
+    ? layoutedNodesAndEdges[0].data.label
+    : 'another one';
 
-  const [searchField, setSearchField] = useState(firstRootComponentLabel);
-  const [searchOptions, setSearchOptions] = useState([]);
   const reactFlowInstance = useZoomPanHelper();
 
   function filterByName(array, filterName) {
     const result = array.filter((obj) => {
-      if (Object.hasOwn(obj, 'type')) {
+      if (isNode(obj)) {
         return obj.id.includes(filterName);
       } else {
         return obj.source.includes(filterName);
@@ -48,48 +51,6 @@ const ComponentTree = ({
     });
     setFilteredNodesAndEdges(result);
   }
-
-  const onSelectNode = (id) => {
-    const index = nodesForDropdown.findIndex((node) => node.id == id);
-    const node = nodesForDropdown[index];
-    const label = node.data.label;
-    setSearchField(label);
-    filterByName(layoutedNodesAndEdges, label);
-    setTimeout(() => reactFlowInstance.fitView(), 0);
-  };
-
-  const getParentId = (id) => {
-    const idSplit = id.split(':');
-    if (idSplit.length == 1) {
-      return null;
-    }
-    idSplit.pop();
-    return idSplit.join(':');
-  };
-
-  const isLeaf = (node) => {
-    return node.data.outDegree == 0;
-  };
-
-  const generateTreeNodes = () => {
-    if (nodesForDropdown.length > 0) {
-      setSearchOptions(
-        nodesForDropdown.map((node) => {
-          return {
-            id: node.id,
-            pId: getParentId(node.id),
-            title: node.data.label,
-            value: node.id,
-            isLeaf: isLeaf(node),
-          };
-        })
-      );
-    }
-  };
-
-  useEffect(() => {
-    generateTreeNodes();
-  }, []);
 
   const { highlightedComponents, setHighlightedComponents } = useContext(
     HighlightedComponentsContext
@@ -130,11 +91,18 @@ const ComponentTree = ({
   // Reset highlightComponents (Empty array).
   const resetHighlight = () => setHighlightedComponents([]);
 
-  // const renderElements = useFilter
-  //    filteredNodesAndEdges
-  //   : layoutedNodesAndEdges;
+  // Conditionally passing nodes and edges to the onChangeTreeLayout, so that we can
+  // change the positioning dynamically based on the direction of the tree.
+  const renderedElementsToPosition =
+    filteredNodesAndEdges && useFilter === true
+      ? filteredNodesAndEdges
+      : layoutedNodesAndEdges;
 
-  console.log('[Rendered] ComponentTree.jsx');
+  // setting the fresh layouted elements, KiKi GangGang
+  const setRenderedElementsToPosition =
+    filteredNodesAndEdges && useFilter === true
+      ? setFilteredNodesAndEdges
+      : setLayoutedNodesAndEdges;
 
   return (
     <>
@@ -146,8 +114,7 @@ const ComponentTree = ({
           checked={useFilter}
           onChange={() => {
             setUseFilter(!useFilter);
-            filterByName(layoutedNodesAndEdges, searchField);
-            setTimeout(() => reactFlowInstance.fitView(), 0);
+            setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
           }}
         />
       </label>
@@ -155,18 +122,10 @@ const ComponentTree = ({
         <GraphDirectionContext.Provider value={treeLayoutDirection}>
           <LayoutButtons
             setTreeLayoutDirection={setTreeLayoutDirection}
-            layoutedNodesAndEdges={layoutedNodesAndEdges}
-            setLayoutedNodesAndEdges={setLayoutedNodesAndEdges}
+            layoutedNodesAndEdges={renderedElementsToPosition}
+            setLayoutedNodesAndEdges={setRenderedElementsToPosition}
           />
-          <TreeComponentDropdown
-            value={searchField}
-            dropdownStyle={StyledDropDownSelect}
-            placeholder="Chose component"
-            onChange={onSelectNode}
-            treeDataSimpleMode
-            treeDefaultExpandAll={true}
-            treeData={searchOptions}
-          />
+
           <ReactFlow
             onLoad={onLoadTree}
             elements={useFilter ? filteredNodesAndEdges : layoutedNodesAndEdges}
@@ -189,6 +148,7 @@ const ComponentTree = ({
 ComponentTree.propTypes = {
   nodesAndEdges: PropTypes.any,
   treeLayoutDirection: PropTypes.any,
+  componentLabelFilter: PropTypes.any,
   setTreeLayoutDirection: PropTypes.any,
 };
 
