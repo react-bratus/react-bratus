@@ -2,16 +2,18 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useStoreState, useZoomPanHelper } from 'react-flow-renderer';
 import HighlightedComponentsContext from '../../../../contexts/HighlightedComponentsContext';
 import PropTypes from 'prop-types';
-
 import {
   StyledDropDownSelect,
   SubtreeSwitchWrapper,
   TreeComponentDropdown,
   SearchNodeExplanationText,
   SubtreeModeText,
+  TimesUsedInputGroup,
+  TimesUsedButton,
 } from '../../NavigationPanel.sc';
 import { InitialNodesContext } from '../../../../App';
-import { Switch, Input, Button } from 'antd';
+import { Input, Switch } from 'antd';
+import { FilterOutlined } from '@ant-design/icons';
 
 const NavSearchComponent = ({
   setComponentLabelFilter,
@@ -48,6 +50,7 @@ const NavSearchComponent = ({
   function handleInputChange(e) {
     setNumberForFilter(e.target.value);
   }
+
   // Bring selected node in the center of the screen.
   const focusNode = (id) => {
     const index = nodes.findIndex((node) => node.id == id);
@@ -129,7 +132,9 @@ const NavSearchComponent = ({
     <>
       <SubtreeSwitchWrapper>
         <Switch defaultChecked={false} onChange={onTreeInteractionModeChange} />
-        <SubtreeModeText>Subtree Mode</SubtreeModeText>
+        <SubtreeModeText>
+          <FilterOutlined /> Filter Mode
+        </SubtreeModeText>
       </SubtreeSwitchWrapper>
 
       {isSubtreeMode ? (
@@ -154,20 +159,22 @@ const NavSearchComponent = ({
             treeDefaultExpandAll={true}
             treeData={searchOptions}
           />
+
           <SearchNodeExplanationText>
             Hide components used more times than:
           </SearchNodeExplanationText>
-          <Input.Group compact>
-            <Input style={{ width: '100px' }} onChange={handleInputChange} />
-            <Button
-              type="primary"
+
+          <TimesUsedInputGroup compact>
+            <Input onChange={handleInputChange} />
+            <TimesUsedButton
               onClick={() => {
                 setComponentNumberFilter(numberForFilter);
               }}
+              type="primary"
             >
               Apply Filter
-            </Button>
-          </Input.Group>
+            </TimesUsedButton>
+          </TimesUsedInputGroup>
         </>
       ) : (
         <TreeComponentDropdown
