@@ -25,6 +25,7 @@ const DefaultLayout = ({
   setIsSubtreeMode,
   setNodeDetail,
   setComponentLabelFilter,
+  setComponentNumberFilter,
   isVerticalTreeLayoutAsDefault,
   setVerticalTreeLayoutAsDefault,
 }) => {
@@ -80,6 +81,7 @@ const DefaultLayout = ({
           setIsSubtreeMode={setIsSubtreeMode}
           isNavCollapsed={isNavCollapsed}
           setComponentLabelFilter={setComponentLabelFilter}
+          setComponentNumberFilter={setComponentNumberFilter}
         />
 
         <NavigationTriggerButton
@@ -155,6 +157,7 @@ DefaultLayout.propTypes = {
   nodeDetail: PropTypes.any,
   setNodeDetail: PropTypes.func,
   setComponentLabelFilter: PropTypes.func,
+  setComponentNumberFilter: PropTypes.func,
   isSubtreeMode: PropTypes.bool,
   setIsSubtreeMode: PropTypes.func,
 };

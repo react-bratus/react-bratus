@@ -15,6 +15,7 @@ import { Switch, Input, Button } from 'antd';
 
 const NavSearchComponent = ({
   setComponentLabelFilter,
+  setComponentNumberFilter,
   isSubtreeMode,
   setIsSubtreeMode,
 }) => {
@@ -41,6 +42,12 @@ const NavSearchComponent = ({
   // Setting the nodes that appear in the searchbar.
   const [searchOptions, setSearchOptions] = useState([]);
 
+  // State for the number input.
+  const [numberForFilter, setNumberForFilter] = useState(0);
+
+  function handleInputChange(e) {
+    setNumberForFilter(e.target.value);
+  }
   // Bring selected node in the center of the screen.
   const focusNode = (id) => {
     const index = nodes.findIndex((node) => node.id == id);
@@ -151,12 +158,15 @@ const NavSearchComponent = ({
             Hide components used more times than:
           </SearchNodeExplanationText>
           <Input.Group compact>
-            <Input
-              style={{ width: '100px' }}
-              name="times"
-              defaultValue={'Hey'}
-            />
-            <Button type="primary">Apply Filter</Button>
+            <Input style={{ width: '100px' }} onChange={handleInputChange} />
+            <Button
+              type="primary"
+              onClick={() => {
+                setComponentNumberFilter(numberForFilter);
+              }}
+            >
+              Apply Filter
+            </Button>
           </Input.Group>
         </>
       ) : (
@@ -177,6 +187,7 @@ const NavSearchComponent = ({
 
 NavSearchComponent.propTypes = {
   setComponentLabelFilter: PropTypes.func,
+  setComponentNumberFilter: PropTypes.func,
   nodesAndEdges: PropTypes.any,
   isSubtreeMode: PropTypes.bool,
   setIsSubtreeMode: PropTypes.func,

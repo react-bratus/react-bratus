@@ -5,7 +5,6 @@ import HighlightedComponentsContext from '../../contexts/HighlightedComponentsCo
 import ComponentNode from '../ComponentNode/ComponentNode';
 import LayoutButtons from './private/LayoutButtons';
 import { ZoomControlButtons } from './ComponentTree.sc';
-import { Input, Button } from 'antd';
 
 // Create context to provide the tree layout direction to the children.
 export const GraphDirectionContext = React.createContext(null);
@@ -13,6 +12,7 @@ export const GraphDirectionContext = React.createContext(null);
 const ComponentTree = ({
   nodesAndEdges,
   componentLabelFilter,
+  componentNumberFilter,
   treeLayoutDirection,
   setTreeLayoutDirection,
   isSubtreeMode,
@@ -26,20 +26,30 @@ const ComponentTree = ({
     setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
   }, []);
 
-  // Will run every time the componentFilter changes.
+  // Will run every time any of the componentFilter(s) change.
   useEffect(() => {
     filterByName(layoutedNodesAndEdges, componentLabelFilter);
     setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
   }, [componentLabelFilter]);
 
+  useEffect(() => {
+    if (filteredNodesAndEdges) {
+      setFilteredNodesAndEdges(
+        filterByTimesUsed(filteredNodesAndEdges, componentNumberFilter)
+      );
+      setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
+      console.log(
+        'componentNumberFilter in useEffect: ',
+        componentNumberFilter
+      );
+    }
+  }, [componentNumberFilter]);
+
+  // MAYBE SPLIT useEffect() ! ! !
+
   // Filtering logic:
 
-  const [filterByTimes, setFilterByTimes] = useState();
   const [filteredNodesAndEdges, setFilteredNodesAndEdges] = useState(null);
-
-  function handleChange(e) {
-    setFilterByTimes(e.target.value);
-  }
 
   // The first node of data is always the root component.
   const rootComponentLabel = layoutedNodesAndEdges
@@ -48,6 +58,11 @@ const ComponentTree = ({
 
   const reactFlowInstance = useZoomPanHelper();
 
+  /**
+   * Sets filtered nodes and edges to display.
+   * @param {*} array
+   * @param {*} filterName
+   */
   function filterByName(array, filterName) {
     const result = array.filter((obj) => {
       if (isNode(obj)) {
@@ -67,8 +82,8 @@ const ComponentTree = ({
         return obj;
       }
     });
-    // setLayoutedNodesAndEdges(result);
-    setFilteredNodesAndEdges(result);
+    return result;
+    // setFilteredNodesAndEdges(result);
   }
 
   const { highlightedComponents, setHighlightedComponents } = useContext(
@@ -123,24 +138,8 @@ const ComponentTree = ({
       ? setFilteredNodesAndEdges
       : setLayoutedNodesAndEdges;
 
-  console.log('Filter on?', isSubtreeMode);
-  console.log('L:', layoutedNodesAndEdges);
-  console.log('F:', filteredNodesAndEdges);
-
   return (
     <>
-      <Input.Group compact>
-        <Input name="times" value={filterByTimes} onChange={handleChange} />
-        <Button
-          type="primary"
-          onClick={() => {
-            filterByTimesUsed(filteredNodesAndEdges, filterByTimes);
-            setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
-          }}
-        >
-          Apply Filter
-        </Button>
-      </Input.Group>
       {layoutedNodesAndEdges && (
         <GraphDirectionContext.Provider value={treeLayoutDirection}>
           <LayoutButtons
@@ -174,6 +173,7 @@ ComponentTree.propTypes = {
   nodesAndEdges: PropTypes.any,
   treeLayoutDirection: PropTypes.any,
   componentLabelFilter: PropTypes.any,
+  componentNumberFilter: PropTypes.any,
   setTreeLayoutDirection: PropTypes.any,
   isSubtreeMode: PropTypes.any,
 };
