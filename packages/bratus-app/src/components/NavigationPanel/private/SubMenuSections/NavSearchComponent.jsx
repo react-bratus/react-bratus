@@ -45,7 +45,7 @@ const NavSearchComponent = ({
   const [searchOptions, setSearchOptions] = useState([]);
 
   // State for the number input.
-  const [numberForFilter, setNumberForFilter] = useState(0);
+  const [numberForFilter, setNumberForFilter] = useState(undefined);
 
   function handleInputChange(e) {
     setNumberForFilter(e.target.value);
