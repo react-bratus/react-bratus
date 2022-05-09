@@ -34,7 +34,7 @@ const ComponentTree = ({
 
   // Filtering logic:
 
-  const [filterByTimes, setFilterByTimes] = useState(0);
+  const [filterByTimes, setFilterByTimes] = useState();
   const [filteredNodesAndEdges, setFilteredNodesAndEdges] = useState(null);
 
   function handleChange(e) {
@@ -43,8 +43,8 @@ const ComponentTree = ({
 
   // The first node of data is always the root component.
   const rootComponentLabel = layoutedNodesAndEdges
-    ? layoutedNodesAndEdges[0].data.label
-    : '';
+    ? layoutedNodesAndEdges[0]?.data?.label
+    : 'App';
 
   const reactFlowInstance = useZoomPanHelper();
 
@@ -67,7 +67,7 @@ const ComponentTree = ({
         return obj;
       }
     });
-    setLayoutedNodesAndEdges(result);
+    // setLayoutedNodesAndEdges(result);
     setFilteredNodesAndEdges(result);
   }
 
@@ -123,13 +123,20 @@ const ComponentTree = ({
       ? setFilteredNodesAndEdges
       : setLayoutedNodesAndEdges;
 
+  console.log('Filter on?', isSubtreeMode);
+  console.log('L:', layoutedNodesAndEdges);
+  console.log('F:', filteredNodesAndEdges);
+
   return (
     <>
       <Input.Group compact>
         <Input name="times" value={filterByTimes} onChange={handleChange} />
         <Button
           type="primary"
-          onClick={() => filterByTimesUsed(nodesAndEdges, filterByTimes)}
+          onClick={() => {
+            filterByTimesUsed(filteredNodesAndEdges, filterByTimes);
+            setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
+          }}
         >
           Apply Filter
         </Button>

@@ -11,7 +11,7 @@ import {
   SubtreeModeText,
 } from '../../NavigationPanel.sc';
 import { InitialNodesContext } from '../../../../App';
-import { Switch } from 'antd';
+import { Switch, Input, Button } from 'antd';
 
 const NavSearchComponent = ({
   setComponentLabelFilter,
@@ -136,16 +136,29 @@ const NavSearchComponent = ({
       )}
 
       {isSubtreeMode === true ? (
-        <TreeComponentDropdown
-          showSearch
-          value={searchField}
-          dropdownStyle={StyledDropDownSelect}
-          placeholder="Define Subtree Root"
-          onChange={onChangeSubtreeRootNode}
-          treeDataSimpleMode
-          treeDefaultExpandAll={true}
-          treeData={searchOptions}
-        />
+        <>
+          <TreeComponentDropdown
+            showSearch
+            value={searchField}
+            dropdownStyle={StyledDropDownSelect}
+            placeholder="Define Subtree Root"
+            onChange={onChangeSubtreeRootNode}
+            treeDataSimpleMode
+            treeDefaultExpandAll={true}
+            treeData={searchOptions}
+          />
+          <SearchNodeExplanationText>
+            Hide components used more times than:
+          </SearchNodeExplanationText>
+          <Input.Group compact>
+            <Input
+              style={{ width: '100px' }}
+              name="times"
+              defaultValue={'Hey'}
+            />
+            <Button type="primary">Apply Filter</Button>
+          </Input.Group>
+        </>
       ) : (
         <TreeComponentDropdown
           showSearch
