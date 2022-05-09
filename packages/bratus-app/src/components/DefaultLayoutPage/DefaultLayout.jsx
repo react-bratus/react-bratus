@@ -21,7 +21,10 @@ import { ButtonLabels } from '../../utils/constants/constants';
 const DefaultLayout = ({
   children,
   nodeDetail,
+  isSubtreeMode,
+  setIsSubtreeMode,
   setNodeDetail,
+  setComponentLabelFilter,
   isVerticalTreeLayoutAsDefault,
   setVerticalTreeLayoutAsDefault,
 }) => {
@@ -40,7 +43,7 @@ const DefaultLayout = ({
   const [isNavCollapsed, setIsNavCollapsed] = useState(false);
 
   // State to hide/ show the minimap.
-  const [isMinimapVisible, setisMinimapVisible] = useState(true);
+  const [isMinimapVisible, setisMinimapVisible] = useState(false);
 
   // Highlight the same nodes on minimap when hovering over the nodes of the tree.
   const { highlightedComponents } = useContext(HighlightedComponentsContext);
@@ -73,7 +76,10 @@ const DefaultLayout = ({
         <NavigationPanel
           setIsHelpVisible={setIsHelpVisible}
           setIsNavCollapsed={setIsNavCollapsed}
+          isSubtreeMode={isSubtreeMode}
+          setIsSubtreeMode={setIsSubtreeMode}
           isNavCollapsed={isNavCollapsed}
+          setComponentLabelFilter={setComponentLabelFilter}
         />
 
         <NavigationTriggerButton
@@ -148,5 +154,8 @@ DefaultLayout.propTypes = {
   setVerticalTreeLayoutAsDefault: PropTypes.any,
   nodeDetail: PropTypes.any,
   setNodeDetail: PropTypes.func,
+  setComponentLabelFilter: PropTypes.func,
+  isSubtreeMode: PropTypes.bool,
+  setIsSubtreeMode: PropTypes.func,
 };
 export default DefaultLayout;

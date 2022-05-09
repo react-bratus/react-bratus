@@ -3,7 +3,17 @@ export const getParsedData = () => {
 };
 
 export const recompile = () => {
-  return fetch('http://localhost:4444/compile', {
+  return fetch('http://localhost:4444/recompile', {
     method: 'POST',
+  });
+};
+
+export const makeConfiguration = (customRootComponenets) => {
+  return fetch('http://localhost:4444/makeConfiguration', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ rootComponents: customRootComponenets }),
   });
 };
