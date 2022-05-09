@@ -82,6 +82,11 @@ Override default configuration by creating `.bratusrc.json` in the root director
 
 ## Changelog
 
+- 3.2.2
+  - Adding comments & documentation to the codebase, refactoring.
+  - Deleting unnecessary functionality.
+  - Bug fixes
+  - Smooth animations on fitting the tree in the view.
 - 3.2.1
   - Fix: Node names no longer break the design. Display ... if the name is long.
 - 3.2.0
