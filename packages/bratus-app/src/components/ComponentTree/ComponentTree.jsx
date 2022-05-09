@@ -5,6 +5,7 @@ import HighlightedComponentsContext from '../../contexts/HighlightedComponentsCo
 import ComponentNode from '../ComponentNode/ComponentNode';
 import LayoutButtons from './private/LayoutButtons';
 import { ZoomControlButtons } from './ComponentTree.sc';
+import { Input, Button } from 'antd';
 
 // Create context to provide the tree layout direction to the children.
 export const GraphDirectionContext = React.createContext(null);
@@ -19,8 +20,10 @@ const ComponentTree = ({
   const [layoutedNodesAndEdges, setLayoutedNodesAndEdges] =
     useState(nodesAndEdges);
 
+  console.log('L:', layoutedNodesAndEdges);
+
   const rootComponentLabel = layoutedNodesAndEdges
-    ? layoutedNodesAndEdges[0].data.label
+    ? layoutedNodesAndEdges[0]?.data?.label
     : 'App';
 
   // Will run when the component is mounted.
@@ -35,8 +38,14 @@ const ComponentTree = ({
     setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
   }, [componentLabelFilter]);
 
-  // FILTERING LOGIC:
+  // Filtering logic:
+
+  const [filterByTimes, setFilterByTimes] = useState(0);
   const [filteredNodesAndEdges, setFilteredNodesAndEdges] = useState(null);
+
+  function handleChange(e) {
+    setFilterByTimes(e.target.value);
+  }
 
   // The first node of data is always the root component.
 
@@ -50,6 +59,18 @@ const ComponentTree = ({
         return obj.source.includes(filterName);
       }
     });
+    setFilteredNodesAndEdges(result);
+  }
+
+  function filterByTimesUsed(array, number) {
+    const result = array.filter((obj) => {
+      if (isNode(obj)) {
+        return obj.data.component.timesUsed < number;
+      } else {
+        return obj;
+      }
+    });
+    setLayoutedNodesAndEdges(result);
     setFilteredNodesAndEdges(result);
   }
 
@@ -107,6 +128,15 @@ const ComponentTree = ({
 
   return (
     <>
+      <Input.Group compact>
+        <Input name="times" value={filterByTimes} onChange={handleChange} />
+        <Button
+          type="primary"
+          onClick={() => filterByTimesUsed(nodesAndEdges, filterByTimes)}
+        >
+          Apply Filter
+        </Button>
+      </Input.Group>
       {layoutedNodesAndEdges && (
         <GraphDirectionContext.Provider value={treeLayoutDirection}>
           <LayoutButtons
