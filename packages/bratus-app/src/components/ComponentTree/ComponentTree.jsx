@@ -77,7 +77,7 @@ const ComponentTree = ({
   function filterByTimesUsed(array, number) {
     const result = array.filter((obj) => {
       if (isNode(obj)) {
-        return obj.data.component.timesUsed < number;
+        return obj.data.component.timesUsed <= number;
       } else {
         return obj;
       }
