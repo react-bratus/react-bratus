@@ -103,10 +103,15 @@ const ComponentNode = (node) => {
           View Code
         </Button>
       </div>
+      <Divider />
+      <Button type="link" onClick={() => setisPopoverVisible(false)}>
+        Close
+      </Button>
     </div>
   );
 
   const truncatedNodeName = truncateNodeName(node.data.label, nodeNameLength);
+
   return (
     <Popover
       visible={isPopoverVisible}
