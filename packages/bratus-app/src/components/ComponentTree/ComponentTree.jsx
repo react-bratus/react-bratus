@@ -20,12 +20,6 @@ const ComponentTree = ({
   const [layoutedNodesAndEdges, setLayoutedNodesAndEdges] =
     useState(nodesAndEdges);
 
-  console.log('L:', layoutedNodesAndEdges);
-
-  const rootComponentLabel = layoutedNodesAndEdges
-    ? layoutedNodesAndEdges[0]?.data?.label
-    : 'App';
-
   // Will run when the component is mounted.
   useEffect(() => {
     filterByName(layoutedNodesAndEdges, rootComponentLabel);
@@ -48,6 +42,9 @@ const ComponentTree = ({
   }
 
   // The first node of data is always the root component.
+  const rootComponentLabel = layoutedNodesAndEdges
+    ? layoutedNodesAndEdges[0].data.label
+    : '';
 
   const reactFlowInstance = useZoomPanHelper();
 

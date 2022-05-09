@@ -82,6 +82,13 @@ Override default configuration by creating `.bratusrc.json` in the root director
 
 ## Changelog
 
+- 3.3.0
+  - Added new functionality to parser.
+  - Updated functionality for defining custom roots for parsing. Added it in the Frontend in the "Define custom roots" section in the Menu.
+  - Introduced Subtree Mode!
+  - Subtree switch button added to the Menu under the "Search for component" section. Subtree mode is disabled by default.
+  - Users can now render subtrees of the tree, by clicking on the node name from the dropdown, as soon as subtree mode is enabled.
+  - Fixes regarding the rendering of the conditionally rendered nodes.
 - 3.2.2
   - Adding comments & documentation to the codebase, refactoring.
   - Deleting unnecessary functionality.

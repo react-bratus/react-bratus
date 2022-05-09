@@ -37,7 +37,7 @@ const NavigationPanel = ({
 
   useEffect(() => {
     setTimeout(() => {
-      reactFlowInstance.fitView({ duration: 700 });
+      reactFlowInstance.fitView({ duration: 500 });
     }, 0);
   }, [isNavCollapsed]);
 
@@ -93,7 +93,7 @@ const NavigationPanel = ({
           <StyledMenuDivider />
           <StyledSubMenu
             key={'experimental-actions'}
-            title={'Experimental actions'}
+            title={'Define custom roots'}
             icon={<ExperimentOutlined />}
           >
             <NavExperimentalActions />
