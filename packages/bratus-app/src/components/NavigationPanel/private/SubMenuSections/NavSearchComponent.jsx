@@ -20,6 +20,11 @@ const NavSearchComponent = ({
 }) => {
   const { setCenter, fitView } = useZoomPanHelper();
 
+  const onTreeInteractionModeChange = () => {
+    setIsSubtreeMode(!isSubtreeMode);
+    setTimeout(() => fitView({ duration: 500 }), 0);
+  };
+
   // Preserving the initial nodes in memory.
   const initialNodesContext = useContext(InitialNodesContext);
 
@@ -35,17 +40,6 @@ const NavSearchComponent = ({
 
   // Setting the nodes that appear in the searchbar.
   const [searchOptions, setSearchOptions] = useState([]);
-
-  const onTreeInteractionModeChange = () => {
-    setIsSubtreeMode(!isSubtreeMode);
-    if (initialNodesContext && searchField === undefined) {
-      setComponentLabelFilter(initialNodesContext[0].data.label);
-      setSearchField(initialNodesContext[0].data.label);
-    } else {
-      setComponentLabelFilter(searchField);
-    }
-    setTimeout(() => fitView({ duration: 500 }), 0);
-  };
 
   // Bring selected node in the center of the screen.
   const focusNode = (id) => {
