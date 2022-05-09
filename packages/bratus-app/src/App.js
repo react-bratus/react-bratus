@@ -31,6 +31,9 @@ const App = () => {
   // Inform the application about the tree direction at all times.
   const [treeLayoutDirection, setTreeLayoutDirection] = useState(undefined);
 
+  // Enabling & disabling subtree mode.
+  const [isSubtreeMode, setIsSubtreeMode] = useState(false);
+
   // Set vertical as default through the help panel preferences section.
   const [isVerticalTreeLayoutAsDefault, setVerticalTreeLayoutAsDefault] =
     useStickyState(false, 'bratus:prefer-vertical-layout');
@@ -64,6 +67,8 @@ const App = () => {
     <InitialNodesContext.Provider value={initialNodes}>
       <DefaultLayout
         nodeDetail={nodeDetail}
+        isSubtreeMode={isSubtreeMode}
+        setIsSubtreeMode={setIsSubtreeMode}
         setComponentLabelFilter={setComponentLabelFilter}
         setNodeDetail={setNodeDetail}
         isVerticalTreeLayoutAsDefault={isVerticalTreeLayoutAsDefault}
@@ -73,6 +78,8 @@ const App = () => {
           <ComponentTree
             componentLabelFilter={componentLabelFilter}
             treeLayoutDirection={treeLayoutDirection}
+            isSubtreeMode={isSubtreeMode}
+            setIsSubtreeMode={setIsSubtreeMode}
             nodesAndEdges={nodesAndEdges}
             setTreeLayoutDirection={setTreeLayoutDirection}
           />

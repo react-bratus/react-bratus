@@ -14,6 +14,7 @@ const ComponentTree = ({
   componentLabelFilter,
   treeLayoutDirection,
   setTreeLayoutDirection,
+  isSubtreeMode,
 }) => {
   const [layoutedNodesAndEdges, setLayoutedNodesAndEdges] =
     useState(nodesAndEdges);
@@ -31,7 +32,6 @@ const ComponentTree = ({
   }, [componentLabelFilter]);
 
   // FILTERING LOGIC:
-  const [useFilter, setUseFilter] = useState(false);
   const [filteredNodesAndEdges, setFilteredNodesAndEdges] = useState(null);
 
   // The first node of data is always the root component.
@@ -94,30 +94,18 @@ const ComponentTree = ({
   // Conditionally passing nodes and edges to the onChangeTreeLayout, so that we can
   // change the positioning dynamically based on the direction of the tree.
   const renderedElementsToPosition =
-    filteredNodesAndEdges && useFilter === true
+    filteredNodesAndEdges && isSubtreeMode === true
       ? filteredNodesAndEdges
       : layoutedNodesAndEdges;
 
   // setting the fresh layouted elements, KiKi GangGang
   const setRenderedElementsToPosition =
-    filteredNodesAndEdges && useFilter === true
+    filteredNodesAndEdges && isSubtreeMode === true
       ? setFilteredNodesAndEdges
       : setLayoutedNodesAndEdges;
 
   return (
     <>
-      <label htmlFor="filter">
-        ComponentTree filter:
-        <input
-          id="filter"
-          type="checkbox"
-          checked={useFilter}
-          onChange={() => {
-            setUseFilter(!useFilter);
-            setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
-          }}
-        />
-      </label>
       {layoutedNodesAndEdges && (
         <GraphDirectionContext.Provider value={treeLayoutDirection}>
           <LayoutButtons
@@ -128,7 +116,9 @@ const ComponentTree = ({
 
           <ReactFlow
             onLoad={onLoadTree}
-            elements={useFilter ? filteredNodesAndEdges : layoutedNodesAndEdges}
+            elements={
+              isSubtreeMode ? filteredNodesAndEdges : layoutedNodesAndEdges
+            }
             nodeTypes={{ reactComponent: ComponentNode }}
             onNodeMouseEnter={(_e, node) => highlightComponent(node, false)}
             onNodeMouseLeave={(_e, node) => removeHighlight(node)}
@@ -150,6 +140,7 @@ ComponentTree.propTypes = {
   treeLayoutDirection: PropTypes.any,
   componentLabelFilter: PropTypes.any,
   setTreeLayoutDirection: PropTypes.any,
+  isSubtreeMode: PropTypes.any,
 };
 
 export default ComponentTree;

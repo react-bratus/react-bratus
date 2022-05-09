@@ -21,6 +21,8 @@ import { ButtonLabels } from '../../utils/constants/constants';
 const DefaultLayout = ({
   children,
   nodeDetail,
+  isSubtreeMode,
+  setIsSubtreeMode,
   setNodeDetail,
   setComponentLabelFilter,
   isVerticalTreeLayoutAsDefault,
@@ -74,6 +76,8 @@ const DefaultLayout = ({
         <NavigationPanel
           setIsHelpVisible={setIsHelpVisible}
           setIsNavCollapsed={setIsNavCollapsed}
+          isSubtreeMode={isSubtreeMode}
+          setIsSubtreeMode={setIsSubtreeMode}
           isNavCollapsed={isNavCollapsed}
           setComponentLabelFilter={setComponentLabelFilter}
         />
@@ -151,5 +155,7 @@ DefaultLayout.propTypes = {
   nodeDetail: PropTypes.any,
   setNodeDetail: PropTypes.func,
   setComponentLabelFilter: PropTypes.func,
+  isSubtreeMode: PropTypes.bool,
+  setIsSubtreeMode: PropTypes.func,
 };
 export default DefaultLayout;

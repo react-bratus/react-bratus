@@ -4,13 +4,25 @@ import HighlightedComponentsContext from '../../../../contexts/HighlightedCompon
 import PropTypes from 'prop-types';
 
 import {
+  SearchNodeExplanation,
   StyledDropDownSelect,
+  SubtreeSwitchWrapper,
   TreeComponentDropdown,
 } from '../../NavigationPanel.sc';
 import { InitialNodesContext } from '../../../../App';
+import { Switch } from 'antd';
 
-const NavSearchComponent = ({ setComponentLabelFilter }) => {
-  const { setCenter } = useZoomPanHelper();
+const NavSearchComponent = ({
+  setComponentLabelFilter,
+  isSubtreeMode,
+  setIsSubtreeMode,
+}) => {
+  const { setCenter, fitView } = useZoomPanHelper();
+
+  const onTreeInteractionModeChange = () => {
+    setIsSubtreeMode(!isSubtreeMode);
+    setTimeout(() => fitView({ duration: 500 }), 0);
+  };
 
   // Preserving the initial nodes in memory.
   const initialNodesContext = useContext(InitialNodesContext);
@@ -107,27 +119,40 @@ const NavSearchComponent = ({ setComponentLabelFilter }) => {
 
   return (
     <>
-      <TreeComponentDropdown
-        showSearch
-        value={searchField}
-        dropdownStyle={StyledDropDownSelect}
-        placeholder="Search components"
-        onChange={onChange}
-        treeDataSimpleMode
-        treeDefaultExpandAll={false}
-        treeData={searchOptions}
-      />
+      <SubtreeSwitchWrapper>
+        <Switch defaultChecked={false} onChange={onTreeInteractionModeChange} />
+        <text>Subtree Mode</text>
+      </SubtreeSwitchWrapper>
 
-      <TreeComponentDropdown
-        showSearch
-        value={searchField}
-        dropdownStyle={StyledDropDownSelect}
-        placeholder="Define Subtree Root"
-        onChange={onChangeSubtreeRootNode}
-        treeDataSimpleMode
-        treeDefaultExpandAll={true}
-        treeData={searchOptions}
-      />
+      <SearchNodeExplanation>
+        {isSubtreeMode
+          ? 'Selecting a node will render a subtree with this node as the root.'
+          : 'Selecting a node in the dropdown will center this node in your screen.'}
+      </SearchNodeExplanation>
+
+      {isSubtreeMode === true ? (
+        <TreeComponentDropdown
+          showSearch
+          value={searchField}
+          dropdownStyle={StyledDropDownSelect}
+          placeholder="Define Subtree Root"
+          onChange={onChangeSubtreeRootNode}
+          treeDataSimpleMode
+          treeDefaultExpandAll={true}
+          treeData={searchOptions}
+        />
+      ) : (
+        <TreeComponentDropdown
+          showSearch
+          value={searchField}
+          dropdownStyle={StyledDropDownSelect}
+          placeholder="Select Node to focus"
+          onChange={onChange}
+          treeDataSimpleMode
+          treeDefaultExpandAll={true}
+          treeData={searchOptions}
+        />
+      )}
     </>
   );
 };
@@ -135,6 +160,8 @@ const NavSearchComponent = ({ setComponentLabelFilter }) => {
 NavSearchComponent.propTypes = {
   setComponentLabelFilter: PropTypes.func,
   nodesAndEdges: PropTypes.any,
+  isSubtreeMode: PropTypes.bool,
+  setIsSubtreeMode: PropTypes.func,
 };
 
 export default NavSearchComponent;

@@ -30,6 +30,8 @@ const NavigationPanel = ({
   isNavCollapsed,
   setIsHelpVisible,
   setComponentLabelFilter,
+  isSubtreeMode,
+  setIsSubtreeMode,
 }) => {
   const reactFlowInstance = useZoomPanHelper();
 
@@ -56,6 +58,8 @@ const NavigationPanel = ({
           >
             <NavSearchComponent
               setComponentLabelFilter={setComponentLabelFilter}
+              isSubtreeMode={isSubtreeMode}
+              setIsSubtreeMode={setIsSubtreeMode}
             />
           </StyledSubMenu>
 
@@ -104,6 +108,8 @@ NavigationPanel.propTypes = {
   isNavCollapsed: PropTypes.any,
   setIsHelpVisible: PropTypes.any,
   setComponentLabelFilter: PropTypes.func,
+  isSubtreeMode: PropTypes.bool,
+  setIsSubtreeMode: PropTypes.func,
 };
 
 export default NavigationPanel;

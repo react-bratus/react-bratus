@@ -55,6 +55,13 @@ export const TreeComponentDropdown = styled(TreeSelect)`
   ${navigationDropdownStyles}
 `;
 
+export const SubtreeSwitchWrapper = styled.div`
+  margin: ${baseUnit}px ${baseUnit * 2}px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 export const StyledDropDownSelect = {
   maxHeight: 550,
   maxWidth: 302,
@@ -65,4 +72,8 @@ export const StyledDropDownSelect = {
 
 export const StyledMenuDivider = styled(MenuDivider)`
   margin: 0 ${baseUnit / 2}px !important;
+`;
+
+export const SearchNodeExplanation = styled.div`
+  margin: ${baseUnit}px ${baseUnit * 2}px;
 `;
