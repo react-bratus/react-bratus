@@ -2,6 +2,7 @@ import { Select, TreeSelect } from 'antd';
 import Sider from 'antd/lib/layout/Sider';
 import MenuDivider from 'antd/lib/menu/MenuDivider';
 import SubMenu from 'antd/lib/menu/SubMenu';
+import Text from 'antd/lib/typography/Text';
 import Title from 'antd/lib/typography/Title';
 import styled, { css } from 'styled-components';
 import { baseUnit } from '../../utils/constants/units';
@@ -56,7 +57,7 @@ export const TreeComponentDropdown = styled(TreeSelect)`
 `;
 
 export const SubtreeSwitchWrapper = styled.div`
-  margin: ${baseUnit}px ${baseUnit * 2}px;
+  padding: ${baseUnit}px ${baseUnit * 2}px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -74,6 +75,13 @@ export const StyledMenuDivider = styled(MenuDivider)`
   margin: 0 ${baseUnit / 2}px !important;
 `;
 
-export const SearchNodeExplanation = styled.div`
-  margin: ${baseUnit}px ${baseUnit * 2}px;
+export const SearchNodeExplanationText = styled(Text)`
+  display: block;
+  color: white;
+  padding: ${baseUnit}px ${baseUnit * 2}px;
+  line-height: normal;
+`;
+
+export const SubtreeModeText = styled(Text)`
+  color: white;
 `;

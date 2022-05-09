@@ -4,10 +4,11 @@ import HighlightedComponentsContext from '../../../../contexts/HighlightedCompon
 import PropTypes from 'prop-types';
 
 import {
-  SearchNodeExplanation,
   StyledDropDownSelect,
   SubtreeSwitchWrapper,
   TreeComponentDropdown,
+  SearchNodeExplanationText,
+  SubtreeModeText,
 } from '../../NavigationPanel.sc';
 import { InitialNodesContext } from '../../../../App';
 import { Switch } from 'antd';
@@ -121,14 +122,18 @@ const NavSearchComponent = ({
     <>
       <SubtreeSwitchWrapper>
         <Switch defaultChecked={false} onChange={onTreeInteractionModeChange} />
-        <text>Subtree Mode</text>
+        <SubtreeModeText>Subtree Mode</SubtreeModeText>
       </SubtreeSwitchWrapper>
 
-      <SearchNodeExplanation>
-        {isSubtreeMode
-          ? 'Selecting a node will render a subtree with this node as the root.'
-          : 'Selecting a node in the dropdown will center this node in your screen.'}
-      </SearchNodeExplanation>
+      {isSubtreeMode ? (
+        <SearchNodeExplanationText>
+          Selecting a node will render a subtree with this node as the root.
+        </SearchNodeExplanationText>
+      ) : (
+        <SearchNodeExplanationText>
+          Selecting a node in the dropdown will center this node in your screen.
+        </SearchNodeExplanationText>
+      )}
 
       {isSubtreeMode === true ? (
         <TreeComponentDropdown
