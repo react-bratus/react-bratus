@@ -1,4 +1,4 @@
-import { Popover, Divider, Button } from 'antd';
+import { Modal, Divider, Button } from 'antd';
 import ColorHash from 'color-hash';
 import React, { useContext, useState } from 'react';
 import { Handle } from 'react-flow-renderer';
@@ -21,8 +21,6 @@ const ComponentNode = (node) => {
 
   // We need the layout to pass it as props to the styled component.
   const treeLayoutDirection = useContext(GraphDirectionContext);
-
-  const [isPopoverVisible, setisPopoverVisible] = useState(false);
 
   const isHighlighted = () => {
     return highlightedComponents.some((component) =>
@@ -96,59 +94,78 @@ const ComponentNode = (node) => {
         <Button
           onClick={() => {
             node.data.onShowNodeDetail(node);
-            setisPopoverVisible(false);
           }}
           type="primary"
         >
           View Code
         </Button>
       </div>
-      <Divider />
-      <Button type="link" onClick={() => setisPopoverVisible(false)}>
-        Close
-      </Button>
     </div>
   );
 
   const truncatedNodeName = truncateNodeName(node.data.label, nodeNameLength);
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   return (
-    <Popover
-      visible={isPopoverVisible}
-      title={node.data.label}
-      trigger={'click'}
-      content={content}
-      onClick={() => setisPopoverVisible(true)}
+    // <Popover
+    //   visible={isPopoverVisible}
+    //   title={node.data.label}
+    //   trigger={'click'}
+    //   content={content}
+    //   onClick={() => setisPopoverVisible(true)}
+    // >
+    <StyledNode
+      linesOfCode={node.data.linesOfCode}
+      componentBackground={componentBackground}
+      treeLayoutDirection={treeLayoutDirection}
+      isHighlighted={isHighlighted()}
+      bgColor={getBgColor}
+      fontColor={getFontColor()}
+      onClick={showModal}
     >
-      <StyledNode
-        linesOfCode={node.data.linesOfCode}
-        componentBackground={componentBackground}
-        treeLayoutDirection={treeLayoutDirection}
-        isHighlighted={isHighlighted()}
-        bgColor={getBgColor}
-        fontColor={getFontColor()}
+      {node.data.inDegree > 0 && (
+        <Handle
+          type={HandleLabels.target}
+          position={layoutTargetHandlePosition}
+        />
+      )}
+
+      <Modal
+        title={node.data.label}
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
       >
-        {node.data.inDegree > 0 && (
-          <Handle
-            type={HandleLabels.target}
-            position={layoutTargetHandlePosition}
-          />
-        )}
+        {content}
+      </Modal>
 
-        <StyledNodeContent>
-          <StyledTitle color={getFontColor} level={5}>
-            {truncatedNodeName}
-          </StyledTitle>
-        </StyledNodeContent>
+      <StyledNodeContent>
+        <StyledTitle color={getFontColor} level={5}>
+          {truncatedNodeName}
+        </StyledTitle>
+      </StyledNodeContent>
 
-        {node.data.outDegree > 0 && (
-          <Handle
-            type={HandleLabels.source}
-            position={layoutSourceHandlePosition}
-          />
-        )}
-      </StyledNode>
-    </Popover>
+      {node.data.outDegree > 0 && (
+        <Handle
+          type={HandleLabels.source}
+          position={layoutSourceHandlePosition}
+        />
+      )}
+    </StyledNode>
+    //</Popover>
   );
 };
 
