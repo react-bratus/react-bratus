@@ -9,6 +9,7 @@ import { getLayoutedGraphElements } from './utils/functions/graphUtils';
 import { GraphLabels } from './utils/constants/constants';
 import ComponentBackgroundContext from './contexts/ComponentBackgroundContext';
 import useStickyState from './hooks/useStickyState';
+import { triggerBrowserWarning } from './utils/functions/browser-notification';
 
 // Preserving the initial nodes to display them in the dropdowns even after filtering.
 export const InitialNodesContext = React.createContext([]);
@@ -50,6 +51,8 @@ const App = () => {
         const nodes = getNodes(data, setNodeDetail, setInitialNodes);
         const edges = getEdges(data);
         let tree = [];
+
+        triggerBrowserWarning('warning');
 
         setNodesAndEdges(
           getLayoutedGraphElements(
