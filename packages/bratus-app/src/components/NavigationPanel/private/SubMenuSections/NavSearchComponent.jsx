@@ -177,7 +177,7 @@ const NavSearchComponent = ({
             <Input onChange={handleInputChange} />
             <TimesUsedButton
               onClick={() => {
-                setComponentNumberFilter(numberForFilter);
+                numberForFilter && setComponentNumberFilter(numberForFilter);
               }}
               type="primary"
             >
