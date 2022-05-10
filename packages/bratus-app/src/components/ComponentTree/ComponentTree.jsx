@@ -33,23 +33,13 @@ const ComponentTree = ({
   }, [componentLabelFilter]);
 
   useEffect(() => {
-    if (filteredNodesAndEdges) {
-      setFilteredNodesAndEdges(
-        filterByTimesUsed(filteredNodesAndEdges, componentNumberFilter)
-      );
-      setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
-      console.log(
-        'componentNumberFilter in useEffect: ',
-        componentNumberFilter
-      );
-    }
+    setFilteredNodesAndEdges(
+      filterByTimesUsed(layoutedNodesAndEdges, componentNumberFilter)
+    );
+    setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
   }, [componentNumberFilter]);
 
-  // MAYBE SPLIT useEffect() ! ! !
-
-  // Filtering logic:
-
-  const [filteredNodesAndEdges, setFilteredNodesAndEdges] = useState(null);
+  const [filteredNodesAndEdges, setFilteredNodesAndEdges] = useState([]);
 
   // The first node of data is always the root component.
   const rootComponentLabel = layoutedNodesAndEdges
