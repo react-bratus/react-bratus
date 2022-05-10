@@ -28,7 +28,9 @@ const ComponentTree = ({
 
   // Will run every time any of the componentFilter(s) change.
   useEffect(() => {
-    filterByName(layoutedNodesAndEdges, componentLabelFilter);
+    setFilteredNodesAndEdges(
+      filterByName(layoutedNodesAndEdges, componentLabelFilter)
+    );
     setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
   }, [componentLabelFilter]);
 
@@ -49,21 +51,26 @@ const ComponentTree = ({
   const reactFlowInstance = useZoomPanHelper();
 
   /**
-   * Sets filtered nodes and edges to display.
-   * @param {*} array
-   * @param {*} filterName
+   * Filters the given array of nodes and edges and leaves only the ones associated with the given component name.
+   * @param {*} array Array to filter.
+   * @param {*} filterName Component name.
    */
   function filterByName(array, filterName) {
     const result = array.filter((obj) => {
       if (isNode(obj)) {
-        return obj.id.includes(filterName);
+        return obj.id.split(':').includes(filterName);
       } else {
-        return obj.source.includes(filterName);
+        return obj.source.split(':').includes(filterName);
       }
     });
-    setFilteredNodesAndEdges(result);
+    return result;
   }
 
+  /**
+   * Filters the given array of nodes and edges and removes component used more times than the given number.
+   * @param {*} array Array to filter.
+   * @param {*} number Number of times used.
+   */
   function filterByTimesUsed(array, number) {
     const result = array.filter((obj) => {
       if (isNode(obj)) {
@@ -73,7 +80,6 @@ const ComponentTree = ({
       }
     });
     return result;
-    // setFilteredNodesAndEdges(result);
   }
 
   const { highlightedComponents, setHighlightedComponents } = useContext(
@@ -127,6 +133,8 @@ const ComponentTree = ({
     filteredNodesAndEdges && isSubtreeMode === true
       ? setFilteredNodesAndEdges
       : setLayoutedNodesAndEdges;
+
+  console.log('Filtered:', filteredNodesAndEdges);
 
   return (
     <>
