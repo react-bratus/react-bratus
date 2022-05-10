@@ -23,8 +23,15 @@ const NavSearchComponent = ({
 }) => {
   const { setCenter, fitView } = useZoomPanHelper();
 
-  const onTreeInteractionModeChange = () => {
-    setIsSubtreeMode(!isSubtreeMode);
+  // Toggling the switch
+  const onFilterSwitchToggle = async () => {
+    await setIsSubtreeMode(!isSubtreeMode);
+
+    // When toggling the switch, set the LabelFilter and the searchfield
+    // to be the root of the initial nodes, so that we rerender the tree.
+    setComponentLabelFilter(initialNodesContext[0].data.label);
+    setSearchField(initialNodesContext[0].data.label);
+
     setTimeout(() => fitView({ duration: 500 }), 0);
   };
 
@@ -89,6 +96,8 @@ const NavSearchComponent = ({
     const index = initialNodesContext.findIndex((node) => node.id == id);
     const node = initialNodesContext[index];
     const label = node.data.label;
+
+    setSearchField(label);
     setComponentLabelFilter(label);
   };
 
@@ -131,7 +140,7 @@ const NavSearchComponent = ({
   return (
     <>
       <SubtreeSwitchWrapper>
-        <Switch defaultChecked={false} onChange={onTreeInteractionModeChange} />
+        <Switch defaultChecked={false} onChange={onFilterSwitchToggle} />
         <SubtreeModeText>
           <FilterOutlined /> Filter Mode
         </SubtreeModeText>
