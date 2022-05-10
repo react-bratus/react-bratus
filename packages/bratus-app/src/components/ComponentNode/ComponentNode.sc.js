@@ -32,6 +32,9 @@ export const StyledNode = styled.div`
   border: ${({ isHighlighted }) => {
     return isHighlighted ? '1.5px solid black' : '1px solid black';
   }};
+  box-shadow: ${({ isHighlighted }) => {
+    return isHighlighted ? '0px 0px 16px 2.5px rgba(255,194,25,0.76)' : 'none';
+  }};
   background-color: ${({ bgColor }) => bgColor};
   color: ${({ fontColor }) => fontColor};
   position: relative;
