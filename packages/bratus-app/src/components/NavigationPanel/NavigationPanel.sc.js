@@ -1,4 +1,4 @@
-import { Select, TreeSelect } from 'antd';
+import { Button, Input, Select, TreeSelect } from 'antd';
 import Sider from 'antd/lib/layout/Sider';
 import MenuDivider from 'antd/lib/menu/MenuDivider';
 import SubMenu from 'antd/lib/menu/SubMenu';
@@ -84,4 +84,15 @@ export const SearchNodeExplanationText = styled(Text)`
 
 export const SubtreeModeText = styled(Text)`
   color: white;
+`;
+
+export const TimesUsedInputGroup = styled(Input.Group)`
+  padding: 0 ${baseUnit * 2}px ${baseUnit * 2}px;
+  .ant-input {
+    width: 65%;
+  }
+`;
+
+export const TimesUsedButton = styled(Button)`
+  width: 35%;
 `;

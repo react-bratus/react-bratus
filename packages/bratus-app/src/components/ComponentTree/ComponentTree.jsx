@@ -12,6 +12,7 @@ export const GraphDirectionContext = React.createContext(null);
 const ComponentTree = ({
   nodesAndEdges,
   componentLabelFilter,
+  componentNumberFilter,
   treeLayoutDirection,
   setTreeLayoutDirection,
   isSubtreeMode,
@@ -25,31 +26,60 @@ const ComponentTree = ({
     setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
   }, []);
 
-  // Will run every time the componentFilter changes.
+  // Will run every time any of the componentFilter(s) change.
   useEffect(() => {
-    filterByName(layoutedNodesAndEdges, componentLabelFilter);
+    setFilteredNodesAndEdges(
+      filterByName(layoutedNodesAndEdges, componentLabelFilter)
+    );
     setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
   }, [componentLabelFilter]);
 
-  // FILTERING LOGIC:
-  const [filteredNodesAndEdges, setFilteredNodesAndEdges] = useState(null);
+  useEffect(() => {
+    setFilteredNodesAndEdges(
+      filterByTimesUsed(layoutedNodesAndEdges, componentNumberFilter)
+    );
+    setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
+  }, [componentNumberFilter]);
+
+  const [filteredNodesAndEdges, setFilteredNodesAndEdges] = useState([]);
 
   // The first node of data is always the root component.
   const rootComponentLabel = layoutedNodesAndEdges
-    ? layoutedNodesAndEdges[0].data.label
-    : '';
+    ? layoutedNodesAndEdges[0]?.data?.label
+    : 'App';
 
   const reactFlowInstance = useZoomPanHelper();
 
+  /**
+   * Filters the given array of nodes and edges and leaves only the ones associated with the given component name.
+   * @param {*} array Array to filter.
+   * @param {*} filterName Component name.
+   */
   function filterByName(array, filterName) {
     const result = array.filter((obj) => {
       if (isNode(obj)) {
-        return obj.id.includes(filterName);
+        return obj.id.split(':').includes(filterName);
       } else {
-        return obj.source.includes(filterName);
+        return obj.source.split(':').includes(filterName);
       }
     });
-    setFilteredNodesAndEdges(result);
+    return result;
+  }
+
+  /**
+   * Filters the given array of nodes and edges and removes component used more times than the given number.
+   * @param {*} array Array to filter.
+   * @param {*} number Number of times used.
+   */
+  function filterByTimesUsed(array, number) {
+    const result = array.filter((obj) => {
+      if (isNode(obj)) {
+        return obj.data.component.timesUsed <= number;
+      } else {
+        return obj;
+      }
+    });
+    return result;
   }
 
   const { highlightedComponents, setHighlightedComponents } = useContext(
@@ -104,6 +134,8 @@ const ComponentTree = ({
       ? setFilteredNodesAndEdges
       : setLayoutedNodesAndEdges;
 
+  console.log('Filtered:', filteredNodesAndEdges);
+
   return (
     <>
       {layoutedNodesAndEdges && (
@@ -139,6 +171,7 @@ ComponentTree.propTypes = {
   nodesAndEdges: PropTypes.any,
   treeLayoutDirection: PropTypes.any,
   componentLabelFilter: PropTypes.any,
+  componentNumberFilter: PropTypes.any,
   setTreeLayoutDirection: PropTypes.any,
   isSubtreeMode: PropTypes.any,
 };

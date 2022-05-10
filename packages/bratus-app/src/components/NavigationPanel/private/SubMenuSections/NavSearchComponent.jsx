@@ -2,26 +2,36 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useStoreState, useZoomPanHelper } from 'react-flow-renderer';
 import HighlightedComponentsContext from '../../../../contexts/HighlightedComponentsContext';
 import PropTypes from 'prop-types';
-
 import {
   StyledDropDownSelect,
   SubtreeSwitchWrapper,
   TreeComponentDropdown,
   SearchNodeExplanationText,
   SubtreeModeText,
+  TimesUsedInputGroup,
+  TimesUsedButton,
 } from '../../NavigationPanel.sc';
 import { InitialNodesContext } from '../../../../App';
-import { Switch } from 'antd';
+import { Input, Switch } from 'antd';
+import { FilterOutlined } from '@ant-design/icons';
 
 const NavSearchComponent = ({
   setComponentLabelFilter,
+  setComponentNumberFilter,
   isSubtreeMode,
   setIsSubtreeMode,
 }) => {
   const { setCenter, fitView } = useZoomPanHelper();
 
-  const onTreeInteractionModeChange = () => {
-    setIsSubtreeMode(!isSubtreeMode);
+  // Toggling the switch
+  const onFilterSwitchToggle = async () => {
+    await setIsSubtreeMode(!isSubtreeMode);
+
+    // When toggling the switch, set the LabelFilter and the searchfield
+    // to be the root of the initial nodes, so that we rerender the tree.
+    setComponentLabelFilter(initialNodesContext[0].data.label);
+    setSearchField(initialNodesContext[0].data.label);
+
     setTimeout(() => fitView({ duration: 500 }), 0);
   };
 
@@ -40,6 +50,13 @@ const NavSearchComponent = ({
 
   // Setting the nodes that appear in the searchbar.
   const [searchOptions, setSearchOptions] = useState([]);
+
+  // State for the number input.
+  const [numberForFilter, setNumberForFilter] = useState(undefined);
+
+  function handleInputChange(e) {
+    setNumberForFilter(e.target.value);
+  }
 
   // Bring selected node in the center of the screen.
   const focusNode = (id) => {
@@ -79,6 +96,8 @@ const NavSearchComponent = ({
     const index = initialNodesContext.findIndex((node) => node.id == id);
     const node = initialNodesContext[index];
     const label = node.data.label;
+
+    setSearchField(label);
     setComponentLabelFilter(label);
   };
 
@@ -121,8 +140,10 @@ const NavSearchComponent = ({
   return (
     <>
       <SubtreeSwitchWrapper>
-        <Switch defaultChecked={false} onChange={onTreeInteractionModeChange} />
-        <SubtreeModeText>Subtree Mode</SubtreeModeText>
+        <Switch defaultChecked={false} onChange={onFilterSwitchToggle} />
+        <SubtreeModeText>
+          <FilterOutlined /> Filter Mode
+        </SubtreeModeText>
       </SubtreeSwitchWrapper>
 
       {isSubtreeMode ? (
@@ -136,16 +157,34 @@ const NavSearchComponent = ({
       )}
 
       {isSubtreeMode === true ? (
-        <TreeComponentDropdown
-          showSearch
-          value={searchField}
-          dropdownStyle={StyledDropDownSelect}
-          placeholder="Define Subtree Root"
-          onChange={onChangeSubtreeRootNode}
-          treeDataSimpleMode
-          treeDefaultExpandAll={true}
-          treeData={searchOptions}
-        />
+        <>
+          <TreeComponentDropdown
+            showSearch
+            value={searchField}
+            dropdownStyle={StyledDropDownSelect}
+            placeholder="Define Subtree Root"
+            onChange={onChangeSubtreeRootNode}
+            treeDataSimpleMode
+            treeDefaultExpandAll={true}
+            treeData={searchOptions}
+          />
+
+          <SearchNodeExplanationText>
+            Hide components used more times than:
+          </SearchNodeExplanationText>
+
+          <TimesUsedInputGroup compact>
+            <Input onChange={handleInputChange} />
+            <TimesUsedButton
+              onClick={() => {
+                setComponentNumberFilter(numberForFilter);
+              }}
+              type="primary"
+            >
+              Apply Filter
+            </TimesUsedButton>
+          </TimesUsedInputGroup>
+        </>
       ) : (
         <TreeComponentDropdown
           showSearch
@@ -164,6 +203,7 @@ const NavSearchComponent = ({
 
 NavSearchComponent.propTypes = {
   setComponentLabelFilter: PropTypes.func,
+  setComponentNumberFilter: PropTypes.func,
   nodesAndEdges: PropTypes.any,
   isSubtreeMode: PropTypes.bool,
   setIsSubtreeMode: PropTypes.func,

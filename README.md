@@ -82,6 +82,12 @@ Override default configuration by creating `.bratusrc.json` in the root director
 
 ## Changelog
 
+- 3.4.0
+  - You can now filter nodes by how many times they are rendered in your application.
+  - Implemented more accurate label filtering.
+  - Adjusting searchfields, labels & tree dynamically on Switch click/ Dropdown click.
+  - Implemented highlighted components styling.
+  - Implemented notification that warns you to switch to Chrome.
 - 3.3.0
   - Added new functionality to parser.
   - Updated functionality for defining custom roots for parsing. Added it in the Frontend in the "Define custom roots" section in the Menu.
