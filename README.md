@@ -82,6 +82,8 @@ Override default configuration by creating `.bratusrc.json` in the root director
 
 ## Changelog
 
+- 3.4.1
+  - Bugfix: Times used filter now works only if there is a value in the input.
 - 3.4.0
   - You can now filter nodes by how many times they are rendered in your application.
   - Implemented more accurate label filtering.
