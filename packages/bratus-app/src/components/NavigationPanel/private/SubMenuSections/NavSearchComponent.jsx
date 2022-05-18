@@ -54,8 +54,15 @@ const NavSearchComponent = ({
   // State for the number input.
   const [numberForFilter, setNumberForFilter] = useState(undefined);
 
-  function handleInputChange(e) {
+  // State for the component name for filtering.
+  const [componentNameForFilter, setComponentNameForFilter] = useState('');
+
+  function handleNumberInputChange(e) {
     setNumberForFilter(e.target.value);
+  }
+
+  function handleNameInputChange(e) {
+    setComponentNameForFilter(e.target.value);
   }
 
   // Bring selected node in the center of the screen.
@@ -175,9 +182,27 @@ const NavSearchComponent = ({
 
           <TimesUsedInputGroup compact>
             <Input type="number" onChange={handleInputChange} />
+            <Input onChange={handleNumberInputChange} />
             <TimesUsedButton
               onClick={() => {
                 numberForFilter && setComponentNumberFilter(numberForFilter);
+              }}
+              type="primary"
+            >
+              Apply Filter
+            </TimesUsedButton>
+          </TimesUsedInputGroup>
+
+          {/* Input field for the 'filter component by name' */}
+          <SearchNodeExplanationText>
+            Hide components by the specified name:
+          </SearchNodeExplanationText>
+
+          <TimesUsedInputGroup compact>
+            <Input onChange={handleNameInputChange} />
+            <TimesUsedButton
+              onClick={() => {
+                setComponentNameForFilter(componentNameForFilter);
               }}
               type="primary"
             >
