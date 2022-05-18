@@ -87,7 +87,8 @@ const ComponentTree = ({
   );
 
   // Fit tree on the screen
-  const onLoadTree = (reactFlowInstance) => reactFlowInstance.fitView();
+  const onLoadTree = (reactFlowInstance) =>
+    reactFlowInstance.fitView({ duration: 500 });
 
   // Highlight nodes on hover
   const highlightComponent = (node) => {
