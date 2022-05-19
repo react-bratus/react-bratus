@@ -11,11 +11,12 @@ export const GraphDirectionContext = React.createContext(null);
 
 const ComponentTree = ({
   nodesAndEdges,
+  isSubtreeMode,
   componentLabelFilter,
   componentNumberFilter,
+  componentNameFilter,
   treeLayoutDirection,
   setTreeLayoutDirection,
-  isSubtreeMode,
 }) => {
   const [layoutedNodesAndEdges, setLayoutedNodesAndEdges] =
     useState(nodesAndEdges);
@@ -40,6 +41,10 @@ const ComponentTree = ({
     );
     setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
   }, [componentNumberFilter]);
+
+  useEffect(() => {
+    console.log('useEffect from name', componentNameFilter);
+  }, [componentNameFilter]);
 
   const [filteredNodesAndEdges, setFilteredNodesAndEdges] = useState([]);
 
@@ -173,6 +178,7 @@ ComponentTree.propTypes = {
   treeLayoutDirection: PropTypes.any,
   componentLabelFilter: PropTypes.any,
   componentNumberFilter: PropTypes.any,
+  componentNameFilter: PropTypes.any,
   setTreeLayoutDirection: PropTypes.any,
   isSubtreeMode: PropTypes.any,
 };

@@ -32,6 +32,9 @@ const App = () => {
   // Input value that filers components by the number of 'timesUsed'
   const [componentNumberFilter, setComponentNumberFilter] = useState(null);
 
+  // Input value that filers components by the number of 'timesUsed'
+  const [componentNameFilter, setComponentNameFilter] = useState(null);
+
   // Inform the application about the tree direction at all times.
   const [treeLayoutDirection, setTreeLayoutDirection] = useState(undefined);
 
@@ -77,6 +80,7 @@ const App = () => {
         setIsSubtreeMode={setIsSubtreeMode}
         setComponentLabelFilter={setComponentLabelFilter}
         setComponentNumberFilter={setComponentNumberFilter}
+        setComponentNameFilter={setComponentNameFilter}
         setNodeDetail={setNodeDetail}
         isVerticalTreeLayoutAsDefault={isVerticalTreeLayoutAsDefault}
         setVerticalTreeLayoutAsDefault={setVerticalTreeLayoutAsDefault}
@@ -85,6 +89,7 @@ const App = () => {
           <ComponentTree
             componentLabelFilter={componentLabelFilter}
             componentNumberFilter={componentNumberFilter}
+            componentNameFilter={componentNameFilter}
             treeLayoutDirection={treeLayoutDirection}
             isSubtreeMode={isSubtreeMode}
             setIsSubtreeMode={setIsSubtreeMode}
