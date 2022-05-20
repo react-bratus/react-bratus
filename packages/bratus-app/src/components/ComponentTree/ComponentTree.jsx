@@ -23,27 +23,39 @@ const ComponentTree = ({
 
   // Will run when the component is mounted.
   useEffect(() => {
-    filterByName(layoutedNodesAndEdges, rootComponentLabel);
+    setFilteredNodesAndEdges(
+      filterLeaveOnlyComponentsByName(layoutedNodesAndEdges, rootComponentLabel)
+    );
     setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
   }, []);
 
-  // Will run every time any of the componentFilter(s) change.
+  // Will run every time the incoming componentLabelFilter changes.
   useEffect(() => {
     setFilteredNodesAndEdges(
-      filterByName(layoutedNodesAndEdges, componentLabelFilter)
+      filterLeaveOnlyComponentsByName(
+        layoutedNodesAndEdges,
+        componentLabelFilter
+      )
     );
     setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
   }, [componentLabelFilter]);
 
+  // Filter: Hides componenets used more times than the given number (can't be lower then 1).
   useEffect(() => {
+    const number = componentNumberFilter < 1 ? 1000 : componentNumberFilter;
     setFilteredNodesAndEdges(
-      filterByTimesUsed(layoutedNodesAndEdges, componentNumberFilter)
+      filterRemoveComponentsUsedMoreTimesThan(layoutedNodesAndEdges, number)
     );
     setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
   }, [componentNumberFilter]);
 
+  //
   useEffect(() => {
     console.log('useEffect from name', componentNameFilter);
+    setFilteredNodesAndEdges(
+      filterRemoveComponentsByName(filteredNodesAndEdges, componentNameFilter)
+    );
+    setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
   }, [componentNameFilter]);
 
   const [filteredNodesAndEdges, setFilteredNodesAndEdges] = useState([]);
@@ -57,15 +69,15 @@ const ComponentTree = ({
 
   /**
    * Filters the given array of nodes and edges and leaves only the ones associated with the given component name.
-   * @param {*} array Array to filter.
-   * @param {*} filterName Component name.
+   * @param {*} incomingDataArray Array to filter.
+   * @param {*} componentName Component name.
    */
-  function filterByName(array, filterName) {
-    const result = array.filter((obj) => {
+  function filterLeaveOnlyComponentsByName(incomingDataArray, componentName) {
+    const result = incomingDataArray.filter((obj) => {
       if (isNode(obj)) {
-        return obj.id.split(':').includes(filterName);
+        return obj.id.split(':').includes(componentName);
       } else {
-        return obj.source.split(':').includes(filterName);
+        return obj.source.split(':').includes(componentName);
       }
     });
     return result;
@@ -73,15 +85,31 @@ const ComponentTree = ({
 
   /**
    * Filters the given array of nodes and edges and removes component used more times than the given number.
-   * @param {*} array Array to filter.
+   * @param {*} incomingDataArray Array to filter.
    * @param {*} number Number of times used.
    */
-  function filterByTimesUsed(array, number) {
-    const result = array.filter((obj) => {
+  function filterRemoveComponentsUsedMoreTimesThan(incomingDataArray, number) {
+    const result = incomingDataArray.filter((obj) => {
       if (isNode(obj)) {
         return obj.data.component.timesUsed <= number;
       } else {
         return obj;
+      }
+    });
+    return result;
+  }
+
+  /**
+   * Filters the given array of nodes and edges and leaves only the ones associated with the given component name.
+   * @param {*} incomingDataArray Array to filter.
+   * @param {*} componentName Component name.
+   */
+  function filterRemoveComponentsByName(incomingDataArray, componentName) {
+    const result = incomingDataArray.filter((obj) => {
+      if (isNode(obj)) {
+        return !obj.id.split(':').includes(componentName);
+      } else {
+        return !obj.source.split(':').includes(componentName);
       }
     });
     return result;
