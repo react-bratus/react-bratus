@@ -13,6 +13,7 @@ import { nodeNameLength } from '../../utils/constants/units';
 import { rgbaToHex } from '../../utils/functions/rgbaToHex';
 import { GraphDirectionContext } from '../ComponentTree/ComponentTree';
 import { StyledNode, StyledNodeContent, StyledTitle } from './ComponentNode.sc';
+import OutsideAlerter from './private/OutsideAlerter';
 
 const ComponentNode = (node) => {
   const { highlightedComponents } = useContext(HighlightedComponentsContext);
@@ -113,42 +114,45 @@ const ComponentNode = (node) => {
   const truncatedNodeName = truncateNodeName(node.data.label, nodeNameLength);
 
   return (
-    <Popover
-      visible={isPopoverVisible}
-      title={node.data.label}
-      trigger={'click'}
-      content={content}
-      onClick={() => setisPopoverVisible(true)}
-    >
-      <StyledNode
-        linesOfCode={node.data.linesOfCode}
-        componentBackground={componentBackground}
-        treeLayoutDirection={treeLayoutDirection}
-        isHighlighted={isHighlighted()}
-        bgColor={getBgColor}
-        fontColor={getFontColor()}
+    <OutsideAlerter setisPopoverVisible={setisPopoverVisible}>
+      <Popover
+        visible={isPopoverVisible}
+        title={node.data.label}
+        trigger={'click'}
+        content={content}
+        onClick={() => setisPopoverVisible(true)}
+        id="popover"
       >
-        {node.data.inDegree > 0 && (
-          <Handle
-            type={HandleLabels.target}
-            position={layoutTargetHandlePosition}
-          />
-        )}
+        <StyledNode
+          linesOfCode={node.data.linesOfCode}
+          componentBackground={componentBackground}
+          treeLayoutDirection={treeLayoutDirection}
+          isHighlighted={isHighlighted()}
+          bgColor={getBgColor}
+          fontColor={getFontColor()}
+        >
+          {node.data.inDegree > 0 && (
+            <Handle
+              type={HandleLabels.target}
+              position={layoutTargetHandlePosition}
+            />
+          )}
 
-        <StyledNodeContent>
-          <StyledTitle color={getFontColor} level={5}>
-            {truncatedNodeName}
-          </StyledTitle>
-        </StyledNodeContent>
+          <StyledNodeContent>
+            <StyledTitle color={getFontColor} level={5}>
+              {truncatedNodeName}
+            </StyledTitle>
+          </StyledNodeContent>
 
-        {node.data.outDegree > 0 && (
-          <Handle
-            type={HandleLabels.source}
-            position={layoutSourceHandlePosition}
-          />
-        )}
-      </StyledNode>
-    </Popover>
+          {node.data.outDegree > 0 && (
+            <Handle
+              type={HandleLabels.source}
+              position={layoutSourceHandlePosition}
+            />
+          )}
+        </StyledNode>
+      </Popover>
+    </OutsideAlerter>
   );
 };
 
