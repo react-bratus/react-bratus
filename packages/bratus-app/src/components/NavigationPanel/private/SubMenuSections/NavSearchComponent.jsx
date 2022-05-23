@@ -16,10 +16,11 @@ import { Input, Switch } from 'antd';
 import { FilterOutlined } from '@ant-design/icons';
 
 const NavSearchComponent = ({
-  setComponentLabelFilter,
-  setComponentNumberFilter,
   isSubtreeMode,
   setIsSubtreeMode,
+  setComponentLabelFilter,
+  setComponentNumberFilter,
+  setComponentNameFilter,
 }) => {
   const { setCenter, fitView } = useZoomPanHelper();
 
@@ -54,8 +55,15 @@ const NavSearchComponent = ({
   // State for the number input.
   const [numberForFilter, setNumberForFilter] = useState(undefined);
 
-  function handleInputChange(e) {
+  // State for the component name for filtering.
+  const [nameForFilter, setNameForFilter] = useState('');
+
+  function handleNumberInputChange(e) {
     setNumberForFilter(e.target.value);
+  }
+
+  function handleNameInputChange(e) {
+    setNameForFilter(e.target.value);
   }
 
   // Bring selected node in the center of the screen.
@@ -174,10 +182,27 @@ const NavSearchComponent = ({
           </SearchNodeExplanationText>
 
           <TimesUsedInputGroup compact>
-            <Input onChange={handleInputChange} />
+            <Input type="number" onChange={handleNumberInputChange} />
             <TimesUsedButton
               onClick={() => {
                 numberForFilter && setComponentNumberFilter(numberForFilter);
+              }}
+              type="primary"
+            >
+              Apply Filter
+            </TimesUsedButton>
+          </TimesUsedInputGroup>
+
+          {/* Input field for the 'filter component by name' */}
+          <SearchNodeExplanationText>
+            Hide components by the specified name:
+          </SearchNodeExplanationText>
+
+          <TimesUsedInputGroup compact>
+            <Input onChange={handleNameInputChange} />
+            <TimesUsedButton
+              onClick={() => {
+                setComponentNameFilter(nameForFilter);
               }}
               type="primary"
             >
@@ -202,11 +227,12 @@ const NavSearchComponent = ({
 };
 
 NavSearchComponent.propTypes = {
-  setComponentLabelFilter: PropTypes.func,
-  setComponentNumberFilter: PropTypes.func,
   nodesAndEdges: PropTypes.any,
   isSubtreeMode: PropTypes.bool,
   setIsSubtreeMode: PropTypes.func,
+  setComponentLabelFilter: PropTypes.func,
+  setComponentNumberFilter: PropTypes.func,
+  setComponentNameFilter: PropTypes.func,
 };
 
 export default NavSearchComponent;

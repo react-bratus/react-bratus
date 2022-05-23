@@ -31,6 +31,7 @@ const NavigationPanel = ({
   setIsHelpVisible,
   setComponentLabelFilter,
   setComponentNumberFilter,
+  setComponentNameFilter,
   isSubtreeMode,
   setIsSubtreeMode,
 }) => {
@@ -60,6 +61,7 @@ const NavigationPanel = ({
             <NavSearchComponent
               setComponentLabelFilter={setComponentLabelFilter}
               setComponentNumberFilter={setComponentNumberFilter}
+              setComponentNameFilter={setComponentNameFilter}
               isSubtreeMode={isSubtreeMode}
               setIsSubtreeMode={setIsSubtreeMode}
             />
@@ -111,6 +113,7 @@ NavigationPanel.propTypes = {
   setIsHelpVisible: PropTypes.any,
   setComponentLabelFilter: PropTypes.func,
   setComponentNumberFilter: PropTypes.func,
+  setComponentNameFilter: PropTypes.func,
   isSubtreeMode: PropTypes.bool,
   setIsSubtreeMode: PropTypes.func,
 };
