@@ -21,7 +21,7 @@ const ComponentTree = ({
   const [layoutedNodesAndEdges, setLayoutedNodesAndEdges] =
     useState(nodesAndEdges);
 
-  // Will run when the component is mounted.
+  // Filter: Will run when the filter switch is toggled on/off.
   useEffect(() => {
     setFilteredNodesAndEdges(
       filterLeaveOnlyComponentsByName(layoutedNodesAndEdges, rootComponentLabel)
@@ -29,7 +29,7 @@ const ComponentTree = ({
     setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
   }, [isSubtreeMode]);
 
-  // Will run every time the incoming componentLabelFilter changes.
+  // Filter: Hides all components but the one specified by the chosen name and its subtree.
   useEffect(() => {
     setFilteredNodesAndEdges(
       filterLeaveOnlyComponentsByName(
@@ -49,9 +49,8 @@ const ComponentTree = ({
     setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
   }, [componentNumberFilter]);
 
-  //
+  // Filter: Hides the component specified by the given name and its subtree.
   useEffect(() => {
-    console.log('useEffect from name', componentNameFilter);
     setFilteredNodesAndEdges(
       filterRemoveComponentsByName(filteredNodesAndEdges, componentNameFilter)
     );
