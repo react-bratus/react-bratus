@@ -27,7 +27,7 @@ const ComponentTree = ({
       filterLeaveOnlyComponentsByName(layoutedNodesAndEdges, rootComponentLabel)
     );
     setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
-  }, []);
+  }, [isSubtreeMode]);
 
   // Will run every time the incoming componentLabelFilter changes.
   useEffect(() => {
