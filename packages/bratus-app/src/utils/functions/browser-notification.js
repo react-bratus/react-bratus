@@ -15,7 +15,7 @@ export const triggerBrowserWarning = (
         setIsBrowserWarningHidden(true);
       }}
     >
-      I understand, dont show this again
+      Don&apos;t show this again
     </Button>
   );
   const title = <b>Browser Warning</b>;
