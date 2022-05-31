@@ -1,4 +1,4 @@
-import { Modal, Divider, Button } from 'antd';
+import { Modal } from 'antd';
 import ColorHash from 'color-hash';
 import React, { useContext, useState } from 'react';
 import { Handle } from 'react-flow-renderer';
@@ -13,11 +13,18 @@ import { nodeNameLength } from '../../utils/constants/units';
 import { rgbaToHex } from '../../utils/functions/rgbaToHex';
 import { GraphDirectionContext } from '../ComponentTree/ComponentTree';
 import { StyledNode, StyledNodeContent, StyledTitle } from './ComponentNode.sc';
+import ModalContent from './private/ModalContent';
 
 const ComponentNode = (node) => {
   const { highlightedComponents } = useContext(HighlightedComponentsContext);
 
   const { componentBackground } = useContext(ComponentBackgroundContext);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
 
   // We need the layout to pass it as props to the styled component.
   const treeLayoutDirection = useContext(GraphDirectionContext);
@@ -83,89 +90,49 @@ const ComponentNode = (node) => {
       : nodeName;
   };
 
-  const content = (
-    <div>
-      <p>This component is used {node.data.component.timesUsed} times.</p>
-      <Divider />
-      <div style={{ display: 'flex', gap: '10px' }}>
-        <Button type="primary" href={`vscode://file/${node.data.path}`}>
-          Go To Code
-        </Button>
-        <Button
-          onClick={() => {
-            node.data.onShowNodeDetail(node);
-          }}
-          type="primary"
-        >
-          View Code
-        </Button>
-      </div>
-    </div>
-  );
-
   const truncatedNodeName = truncateNodeName(node.data.label, nodeNameLength);
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
   return (
-    // <Popover
-    //   visible={isPopoverVisible}
-    //   title={node.data.label}
-    //   trigger={'click'}
-    //   content={content}
-    //   onClick={() => setisPopoverVisible(true)}
-    // >
-    <StyledNode
-      linesOfCode={node.data.linesOfCode}
-      componentBackground={componentBackground}
-      treeLayoutDirection={treeLayoutDirection}
-      isHighlighted={isHighlighted()}
-      bgColor={getBgColor}
-      fontColor={getFontColor()}
-      onClick={showModal}
-    >
-      {node.data.inDegree > 0 && (
-        <Handle
-          type={HandleLabels.target}
-          position={layoutTargetHandlePosition}
-        />
-      )}
+    <>
+      <StyledNode
+        linesOfCode={node.data.linesOfCode}
+        componentBackground={componentBackground}
+        treeLayoutDirection={treeLayoutDirection}
+        isHighlighted={isHighlighted()}
+        bgColor={getBgColor}
+        fontColor={getFontColor()}
+        onClick={openModal}
+      >
+        {node.data.inDegree > 0 && (
+          <Handle
+            type={HandleLabels.target}
+            position={layoutTargetHandlePosition}
+          />
+        )}
 
+        <StyledNodeContent>
+          <StyledTitle color={getFontColor} level={5}>
+            {truncatedNodeName}
+          </StyledTitle>
+        </StyledNodeContent>
+
+        {node.data.outDegree > 0 && (
+          <Handle
+            type={HandleLabels.source}
+            position={layoutSourceHandlePosition}
+          />
+        )}
+      </StyledNode>
       <Modal
         title={node.data.label}
         visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
+        centered={true}
       >
-        {content}
+        <ModalContent node={node} />
       </Modal>
-
-      <StyledNodeContent>
-        <StyledTitle color={getFontColor} level={5}>
-          {truncatedNodeName}
-        </StyledTitle>
-      </StyledNodeContent>
-
-      {node.data.outDegree > 0 && (
-        <Handle
-          type={HandleLabels.source}
-          position={layoutSourceHandlePosition}
-        />
-      )}
-    </StyledNode>
-    //</Popover>
+    </>
   );
 };
 
