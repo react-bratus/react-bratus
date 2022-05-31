@@ -11,13 +11,7 @@ import Import from './Builder/Import';
 import JSXElement from './Builder/JSXElement';
 import ParsedFile from './Builder/ParsedFile';
 import Graph from './Graph/Graph';
-interface ParserOptions {
-  log: boolean;
-  rootFolderPath: string;
-  rootComponents: string[];
-  pathToSaveDir: string;
-}
-
+import { ParserOptions } from '../api/ParserConfiguration';
 class ASTParser {
   private componentMap: Map<string, Component> = new Map();
   private options: ParserOptions;
@@ -27,15 +21,17 @@ class ASTParser {
     this.options = options;
     ASTParser.log = options.log;
     console.log(
-      `[Info] Parser initialized with path: ${this.options.rootFolderPath}`
+      `[ASTParser] Parser initialized with path: ${this.options.rootFolderPath}`
     );
   }
 
   public parse(): Promise<void> {
     return new Promise((resolve) => {
-      console.log(`[Info] Parsing project`);
+      console.log(`[ASTParser] Parsing project`);
       this.getFilesAndDirectories().then(async (files) => {
-        ASTParser.logEntry(`[Info] Traversing files: [${files.join(',\n')}]`);
+        ASTParser.logEntry(
+          `[ASTParser] Traversing files: [${files.join(',\n')}]`
+        );
         for (let i = 0; i < files.length; i++) {
           // Fix to avoid parsing Storybook files
           if (!files[i].includes('stories')) {
@@ -65,25 +61,31 @@ class ASTParser {
           }
         }
         const graph = new Graph(this.componentMap);
-        console.log(`[Info] Parsing finished`);
+        console.log(`[ASTParser] Parsing finished`);
         graph.build(this.options.rootComponents);
-        console.log(`[Info] Building graph finished`);
+        console.log(`[Graph Builder] Building graph finished`);
 
-        await this.writeDataToFile(graph.toString());
+        this.writeDataToFile(graph.toString());
         resolve();
       });
     });
   }
 
+  /**
+   * The function responsible for saving the graph data to the data.json file.
+   * @param graphData Graph data represented by a string
+   */
+
   private writeDataToFile(graphData: string): void {
-    console.log(
-      `[Info] Writing data to ${this.options.pathToSaveDir}/data.json`
-    );
-    const dir = this.options.pathToSaveDir;
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir);
+    const path = this.options.pathToSaveDir;
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path);
+      console.log('[ASTParser] Creating the .react-bratus folder.');
     }
-    fs.writeFileSync(dir + '/data.json', graphData);
+    fs.writeFileSync(`${path}/data.json`, graphData);
+    console.log(
+      `[ASTParser] Writing data to ${this.options.pathToSaveDir}/data.json`
+    );
   }
 
   public getFilesAndDirectories(): Promise<string[]> {
@@ -152,14 +154,14 @@ class ASTParser {
           },
           ClassDeclaration({ node }) {
             if (component.isUndefined()) {
-              ASTParser.logEntry(`[Info] Open component by ClassDeclaration`);
+              ASTParser.logEntry('[Info] Open component by ClassDeclaration');
               component.open(node);
             }
           },
           VariableDeclaration({ node }) {
             if (component.isUndefined()) {
               ASTParser.logEntry(
-                `[Info] Open component by VariableDeclaration`
+                '[Info] Open component by VariableDeclaration'
               );
               component.open(node);
             }
@@ -177,10 +179,10 @@ class ASTParser {
               ASTParser.logEntry(`[Info] Identify component ${node.name}`);
               component.identify(node);
             }
-            if (isConditional) {
-              conditionIdentifier = conditionKind + ':' + node.name;
+            if (isConditional && conditionIdentifier == '') {
+              conditionIdentifier = conditionIdentifier + '.' + node.name;
               ASTParser.logEntry(
-                `[CURRENT] --> The name of the rendering constant: ${node.name}`
+                `[Parser] Found first condition identifier: ${node.name}`
               );
             }
           },
@@ -190,11 +192,11 @@ class ASTParser {
             );
             // ifStatementLevel++;
             isConditional = true;
-            conditionKind = '[if]';
+            conditionKind = '[IF]';
           },
           LogicalExpression() {
             ASTParser.logEntry(
-              `[CURRENT] Conditional rendering by '&&' found for this componenet.`
+              `[Info] Conditional rendering by '&&' found for this componenet.`
             );
             isConditional = true;
             conditionKind = '[&&]';
@@ -204,7 +206,7 @@ class ASTParser {
               `[Info] Conditional rendering by a ternary operator found for this componenet.`
             );
             isConditional = true;
-            conditionKind = '[ternary]';
+            conditionKind = '[?:]';
           },
           JSXOpeningElement({ node }) {
             const jsxElement = ASTParser.peek(elements);
@@ -312,7 +314,8 @@ class ASTParser {
               // jsxElement.setOptional(ifStatementLevel > 0);
               if (conditionIdentifier) {
                 jsxElement.setConditional();
-                jsxElement.conditionalOperator = conditionIdentifier;
+                jsxElement.conditionalOperator =
+                  conditionKind + conditionIdentifier;
               }
               component.addJSXElement(jsxElement);
               elements.pop();
@@ -363,6 +366,7 @@ class ASTParser {
       }
     });
   }
+
   public static logEntry(logEntry: string): void {
     if (ASTParser.log) {
       console.log(logEntry);

@@ -1,7 +1,8 @@
-import { Select, TreeSelect } from 'antd';
+import { Button, Input, Select, TreeSelect } from 'antd';
 import Sider from 'antd/lib/layout/Sider';
 import MenuDivider from 'antd/lib/menu/MenuDivider';
 import SubMenu from 'antd/lib/menu/SubMenu';
+import Text from 'antd/lib/typography/Text';
 import Title from 'antd/lib/typography/Title';
 import styled, { css } from 'styled-components';
 import { baseUnit } from '../../utils/constants/units';
@@ -55,6 +56,13 @@ export const TreeComponentDropdown = styled(TreeSelect)`
   ${navigationDropdownStyles}
 `;
 
+export const SubtreeSwitchWrapper = styled.div`
+  padding: ${baseUnit}px ${baseUnit * 2}px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 export const StyledDropDownSelect = {
   maxHeight: 550,
   maxWidth: 302,
@@ -65,4 +73,26 @@ export const StyledDropDownSelect = {
 
 export const StyledMenuDivider = styled(MenuDivider)`
   margin: 0 ${baseUnit / 2}px !important;
+`;
+
+export const SearchNodeExplanationText = styled(Text)`
+  display: block;
+  color: white;
+  padding: ${baseUnit}px ${baseUnit * 2}px;
+  line-height: normal;
+`;
+
+export const SubtreeModeText = styled(Text)`
+  color: white;
+`;
+
+export const TimesUsedInputGroup = styled(Input.Group)`
+  padding: 0 ${baseUnit * 2}px ${baseUnit * 2}px;
+  .ant-input {
+    width: 65%;
+  }
+`;
+
+export const TimesUsedButton = styled(Button)`
+  width: 35%;
 `;

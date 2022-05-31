@@ -1,5 +1,5 @@
 import { Menu } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { navigationWidth } from '../../utils/constants/units';
 import {
   AppTitle,
@@ -13,17 +13,36 @@ import {
   FileSearchOutlined,
   GithubOutlined,
   InteractionOutlined,
+  ExperimentOutlined,
 } from '@ant-design/icons';
 import NavigationPrimaryActions from './private/ActionButtons/NavigationPrimaryActions';
 import NavigationGitHubActions from './private/ActionButtons/NavigationGitHubActions';
+import NavExperimentalActions from './private/Experimental/NavExperimentalActions';
 import NavSearchComponent from './private/SubMenuSections/NavSearchComponent';
 import NavNodeVisualizationOptions from './private/SubMenuSections/NavNodeVisualizationOptions';
 import {
   defaultOpenKeys,
   NavigationLabels,
 } from '../../utils/constants/constants';
+import { useZoomPanHelper } from 'react-flow-renderer';
 
-const NavigationPanel = ({ isNavCollapsed, setIsHelpVisible }) => {
+const NavigationPanel = ({
+  isNavCollapsed,
+  setIsHelpVisible,
+  setComponentLabelFilter,
+  setComponentNumberFilter,
+  setComponentNameFilter,
+  isSubtreeMode,
+  setIsSubtreeMode,
+}) => {
+  const reactFlowInstance = useZoomPanHelper();
+
+  useEffect(() => {
+    setTimeout(() => {
+      reactFlowInstance.fitView({ duration: 500 });
+    }, 0);
+  }, [isNavCollapsed]);
+
   return (
     <>
       <NavigationSider
@@ -39,7 +58,13 @@ const NavigationPanel = ({ isNavCollapsed, setIsHelpVisible }) => {
             title={NavigationLabels.search.title}
             icon={<FileSearchOutlined />}
           >
-            <NavSearchComponent />
+            <NavSearchComponent
+              setComponentLabelFilter={setComponentLabelFilter}
+              setComponentNumberFilter={setComponentNumberFilter}
+              setComponentNameFilter={setComponentNameFilter}
+              isSubtreeMode={isSubtreeMode}
+              setIsSubtreeMode={setIsSubtreeMode}
+            />
           </StyledSubMenu>
 
           <StyledMenuDivider />
@@ -68,6 +93,15 @@ const NavigationPanel = ({ isNavCollapsed, setIsHelpVisible }) => {
               <NavigationGitHubActions />
             </StyledSubMenu>
           </StyledSubMenu>
+
+          <StyledMenuDivider />
+          <StyledSubMenu
+            key={'experimental-actions'}
+            title={'Define custom roots'}
+            icon={<ExperimentOutlined />}
+          >
+            <NavExperimentalActions />
+          </StyledSubMenu>
         </Menu>
       </NavigationSider>
     </>
@@ -77,6 +111,11 @@ const NavigationPanel = ({ isNavCollapsed, setIsHelpVisible }) => {
 NavigationPanel.propTypes = {
   isNavCollapsed: PropTypes.any,
   setIsHelpVisible: PropTypes.any,
+  setComponentLabelFilter: PropTypes.func,
+  setComponentNumberFilter: PropTypes.func,
+  setComponentNameFilter: PropTypes.func,
+  isSubtreeMode: PropTypes.bool,
+  setIsSubtreeMode: PropTypes.func,
 };
 
 export default NavigationPanel;

@@ -1,64 +1,54 @@
 #!/usr/bin/env node
 
 import { program } from 'commander';
-import * as fs from 'fs';
-
-import Server from './api';
 import ASTParser from './parser';
+import Server from './api';
+import {
+  ParserOptions,
+  isProjectParsed,
+  DEFAULT_PARSER_CONFIGURATION,
+} from './api/ParserConfiguration';
 
 const packageJson = require('../package.json');
 
-interface ParserOptions {
-  log: boolean;
-  rootFolderPath: string;
-  rootComponents: string[];
-  pathToSaveDir: string;
+// If user does not specify any flag, bratus will run 'help' as the default.
+if (process.argv.length === 2) {
+  process.argv.push('-h');
 }
 
-const currentWorkingDirectory = process.cwd();
-const DEFAULT_CONFIGURATION = {
-  pathToSaveDir: `${currentWorkingDirectory}/.react-bratus`,
-  rootFolderPath: `${currentWorkingDirectory}/src`,
-  rootComponents: ['App'],
-};
-
 program
-  .version(packageJson.version)
   .description('React Bratus CLI')
   .option('-s, --start', 'Start react-bratus app')
   .option('-p, --parse', 'Parse repository')
   .option('-l, --log', 'Show logs while parsing')
+  .version(
+    packageJson.version,
+    '-v, --version',
+    'Show current version of React-bratus'
+  )
   .parse(process.argv);
 
 const options = program.opts();
-const config = getConfiguration();
+
 const parserOptions: ParserOptions = {
-  rootFolderPath: config.rootFolderPath,
+  ...DEFAULT_PARSER_CONFIGURATION,
   log: options.log,
-  rootComponents: config.rootComponents,
-  pathToSaveDir: config.pathToSaveDir,
 };
+
+// The bratus --start command always parses the project and then starts the server.
 if (options.start) {
-  if (fs.existsSync(`${config.pathToSaveDir}/data.json`)) {
+  if (isProjectParsed()) {
     startServer();
   } else {
+    console.log(
+      '[Program] No data.json found. Initializing the first parsing of this project.'
+    );
     parseProject(parserOptions).then(() => startServer());
   }
 }
 
 if (options.parse) {
   parseProject(parserOptions);
-}
-
-function getConfiguration() {
-  const path = `${currentWorkingDirectory}/.bratusrc.json`;
-  if (fs.existsSync(path) && fs.lstatSync(path).isFile()) {
-    return {
-      ...DEFAULT_CONFIGURATION,
-      ...JSON.parse(fs.readFileSync(path, 'utf8')),
-    };
-  }
-  return DEFAULT_CONFIGURATION;
 }
 
 function startServer() {

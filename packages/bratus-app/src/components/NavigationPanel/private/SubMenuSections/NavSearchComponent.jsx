@@ -1,13 +1,43 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useStoreState, useZoomPanHelper } from 'react-flow-renderer';
 import HighlightedComponentsContext from '../../../../contexts/HighlightedComponentsContext';
+import PropTypes from 'prop-types';
 import {
   StyledDropDownSelect,
+  SubtreeSwitchWrapper,
   TreeComponentDropdown,
+  SearchNodeExplanationText,
+  SubtreeModeText,
+  TimesUsedInputGroup,
+  TimesUsedButton,
 } from '../../NavigationPanel.sc';
+import { InitialNodesContext } from '../../../../App';
+import { Input, Switch } from 'antd';
+import { FilterOutlined } from '@ant-design/icons';
 
-const NavSearchComponent = () => {
-  const { setCenter } = useZoomPanHelper();
+const NavSearchComponent = ({
+  isSubtreeMode,
+  setIsSubtreeMode,
+  setComponentLabelFilter,
+  setComponentNumberFilter,
+  setComponentNameFilter,
+}) => {
+  const { setCenter, fitView } = useZoomPanHelper();
+
+  // Toggling the switch
+  const onFilterSwitchToggle = async () => {
+    await setIsSubtreeMode(!isSubtreeMode);
+
+    // When toggling the switch, set the LabelFilter and the searchfield
+    // to be the root of the initial nodes, so that we rerender the tree.
+    setComponentLabelFilter(initialNodesContext[0].data.label);
+    setSearchField(initialNodesContext[0].data.label);
+
+    setTimeout(() => fitView({ duration: 500 }), 0);
+  };
+
+  // Preserving the initial nodes in memory.
+  const initialNodesContext = useContext(InitialNodesContext);
 
   const { highlightedComponents, setHighlightedComponents } = useContext(
     HighlightedComponentsContext
@@ -20,7 +50,21 @@ const NavSearchComponent = () => {
   const [searchField, setSearchField] = useState();
 
   // Setting the nodes that appear in the searchbar.
-  const [nodesInSearch, setNodesInSearch] = useState([]);
+  const [searchOptions, setSearchOptions] = useState([]);
+
+  // State for the number input.
+  const [numberForFilter, setNumberForFilter] = useState(undefined);
+
+  // State for the component name for filtering.
+  const [nameForFilter, setNameForFilter] = useState('');
+
+  function handleNumberInputChange(e) {
+    setNumberForFilter(e.target.value);
+  }
+
+  function handleNameInputChange(e) {
+    setNameForFilter(e.target.value);
+  }
 
   // Bring selected node in the center of the screen.
   const focusNode = (id) => {
@@ -36,7 +80,7 @@ const NavSearchComponent = () => {
 
   // Sets the in searchbar selected node. Finds the name of the component,
   // highlights its subtree and focuses its root.
-  const onChangeSelectedNodeInSearch = (value) => {
+  const onChange = (value) => {
     setSearchField(value);
     const arr = value.split(':');
     const componentName = arr[arr.length - 1];
@@ -56,6 +100,15 @@ const NavSearchComponent = () => {
     focusNode(value);
   };
 
+  const onChangeSubtreeRootNode = (id) => {
+    const index = initialNodesContext.findIndex((node) => node.id == id);
+    const node = initialNodesContext[index];
+    const label = node.data.label;
+
+    setSearchField(label);
+    setComponentLabelFilter(label);
+  };
+
   // Node names are in form of Parent:Children.
   const getParentId = (id) => {
     const idSplit = id.split(':');
@@ -73,9 +126,9 @@ const NavSearchComponent = () => {
 
   // Returns a list of node objects, used in the TreeComponentDropdown.
   const generateTreeNodes = () => {
-    if (nodes.length > 0) {
-      setNodesInSearch(
-        nodes.map((node) => {
+    if (initialNodesContext.length > 0) {
+      setSearchOptions(
+        initialNodesContext.map((node) => {
           return {
             id: node.id,
             pId: getParentId(node.id),
@@ -93,17 +146,93 @@ const NavSearchComponent = () => {
   }, [nodes]);
 
   return (
-    <TreeComponentDropdown
-      showSearch
-      value={searchField}
-      dropdownStyle={StyledDropDownSelect}
-      placeholder="Search components"
-      onChange={onChangeSelectedNodeInSearch}
-      treeDataSimpleMode
-      treeDefaultExpandAll={false}
-      treeData={nodesInSearch}
-    />
+    <>
+      <SubtreeSwitchWrapper>
+        <Switch defaultChecked={false} onChange={onFilterSwitchToggle} />
+        <SubtreeModeText>
+          <FilterOutlined /> Filter Mode
+        </SubtreeModeText>
+      </SubtreeSwitchWrapper>
+
+      {isSubtreeMode ? (
+        <SearchNodeExplanationText>
+          Selecting a node will render a subtree with this node as the root.
+        </SearchNodeExplanationText>
+      ) : (
+        <SearchNodeExplanationText>
+          Selecting a node in the dropdown will center this node in your screen.
+        </SearchNodeExplanationText>
+      )}
+
+      {isSubtreeMode === true ? (
+        <>
+          <TreeComponentDropdown
+            showSearch
+            value={searchField}
+            dropdownStyle={StyledDropDownSelect}
+            placeholder="Define Subtree Root"
+            onChange={onChangeSubtreeRootNode}
+            treeDataSimpleMode
+            treeDefaultExpandAll={true}
+            treeData={searchOptions}
+          />
+
+          <SearchNodeExplanationText>
+            Hide components used more times than:
+          </SearchNodeExplanationText>
+
+          <TimesUsedInputGroup compact>
+            <Input type="number" onChange={handleNumberInputChange} />
+            <TimesUsedButton
+              onClick={() => {
+                numberForFilter && setComponentNumberFilter(numberForFilter);
+              }}
+              type="primary"
+            >
+              Apply Filter
+            </TimesUsedButton>
+          </TimesUsedInputGroup>
+
+          {/* Input field for the 'filter component by name' */}
+          <SearchNodeExplanationText>
+            Hide components by the specified name:
+          </SearchNodeExplanationText>
+
+          <TimesUsedInputGroup compact>
+            <Input onChange={handleNameInputChange} />
+            <TimesUsedButton
+              onClick={() => {
+                setComponentNameFilter(nameForFilter);
+              }}
+              type="primary"
+            >
+              Apply Filter
+            </TimesUsedButton>
+          </TimesUsedInputGroup>
+        </>
+      ) : (
+        <TreeComponentDropdown
+          showSearch
+          value={searchField}
+          dropdownStyle={StyledDropDownSelect}
+          placeholder="Select Node to focus"
+          onChange={onChange}
+          treeDataSimpleMode
+          treeDefaultExpandAll={true}
+          treeData={searchOptions}
+        />
+      )}
+    </>
   );
+};
+
+NavSearchComponent.propTypes = {
+  nodesAndEdges: PropTypes.any,
+  isSubtreeMode: PropTypes.bool,
+  setIsSubtreeMode: PropTypes.func,
+  setComponentLabelFilter: PropTypes.func,
+  setComponentNumberFilter: PropTypes.func,
+  setComponentNameFilter: PropTypes.func,
 };
 
 export default NavSearchComponent;

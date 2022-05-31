@@ -1,5 +1,5 @@
 // Get the nodes from data and set their information.
-export const getNodes = (data, setNodeDetail) => {
+export const getNodes = (data, setNodeDetail, setInitialNodes) => {
   const nodes = data.nodes.map((node) => {
     return {
       ...node,
@@ -10,6 +10,9 @@ export const getNodes = (data, setNodeDetail) => {
       },
     };
   });
+
+  // Setting the initial nodes as soon as they arrive from the parsed data
+  setInitialNodes(nodes);
 
   return nodes;
 };
