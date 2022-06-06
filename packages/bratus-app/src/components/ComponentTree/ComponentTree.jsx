@@ -167,8 +167,6 @@ const ComponentTree = ({
       ? setFilteredNodesAndEdges
       : setLayoutedNodesAndEdges;
 
-  console.log('Filtered:', filteredNodesAndEdges);
-
   return (
     <>
       {layoutedNodesAndEdges && (
