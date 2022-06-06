@@ -14,6 +14,7 @@ import {
 import { InitialNodesContext } from '../../../../App';
 import { Input, Switch } from 'antd';
 import { FilterOutlined } from '@ant-design/icons';
+import { focusSearchDropdown } from '../../../../utils/functions/focusSearchDropdown';
 
 const NavSearchComponent = ({
   isSubtreeMode,
@@ -65,6 +66,9 @@ const NavSearchComponent = ({
   function handleNameInputChange(e) {
     setNameForFilter(e.target.value);
   }
+
+  // Focus navigation search bar on keypress for both Mac and Windows
+  focusSearchDropdown();
 
   // Bring selected node in the center of the screen.
   const focusNode = (id) => {
@@ -168,6 +172,7 @@ const NavSearchComponent = ({
         <>
           <TreeComponentDropdown
             showSearch
+            id="search-component-dropdown"
             value={searchField}
             dropdownStyle={StyledDropDownSelect}
             placeholder="Define Subtree Root"
@@ -214,6 +219,7 @@ const NavSearchComponent = ({
         <TreeComponentDropdown
           showSearch
           value={searchField}
+          id="search-component-dropdown"
           dropdownStyle={StyledDropDownSelect}
           placeholder="Select Node to focus"
           onChange={onChange}
