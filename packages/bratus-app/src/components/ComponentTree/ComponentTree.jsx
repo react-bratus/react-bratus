@@ -1,6 +1,6 @@
 import ReactFlow, { isNode, useZoomPanHelper } from 'react-flow-renderer';
 import PropTypes from 'prop-types';
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useCallback } from 'react';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
 import ComponentNode from '../ComponentNode/ComponentNode';
 import LayoutButtons from './private/LayoutButtons';
@@ -151,6 +151,25 @@ const ComponentTree = ({
     }
   };
 
+  // Spots if the user uses a trackpad or a mousepad
+  const [isTrackPad, setIsTrackPad] = useState(false);
+
+  const detectTrackPad = useCallback((e) => {
+    var isTrackpad = false;
+    if (e.wheelDeltaY) {
+      if (e.wheelDeltaY === e.deltaY * -3) {
+        isTrackpad = true;
+      }
+    } else if (e.deltaMode === 0) {
+      isTrackpad = true;
+    }
+    console.log(isTrackpad ? 'Trackpad detected' : 'Mousewheel detected');
+    setIsTrackPad(isTrackpad);
+  }, []);
+
+  document.addEventListener('mousewheel', detectTrackPad, false);
+  document.addEventListener('DOMMouseScroll', detectTrackPad, false);
+
   // Reset highlightComponents (Empty array).
   const resetHighlight = () => setHighlightedComponents([]);
 
@@ -186,7 +205,7 @@ const ComponentTree = ({
             onNodeMouseEnter={(_e, node) => highlightComponent(node, false)}
             onNodeMouseLeave={(_e, node) => removeHighlight(node)}
             onPaneClick={resetHighlight}
-            panOnScroll={true}
+            panOnScroll={isTrackPad}
             minZoom={0}
             defaultZoom={0}
           >
