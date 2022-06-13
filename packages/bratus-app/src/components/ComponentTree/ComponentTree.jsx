@@ -151,22 +151,29 @@ const ComponentTree = ({
     }
   };
 
-  // Spots if the user uses a trackpad or a mousepad
+  // Holds the state for the user interaction
   const [isTrackPad, setIsTrackPad] = useState(false);
 
-  // TO DO: Write you beautiful comment here, YO!
+  /**
+   * @description this function spots if the user uses a mousepad or a
+   * trackpad, and the pane interaction changes accordingly. The interaction
+   * is done like a Figma canvas. We need this, as, otherwise, it moves the
+   * canvas on mouse scroll.
+   * @param {*} e mouse or trackpad event
+   */
   function detectTrackPad(e) {
     var isTouchPad = e.wheelDeltaY
       ? e.wheelDeltaY === -3 * e.deltaY
       : e.deltaMode === 0;
 
-    console.log(isTouchPad ? 'isTouchPad' : 'isMouse');
     setIsTrackPad(isTouchPad);
   }
-  const myCanvas = document.querySelector('.react-flow__pane');
-  if (myCanvas) {
-    myCanvas.addEventListener('mousewheel', detectTrackPad, false);
-    myCanvas.addEventListener('DOMMouseScroll', detectTrackPad, false);
+
+  const reactFlowPane = document.querySelector('.react-flow__pane');
+
+  if (reactFlowPane) {
+    reactFlowPane.addEventListener('mousewheel', detectTrackPad, false);
+    reactFlowPane.addEventListener('DOMMouseScroll', detectTrackPad, false);
   }
 
   // Reset highlightComponents (Empty array).
