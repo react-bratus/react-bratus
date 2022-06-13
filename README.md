@@ -82,6 +82,10 @@ Override default configuration by creating `.bratusrc.json` in the root director
 
 ## Changelog
 
+- 3.5.0
+  - You can now focus the component searchbar with CTRL+F (windows) or CMD+F (apple).
+  - The browser warning popup has a "remember me" functionality and doesn't pop up if the browser is already Chrome.
+  - You can now hide nodes by typing their names in an input field.
 - 3.4.1
   - Bugfix: Times used filter now works only if there is a value in the input.
 - 3.4.0
