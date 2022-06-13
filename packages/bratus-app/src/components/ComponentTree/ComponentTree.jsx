@@ -151,6 +151,31 @@ const ComponentTree = ({
     }
   };
 
+  // Holds the state for the user interaction
+  const [isTrackPad, setIsTrackPad] = useState(false);
+
+  /**
+   * @description this function spots if the user uses a mousepad or a
+   * trackpad, and the pane interaction changes accordingly. The interaction
+   * is done like a Figma canvas. We need this, as, otherwise, it moves the
+   * canvas on mouse scroll.
+   * @param {*} e mouse or trackpad event
+   */
+  function detectTrackPad(e) {
+    var isTouchPad = e.wheelDeltaY
+      ? e.wheelDeltaY === -3 * e.deltaY
+      : e.deltaMode === 0;
+
+    setIsTrackPad(isTouchPad);
+  }
+
+  const reactFlowPane = document.querySelector('.react-flow__pane');
+
+  if (reactFlowPane) {
+    reactFlowPane.addEventListener('mousewheel', detectTrackPad, false);
+    reactFlowPane.addEventListener('DOMMouseScroll', detectTrackPad, false);
+  }
+
   // Reset highlightComponents (Empty array).
   const resetHighlight = () => setHighlightedComponents([]);
 
@@ -186,7 +211,7 @@ const ComponentTree = ({
             onNodeMouseEnter={(_e, node) => highlightComponent(node, false)}
             onNodeMouseLeave={(_e, node) => removeHighlight(node)}
             onPaneClick={resetHighlight}
-            panOnScroll={true}
+            panOnScroll={isTrackPad}
             minZoom={0}
             defaultZoom={0}
           >
