@@ -1,6 +1,6 @@
 import ReactFlow, { isNode, useZoomPanHelper } from 'react-flow-renderer';
 import PropTypes from 'prop-types';
-import React, { useContext, useState, useEffect, useCallback } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
 import ComponentNode from '../ComponentNode/ComponentNode';
 import LayoutButtons from './private/LayoutButtons';
@@ -154,21 +154,20 @@ const ComponentTree = ({
   // Spots if the user uses a trackpad or a mousepad
   const [isTrackPad, setIsTrackPad] = useState(false);
 
-  const detectTrackPad = useCallback((e) => {
-    var isTrackpad = false;
-    if (e.wheelDeltaY) {
-      if (e.wheelDeltaY === e.deltaY * -3) {
-        isTrackpad = true;
-      }
-    } else if (e.deltaMode === 0) {
-      isTrackpad = true;
-    }
-    console.log(isTrackpad ? 'Trackpad detected' : 'Mousewheel detected');
-    setIsTrackPad(isTrackpad);
-  }, []);
+  // TO DO: Write you beautiful comment here, YO!
+  function detectTrackPad(e) {
+    var isTouchPad = e.wheelDeltaY
+      ? e.wheelDeltaY === -3 * e.deltaY
+      : e.deltaMode === 0;
 
-  document.addEventListener('mousewheel', detectTrackPad, false);
-  document.addEventListener('DOMMouseScroll', detectTrackPad, false);
+    console.log(isTouchPad ? 'isTouchPad' : 'isMouse');
+    setIsTrackPad(isTouchPad);
+  }
+  const myCanvas = document.querySelector('.react-flow__pane');
+  if (myCanvas) {
+    myCanvas.addEventListener('mousewheel', detectTrackPad, false);
+    myCanvas.addEventListener('DOMMouseScroll', detectTrackPad, false);
+  }
 
   // Reset highlightComponents (Empty array).
   const resetHighlight = () => setHighlightedComponents([]);
