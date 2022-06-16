@@ -3,6 +3,7 @@ import JSXElement from './JSXElement';
 import ParsableElement from './ParsableElement';
 class Component extends ParsableElement {
   private JSXElements: JSXElement[] = [];
+  private componentProps: String[] = [];
   private imports: Import[] = [];
   public timesUsed = 0;
   public code: string;
@@ -22,10 +23,6 @@ class Component extends ParsableElement {
     }
   }
 
-  addJSXElement(element: JSXElement): void {
-    this.JSXElements.push(element);
-  }
-
   addImport(_import: Import): void {
     this.imports.push(_import);
   }
@@ -33,8 +30,21 @@ class Component extends ParsableElement {
   hasJSX(): boolean {
     return this.JSXElements.length > 0;
   }
+
+  addJSXElement(element: JSXElement): void {
+    this.JSXElements.push(element);
+  }
+
   getJSXElements(): JSXElement[] {
     return this.JSXElements;
+  }
+
+  addProp(prop: string): void {
+    this.componentProps.push(prop);
+  }
+
+  getProps(): String[] {
+    return this.componentProps;
   }
 }
 
