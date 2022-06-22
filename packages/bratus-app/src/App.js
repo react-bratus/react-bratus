@@ -45,6 +45,12 @@ const App = () => {
   const [isVerticalTreeLayoutAsDefault, setVerticalTreeLayoutAsDefault] =
     useStickyState(false, 'bratus:prefer-vertical-layout');
 
+  // Don't show browser warning again
+  const [isBrowserWarningHidden, setIsBrowserWarningHidden] = useStickyState(
+    false,
+    'bratus:hidden-browser-warning'
+  );
+
   const treeLayoutOnCompile =
     isVerticalTreeLayoutAsDefault === true
       ? GraphLabels.leftToRight
@@ -58,7 +64,10 @@ const App = () => {
         const edges = getEdges(data);
         let tree = [];
 
-        triggerBrowserWarning('warning');
+        triggerBrowserWarning(
+          setIsBrowserWarningHidden,
+          isBrowserWarningHidden
+        );
 
         setNodesAndEdges(
           getLayoutedGraphElements(
