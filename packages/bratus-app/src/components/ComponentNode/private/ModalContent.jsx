@@ -4,6 +4,8 @@ import { Divider, Button } from 'antd';
 const ModalContent = (node) => {
   console.log('Incoming node:', node);
   const nodeDetails = node.node.data;
+  // const componentId = node.node.id;
+  // const componentPath = componentId.replaceAll(':', ' > ');
   const componentType =
     nodeDetails.component.node.type == 'VariableDeclaration'
       ? 'arrow function'
@@ -12,15 +14,23 @@ const ModalContent = (node) => {
       : 'class';
   return (
     <>
+      {/* <p>
+        Location in the component tree:
+        <br />
+        {componentPath}
+      </p> */}
       <p>
-        This is a{' '}
+        This is {componentType == 'arrow function' ? 'an' : 'a'}{' '}
         <span style={{ color: '#0080ff' }}>{componentType} component</span>,
-        rendered{' '}
+        <br />
+        it is rendered{' '}
         <span style={{ color: '#ff8400' }}>
           {nodeDetails.component.timesUsed}
         </span>{' '}
-        times in your project and it has{' '}
-        <span style={{ color: '#53edb2' }}>{nodeDetails.linesOfCode}</span>{' '}
+        times in your project
+        <br />
+        and it has{' '}
+        <span style={{ color: '#168d28' }}>{nodeDetails.linesOfCode}</span>{' '}
         lines of code.
       </p>
       <Divider />
@@ -42,7 +52,3 @@ const ModalContent = (node) => {
 };
 
 export default ModalContent;
-
-// Arrow Function Component
-// Function Component
-// Class Component

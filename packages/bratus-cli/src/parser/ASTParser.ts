@@ -190,7 +190,6 @@ class ASTParser {
             ASTParser.logEntry(
               `[Info] Increment level of depth in if statement: ${ifStatementLevel}`
             );
-            // ifStatementLevel++;
             isConditional = true;
             conditionKind = '[IF]';
           },
@@ -235,6 +234,12 @@ class ASTParser {
                 jsxElement.open(node);
                 jsxElement.isRouteElement = true;
                 jsxElement.resetIdentifier();
+              }
+              if (node.attributes != null) {
+                console.log(
+                  '[WORKING] This node has attributes = props',
+                  node.attributes
+                );
               }
             }
           },
@@ -311,7 +316,6 @@ class ASTParser {
               ASTParser.logEntry(
                 `[Info] Close Element: ${jsxElement.getElementName()}`
               );
-              // jsxElement.setOptional(ifStatementLevel > 0);
               if (conditionIdentifier) {
                 jsxElement.setConditional();
                 jsxElement.conditionalOperator =
@@ -334,20 +338,13 @@ class ASTParser {
               if (attributes.length === 0) attributes.push(new Attribute());
             }
 
-            // if (node.type == 'IfStatement') {
-            //   ASTParser.logEntry(
-            //     `[Info] Reduce level of depth in if statement: ${ifStatementLevel}`
-            //   );
-            //   ifStatementLevel--;
-            // }
-
             if (
               node.type == 'LogicalExpression' ||
               node.type == 'ConditionalExpression' ||
               node.type == 'IfStatement'
             ) {
               ASTParser.logEntry(
-                `[CURRENT] Resetting the Logical Expression node`
+                `[Info] Resetting the conditional parser state (3 types)`
               );
               isConditional = false;
               conditionIdentifier = '';
