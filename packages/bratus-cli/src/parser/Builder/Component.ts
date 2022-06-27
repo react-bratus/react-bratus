@@ -15,7 +15,7 @@ class Component extends ParsableElement {
   getLinesOfCode(): number {
     const node = super.getNode();
     if (node && node.loc) {
-      return node.loc.end.line - node.loc.start.line;
+      return node.loc.end.line - node.loc.start.line + node.loc.start.line;
     } else {
       throw new Error(
         'Component is not defined or does not have location data'
