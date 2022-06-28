@@ -22,31 +22,19 @@ class JSXElement extends ParsableElement {
     }
   }
 
-  // setOptional(isOptional: boolean): void {
-  //   if (this.isRouteElement) {
-  //     this.optional = true;
-  //   } else {
-  //     this.optional = isOptional;
-  //   }
-  // }
-
-  setConditional(): void {
-    this.conditional = true;
-  }
-
-  // isOptional(): boolean {
-  //   return this.optional;
-  // }
-
-  isConditional(): boolean {
-    return this.conditional;
-  }
-
   getAttribute(key: string): Attribute | undefined {
     if (this.attributes.has(key)) {
       return this.attributes.get(key);
     }
     throw new Error(`The attribute ${key} does not exist on this component`);
+  }
+
+  setConditional(): void {
+    this.conditional = true;
+  }
+
+  isConditional(): boolean {
+    return this.conditional;
   }
 
   isRoute(): boolean {

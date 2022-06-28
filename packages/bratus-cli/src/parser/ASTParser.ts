@@ -119,7 +119,6 @@ class ASTParser {
         let component: Component = new Component(path, fileContent);
         const elements: JSXElement[] = [new JSXElement(path)];
         const attributes: Attribute[] = [new Attribute()];
-        let ifStatementLevel = 0;
         let isConditional = false;
         let conditionKind = '';
         let conditionIdentifier = '';
@@ -188,7 +187,7 @@ class ASTParser {
           },
           IfStatement() {
             ASTParser.logEntry(
-              `[Info] Increment level of depth in if statement: ${ifStatementLevel}`
+              `[Info] Conditional rendering by an if-statement.`
             );
             isConditional = true;
             conditionKind = '[IF]';
@@ -235,11 +234,21 @@ class ASTParser {
                 jsxElement.isRouteElement = true;
                 jsxElement.resetIdentifier();
               }
-              if (node.attributes != null) {
-                console.log(
-                  '[WORKING] This node has attributes = props',
-                  node.attributes
-                );
+
+              if (node.attributes.length !== 0) {
+                if (node.name.type === 'JSXIdentifier') {
+                  console.log(node.name.name);
+                }
+                const attr = node.attributes;
+                attr.forEach((att: any) => {
+                  console.log(
+                    att.name.name +
+                      ' - ' +
+                      (att.value.expression.name
+                        ? att.value.expression.name
+                        : att.value.expression.value)
+                  );
+                });
               }
             }
           },
