@@ -1,3 +1,5 @@
+import { Colors } from '../constants/colors';
+
 // Get the nodes from data and set their information.
 export const getNodes = (data, setNodeDetail, setInitialNodes) => {
   const nodes = data.nodes.map((node) => {
@@ -33,7 +35,9 @@ export const getEdges = (data) => {
       },
       style: {
         // Edge color & thickness
-        stroke: edge.conditional ? '#348888' : edge.label ? '#FA7F08' : '#000',
+        stroke: edge.conditional
+          ? `${Colors.conditionalEdges}`
+          : `${Colors.defaultAndRouteEdges}`,
         strokeWidth: '2px',
       },
     };

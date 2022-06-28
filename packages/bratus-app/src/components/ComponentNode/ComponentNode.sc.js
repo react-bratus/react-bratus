@@ -7,10 +7,18 @@ import {
   nodeWidth,
   horizontalViewNodeHeight,
 } from '../../utils/constants/units';
+import { Handle } from 'react-flow-renderer';
+import { Colors } from '../../utils/constants/colors';
 
 // The height and the width of the tree nodes, are dynamically adjusted based on the
 // layout of the tree and the node visualization options that the user chooses.
 export const StyledNode = styled.div`
+  background-color: ${({ bgColor }) => bgColor};
+  color: ${({ fontColor }) => fontColor};
+  position: relative;
+  padding: ${baseUnit}px;
+  border-radius: 100px;
+
   height: ${({ linesOfCode, componentBackground, treeLayoutDirection }) => {
     if (componentBackground.mode === BackgroundLabels.size) {
       if (treeLayoutDirection === GraphLabels.topToBottom) {
@@ -19,6 +27,7 @@ export const StyledNode = styled.div`
     }
     return '75px';
   }};
+
   width: ${({ linesOfCode, componentBackground, treeLayoutDirection }) => {
     if (componentBackground.mode === BackgroundLabels.size) {
       if (treeLayoutDirection === GraphLabels.leftToRight) {
@@ -27,17 +36,58 @@ export const StyledNode = styled.div`
     }
     return `${nodeWidth}px`;
   }};
-  padding: ${baseUnit}px;
-  border-radius: 100px;
+
   border: ${({ isHighlighted }) => {
-    return isHighlighted ? '1.5px solid black' : '1px solid black';
+    return isHighlighted
+      ? `3px solid ${Colors.nodeBorder}`
+      : `1px solid ${Colors.nodeBorder}`;
   }};
-  box-shadow: ${({ isHighlighted }) => {
-    return isHighlighted ? '0px 0px 16px 2.5px rgba(255,194,25,0.76)' : 'none';
+`;
+
+export const StyledHandle = styled(Handle)`
+  background: #fff;
+  border-radius: 100%;
+  position: absolute;
+
+  border: ${({ isHighlighted }) => {
+    return isHighlighted
+      ? `2px solid ${Colors.nodeBorder}`
+      : `1px solid ${Colors.nodeBorder}`;
   }};
-  background-color: ${({ bgColor }) => bgColor};
-  color: ${({ fontColor }) => fontColor};
-  position: relative;
+
+  height: ${({ isHighlighted }) => {
+    return isHighlighted ? '12px' : '8px';
+  }};
+
+  width: ${({ isHighlighted }) => {
+    return isHighlighted ? '12px' : '8px';
+  }};
+
+  // Hack for Handle style for vertical view
+  &.react-flow__handle-left {
+    left: ${({ isHighlighted }) => {
+      return isHighlighted ? '-8px' : '-4px';
+    }};
+  }
+
+  &.react-flow__handle-right {
+    right: ${({ isHighlighted }) => {
+      return isHighlighted ? '-8px' : '-4px';
+    }};
+  }
+
+  // Hack for Handle style for horizontal view
+  &.react-flow__handle-top {
+    top: ${({ isHighlighted }) => {
+      return isHighlighted ? '-8px' : '-4px';
+    }};
+  }
+
+  &.react-flow__handle-bottom {
+    bottom: ${({ isHighlighted }) => {
+      return isHighlighted ? '-8px' : '-4px';
+    }};
+  }
 `;
 
 export const StyledTitle = styled(Title)`

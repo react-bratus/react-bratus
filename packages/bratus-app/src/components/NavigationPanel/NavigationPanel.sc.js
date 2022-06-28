@@ -1,10 +1,11 @@
-import { Button, Input, Select, TreeSelect } from 'antd';
+import { Button, Input, Select, Switch, TreeSelect } from 'antd';
 import Sider from 'antd/lib/layout/Sider';
 import MenuDivider from 'antd/lib/menu/MenuDivider';
 import SubMenu from 'antd/lib/menu/SubMenu';
 import Text from 'antd/lib/typography/Text';
 import Title from 'antd/lib/typography/Title';
 import styled, { css } from 'styled-components';
+import { Colors } from '../../utils/constants/colors';
 import { baseUnit } from '../../utils/constants/units';
 
 export const NavigationSider = styled(Sider)`
@@ -63,6 +64,12 @@ export const SubtreeSwitchWrapper = styled.div`
   align-items: center;
 `;
 
+export const FilterSwitch = styled(Switch)`
+  &[aria-checked='false'] {
+    background-color: rgba(0, 0, 0);
+  }
+`;
+
 export const StyledDropDownSelect = {
   maxHeight: 550,
   maxWidth: 302,
@@ -95,4 +102,8 @@ export const TimesUsedInputGroup = styled(Input.Group)`
 
 export const TimesUsedButton = styled(Button)`
   width: 35%;
+`;
+
+export const ImportantKeyword = styled.span`
+  color: ${Colors.leaf};
 `;

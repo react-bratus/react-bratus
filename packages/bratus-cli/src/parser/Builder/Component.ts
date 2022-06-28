@@ -14,16 +14,12 @@ class Component extends ParsableElement {
   getLinesOfCode(): number {
     const node = super.getNode();
     if (node && node.loc) {
-      return node.loc.end.line - node.loc.start.line;
+      return node.loc.end.line - node.loc.start.line + node.loc.start.line;
     } else {
       throw new Error(
         'Component is not defined or does not have location data'
       );
     }
-  }
-
-  addJSXElement(element: JSXElement): void {
-    this.JSXElements.push(element);
   }
 
   addImport(_import: Import): void {
@@ -33,6 +29,11 @@ class Component extends ParsableElement {
   hasJSX(): boolean {
     return this.JSXElements.length > 0;
   }
+
+  addJSXElement(element: JSXElement): void {
+    this.JSXElements.push(element);
+  }
+
   getJSXElements(): JSXElement[] {
     return this.JSXElements;
   }

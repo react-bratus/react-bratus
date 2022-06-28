@@ -1,12 +1,12 @@
-import { LeftCircleOutlined } from '@ant-design/icons';
+import { LeftCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import ColorHash from 'color-hash';
 
-import { Drawer as ComponentDetailsDrawer, Layout } from 'antd';
+import { Drawer as ComponentCodeDrawer, Layout } from 'antd';
 import PropTypes from 'prop-types';
 import React, { useState, useContext } from 'react';
 import { ReactFlowProvider } from 'react-flow-renderer';
 import useStickyState from '../../hooks/useStickyState';
-import ComponentDetails from '../ComponentDetails/ComponentDetails';
+import ComponentCode from '../ComponentCode/ComponentCode';
 import HelpPanel from '../HelpPanel/HelpPanel';
 import StyledMiniMap from '../Minimap/Minimap.sc';
 import NavigationPanel from '../NavigationPanel/NavigationPanel';
@@ -14,6 +14,7 @@ import {
   MainContentWrapper,
   MinimapTriggerButton,
   NavigationTriggerButton,
+  OpenHelpButton,
 } from './DefaultLayout.sc';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
 import { ButtonLabels } from '../../utils/constants/constants';
@@ -21,8 +22,8 @@ import { ButtonLabels } from '../../utils/constants/constants';
 const DefaultLayout = ({
   children,
   nodeDetail,
-  isSubtreeMode,
-  setIsSubtreeMode,
+  isFilterMode,
+  setIsFilterMode,
   setNodeDetail,
   setComponentLabelFilter,
   setComponentNumberFilter,
@@ -73,13 +74,13 @@ const DefaultLayout = ({
   };
 
   return (
-    <Layout>
+    <Layout style={{ backgroundColor: 'white' }}>
       <ReactFlowProvider>
         <NavigationPanel
           setIsHelpVisible={setIsHelpVisible}
           setIsNavCollapsed={setIsNavCollapsed}
-          isSubtreeMode={isSubtreeMode}
-          setIsSubtreeMode={setIsSubtreeMode}
+          isFilterMode={isFilterMode}
+          setIsFilterMode={setIsFilterMode}
           isNavCollapsed={isNavCollapsed}
           setComponentLabelFilter={setComponentLabelFilter}
           setComponentNumberFilter={setComponentNumberFilter}
@@ -107,7 +108,7 @@ const DefaultLayout = ({
           {children}
         </MainContentWrapper>
 
-        <ComponentDetailsDrawer
+        <ComponentCodeDrawer
           width={800}
           visible={nodeDetail.visible}
           closable={true}
@@ -115,8 +116,8 @@ const DefaultLayout = ({
           onClose={() => setNodeDetail({ visible: false, node: null })}
           title={nodeDetail.node ? nodeDetail.node.data.label : ''}
         >
-          <ComponentDetails nodeDetail={nodeDetail} />
-        </ComponentDetailsDrawer>
+          <ComponentCode nodeDetail={nodeDetail} />
+        </ComponentCodeDrawer>
 
         <MinimapTriggerButton
           isMinimapVisible={isMinimapVisible}
@@ -140,6 +141,17 @@ const DefaultLayout = ({
       </ReactFlowProvider>
 
       <ReactFlowProvider>
+        <OpenHelpButton
+          type="primary"
+          shape="round"
+          size="middle"
+          isHelpVisible={isHelpVisible}
+          icon={<QuestionCircleOutlined />}
+          onClick={() => setIsHelpVisible(true)}
+        >
+          {ButtonLabels.help}
+        </OpenHelpButton>
+
         <HelpPanel
           isVerticalTreeLayoutAsDefault={isVerticalTreeLayoutAsDefault}
           setVerticalTreeLayoutAsDefault={setVerticalTreeLayoutAsDefault}
@@ -161,7 +173,7 @@ DefaultLayout.propTypes = {
   setComponentLabelFilter: PropTypes.func,
   setComponentNumberFilter: PropTypes.func,
   setComponentNameFilter: PropTypes.func,
-  isSubtreeMode: PropTypes.bool,
-  setIsSubtreeMode: PropTypes.func,
+  isFilterMode: PropTypes.bool,
+  setIsFilterMode: PropTypes.func,
 };
 export default DefaultLayout;

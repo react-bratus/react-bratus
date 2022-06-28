@@ -11,12 +11,9 @@ import PropTypes from 'prop-types';
 import {
   BgColorsOutlined,
   FileSearchOutlined,
-  GithubOutlined,
-  InteractionOutlined,
   ExperimentOutlined,
+  FilterOutlined,
 } from '@ant-design/icons';
-import NavigationPrimaryActions from './private/ActionButtons/NavigationPrimaryActions';
-import NavigationGitHubActions from './private/ActionButtons/NavigationGitHubActions';
 import NavExperimentalActions from './private/Experimental/NavExperimentalActions';
 import NavSearchComponent from './private/SubMenuSections/NavSearchComponent';
 import NavNodeVisualizationOptions from './private/SubMenuSections/NavNodeVisualizationOptions';
@@ -25,15 +22,15 @@ import {
   NavigationLabels,
 } from '../../utils/constants/constants';
 import { useZoomPanHelper } from 'react-flow-renderer';
+import NavFilterComponent from './private/SubMenuSections/NavFilterComponent';
 
 const NavigationPanel = ({
   isNavCollapsed,
-  setIsHelpVisible,
   setComponentLabelFilter,
   setComponentNumberFilter,
   setComponentNameFilter,
-  isSubtreeMode,
-  setIsSubtreeMode,
+  isFilterMode,
+  setIsFilterMode,
 }) => {
   const reactFlowInstance = useZoomPanHelper();
 
@@ -58,12 +55,22 @@ const NavigationPanel = ({
             title={NavigationLabels.search.title}
             icon={<FileSearchOutlined />}
           >
-            <NavSearchComponent
+            <NavSearchComponent />
+          </StyledSubMenu>
+
+          <StyledMenuDivider />
+
+          <StyledSubMenu
+            key={'salam'}
+            title={'Filters'}
+            icon={<FilterOutlined />}
+          >
+            <NavFilterComponent
               setComponentLabelFilter={setComponentLabelFilter}
               setComponentNumberFilter={setComponentNumberFilter}
               setComponentNameFilter={setComponentNameFilter}
-              isSubtreeMode={isSubtreeMode}
-              setIsSubtreeMode={setIsSubtreeMode}
+              isFilterMode={isFilterMode}
+              setIsFilterMode={setIsFilterMode}
             />
           </StyledSubMenu>
 
@@ -80,24 +87,8 @@ const NavigationPanel = ({
           <StyledMenuDivider />
 
           <StyledSubMenu
-            key={NavigationLabels.actions.key}
-            title={NavigationLabels.actions.title}
-            icon={<InteractionOutlined />}
-          >
-            <NavigationPrimaryActions setIsHelpVisible={setIsHelpVisible} />
-            <StyledSubMenu
-              key={NavigationLabels.github.key}
-              title={NavigationLabels.github.title}
-              icon={<GithubOutlined />}
-            >
-              <NavigationGitHubActions />
-            </StyledSubMenu>
-          </StyledSubMenu>
-
-          <StyledMenuDivider />
-          <StyledSubMenu
             key={'experimental-actions'}
-            title={'Define custom roots'}
+            title={'Custom Root & Reset'}
             icon={<ExperimentOutlined />}
           >
             <NavExperimentalActions />
@@ -110,12 +101,11 @@ const NavigationPanel = ({
 
 NavigationPanel.propTypes = {
   isNavCollapsed: PropTypes.any,
-  setIsHelpVisible: PropTypes.any,
   setComponentLabelFilter: PropTypes.func,
   setComponentNumberFilter: PropTypes.func,
   setComponentNameFilter: PropTypes.func,
-  isSubtreeMode: PropTypes.bool,
-  setIsSubtreeMode: PropTypes.func,
+  isFilterMode: PropTypes.bool,
+  setIsFilterMode: PropTypes.func,
 };
 
 export default NavigationPanel;

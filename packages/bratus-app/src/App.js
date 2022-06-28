@@ -13,8 +13,11 @@ import { triggerBrowserWarning } from './utils/functions/browser-notification';
 
 // Preserving the initial nodes to display them in the dropdowns even after filtering.
 export const InitialNodesContext = React.createContext([]);
+export const DraggableContent = React.createContext(false);
 
 const App = () => {
+  const [isDragging, setIsDragging] = useState(false);
+
   const [nodesAndEdges, setNodesAndEdges] = useState(null);
 
   // State for Drawer holding the code panel of the selected node..
@@ -23,7 +26,7 @@ const App = () => {
   // Storing initial nodes to assign them to InitialNodesContext
   const [initialNodes, setInitialNodes] = useState([]);
 
-  // Node visualization options (size, color, white). See NavNodeVisualizationOptions.jsx
+  // Node visualization options (size, color, green). See NavNodeVisualizationOptions.jsx
   const { componentBackground } = useContext(ComponentBackgroundContext);
 
   // Dropdown value that filters by component label (name) on click.
@@ -39,7 +42,7 @@ const App = () => {
   const [treeLayoutDirection, setTreeLayoutDirection] = useState(undefined);
 
   // Enabling & disabling subtree mode.
-  const [isSubtreeMode, setIsSubtreeMode] = useState(false);
+  const [isFilterMode, setIsFilterMode] = useState(false);
 
   // Set vertical as default through the help panel preferences section.
   const [isVerticalTreeLayoutAsDefault, setVerticalTreeLayoutAsDefault] =
@@ -85,8 +88,8 @@ const App = () => {
     <InitialNodesContext.Provider value={initialNodes}>
       <DefaultLayout
         nodeDetail={nodeDetail}
-        isSubtreeMode={isSubtreeMode}
-        setIsSubtreeMode={setIsSubtreeMode}
+        isFilterMode={isFilterMode}
+        setIsFilterMode={setIsFilterMode}
         setComponentLabelFilter={setComponentLabelFilter}
         setComponentNumberFilter={setComponentNumberFilter}
         setComponentNameFilter={setComponentNameFilter}
@@ -95,16 +98,19 @@ const App = () => {
         setVerticalTreeLayoutAsDefault={setVerticalTreeLayoutAsDefault}
       >
         {nodesAndEdges ? (
-          <ComponentTree
-            componentLabelFilter={componentLabelFilter}
-            componentNumberFilter={componentNumberFilter}
-            componentNameFilter={componentNameFilter}
-            treeLayoutDirection={treeLayoutDirection}
-            isSubtreeMode={isSubtreeMode}
-            setIsSubtreeMode={setIsSubtreeMode}
-            nodesAndEdges={nodesAndEdges}
-            setTreeLayoutDirection={setTreeLayoutDirection}
-          />
+          <DraggableContent.Provider value={isDragging}>
+            <ComponentTree
+              componentLabelFilter={componentLabelFilter}
+              componentNumberFilter={componentNumberFilter}
+              componentNameFilter={componentNameFilter}
+              treeLayoutDirection={treeLayoutDirection}
+              isFilterMode={isFilterMode}
+              setIsDragging={setIsDragging}
+              setIsFilterMode={setIsFilterMode}
+              nodesAndEdges={nodesAndEdges}
+              setTreeLayoutDirection={setTreeLayoutDirection}
+            />
+          </DraggableContent.Provider>
         ) : (
           <Spin spinning={true}>
             <Alert

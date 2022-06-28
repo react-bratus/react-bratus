@@ -5,18 +5,20 @@ import HighlightedComponentsContext from '../../contexts/HighlightedComponentsCo
 import ComponentNode from '../ComponentNode/ComponentNode';
 import LayoutButtons from './private/LayoutButtons';
 import { ZoomControlButtons } from './ComponentTree.sc';
+// import { DraggableContent } from '../../App';
 
 // Create context to provide the tree layout direction to the children.
 export const GraphDirectionContext = React.createContext(null);
 
 const ComponentTree = ({
   nodesAndEdges,
-  isSubtreeMode,
+  isFilterMode,
   componentLabelFilter,
   componentNumberFilter,
   componentNameFilter,
   treeLayoutDirection,
   setTreeLayoutDirection,
+  setIsDragging,
 }) => {
   const [layoutedNodesAndEdges, setLayoutedNodesAndEdges] =
     useState(nodesAndEdges);
@@ -27,7 +29,7 @@ const ComponentTree = ({
       filterLeaveOnlyComponentsByName(layoutedNodesAndEdges, rootComponentLabel)
     );
     setTimeout(() => reactFlowInstance.fitView({ duration: 500 }), 0);
-  }, [isSubtreeMode]);
+  }, [isFilterMode]);
 
   // Filter: Hides all components but the one specified by the chosen name and its subtree.
   useEffect(() => {
@@ -154,6 +156,14 @@ const ComponentTree = ({
   // Holds the state for the user interaction
   const [isTrackPad, setIsTrackPad] = useState(false);
 
+  const onDragStart = () => {
+    setIsDragging(true);
+  };
+
+  const onDragStop = () => {
+    setTimeout(setIsDragging(false), 2000);
+  };
+
   /**
    * @description this function spots if the user uses a mousepad or a
    * trackpad, and the pane interaction changes accordingly. The interaction
@@ -182,13 +192,13 @@ const ComponentTree = ({
   // Conditionally passing nodes and edges to the onChangeTreeLayout, so that we can
   // change the positioning dynamically based on the direction of the tree.
   const renderedElementsToPosition =
-    filteredNodesAndEdges && isSubtreeMode === true
+    filteredNodesAndEdges && isFilterMode === true
       ? filteredNodesAndEdges
       : layoutedNodesAndEdges;
 
   // setting the fresh layouted elements, KiKi GangGang
   const setRenderedElementsToPosition =
-    filteredNodesAndEdges && isSubtreeMode === true
+    filteredNodesAndEdges && isFilterMode === true
       ? setFilteredNodesAndEdges
       : setLayoutedNodesAndEdges;
 
@@ -205,12 +215,15 @@ const ComponentTree = ({
           <ReactFlow
             onLoad={onLoadTree}
             elements={
-              isSubtreeMode ? filteredNodesAndEdges : layoutedNodesAndEdges
+              isFilterMode ? filteredNodesAndEdges : layoutedNodesAndEdges
             }
             nodeTypes={{ reactComponent: ComponentNode }}
             onNodeMouseEnter={(_e, node) => highlightComponent(node, false)}
             onNodeMouseLeave={(_e, node) => removeHighlight(node)}
             onPaneClick={resetHighlight}
+            onNodeDrag={onDragStart}
+            onNodeDragStart={onDragStart}
+            onNodeDragStop={onDragStop}
             panOnScroll={isTrackPad}
             minZoom={0}
             defaultZoom={0}
@@ -230,7 +243,8 @@ ComponentTree.propTypes = {
   componentNumberFilter: PropTypes.any,
   componentNameFilter: PropTypes.any,
   setTreeLayoutDirection: PropTypes.any,
-  isSubtreeMode: PropTypes.any,
+  isFilterMode: PropTypes.any,
+  setIsDragging: PropTypes.any,
 };
 
 export default ComponentTree;

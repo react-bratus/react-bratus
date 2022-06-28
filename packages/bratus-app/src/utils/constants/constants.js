@@ -13,7 +13,7 @@ export const HandleLabels = {
 };
 
 export const DropDownLabels = {
-  white: 'White',
+  default: 'Default - Green',
   size: 'Proportional Size based on Lines',
   color: 'Colorization based on Lines',
 };
@@ -31,7 +31,7 @@ export const DetailsLabels = {
 export const BackgroundLabels = {
   size: 'proportional_size',
   loc: 'loc_reference',
-  white: 'white',
+  default: 'default',
 };
 
 export const defaultOpenKeys = [
@@ -41,46 +41,46 @@ export const defaultOpenKeys = [
 ];
 
 export const HelpPanelLabels = {
-  title: 'Legend',
+  title: 'Help Section',
   thanks: 'Thank you for installing react-bratus',
   purpose: 'Hopefully this tool can help you navigate your React.js code base.',
   nodes: {
     title: 'Node visualization options',
-    text: 'Each node in the visualization represents a user-defined React component. React-Bratus provides three different ways of visualizing the nodes:',
+    text: 'React-Bratus provides three ways of visualizing the nodes:',
     size: {
-      header: 'Proportional Size based on Lines of Code',
-      text: 'Depending on the layout of the tree the height or width of each node is proportional to the lines of code in that component.',
+      header: 'Size proportional to lines of code',
+      text: 'Depending on the layout of the tree the height or width of each node is proportional to the lines of code in that component. However, there is a minimum size. The different colors are used to easily distinguish between components.',
       img: './images/proportional_size.png',
     },
     color: {
-      header: 'Colorization based on Lines of Code',
-      text: ' Depending on the lines of code of a component, its color gets lighter or darker. React-Bratus uses DarkOrange(255,140,0) to achieve this scaling.',
+      header: 'Color Intensity proportional to lines of code',
+      text: "Based on the component's lines of code. More lines result in a darker shade.",
       img: './images/lines_colorization.png',
       key: 'nodes-color-scale',
     },
-    white: {
-      header: 'White',
-      text: 'White provides a simple overview of your component hierarchy, without any visualization filters applied on it.',
-      img: './images/white.png',
+    default: {
+      header: 'Default (green)',
+      text: 'A simple overview of your component hierarchy.',
+      img: './images/default-green.png',
     },
   },
   edges: {
     title: 'Edge types',
-    text: 'Each edge in the visualization indicates a ”renders” relationship where the source node renders the target node. There are three types of those relationships:',
+    text: 'Each edge represents a ”renders” relationship where the source node renders the target node. There are three types of those relationships:',
     default: {
       header: 'Components rendered by default',
-      text: 'Black edges denote that these comoponents are always rendered by their parent.',
+      text: 'Dark brown edges denote that these components are always rendered by their parent.',
       img: './images/default.png',
       key: 'default-edges',
     },
     conditional: {
       header: 'Conditionally rendered components',
-      text: 'Conditionally rendered based on Javascript control flow (orange-dashed lines) indicate a component rendered within conditional statements. In the label, you can see the conditional type (ternary, &&, if) and the condition that needs to be satisfied for the component to be rendered.',
+      text: 'Components rendered conditionally. The conditional types ([IF], [&&], [?:]), as well as the conditions, are shown in the label.',
       img: './images/conditional.png',
     },
     router: {
       header: 'Components rendered by React-Router',
-      text: 'Conditionally rendered by the react-router-dom rendered component given a specific path, represented as the label on the edge',
+      text: 'Components rendered by react-router-dom. The path is shown in the label.',
       img: './images/router.png',
     },
   },
@@ -107,8 +107,9 @@ export const ButtonLabels = {
   feedback: 'Give feedback',
   bug: 'Submit bug',
   feature: 'Suggest new feature',
-  recompile: 'Recompile Project',
-  help: 'Open Legend',
+  recompile: 'Reset',
+  filterReset: 'Reset Filters',
+  help: 'Open Help',
   nav: {
     show: 'Show Nav',
     hide: 'Hide Nav',

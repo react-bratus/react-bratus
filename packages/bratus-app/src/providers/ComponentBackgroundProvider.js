@@ -6,7 +6,7 @@ import { BackgroundLabels } from '../utils/constants/constants';
 const ComponentBackgroundProvider = ({ children }) => {
   const [componentBackground, setComponentBackground] = useStickyState(
     {
-      mode: BackgroundLabels.white,
+      mode: BackgroundLabels.default,
       locReference: 300,
     },
     'componentBackground'
