@@ -48,8 +48,8 @@ const NavNodeVisualizationOptions = () => {
         }
         dropdownStyle={StyledDropDownSelect}
       >
-        <Select.Option value={BackgroundLabels.white}>
-          {DropDownLabels.white}
+        <Select.Option value={BackgroundLabels.default}>
+          {DropDownLabels.default}
         </Select.Option>
 
         <Select.Option value={BackgroundLabels.size}>

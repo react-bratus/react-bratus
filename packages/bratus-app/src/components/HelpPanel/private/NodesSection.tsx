@@ -9,13 +9,10 @@ const NodesSection = () => {
     <>
       <Paragraph>{HelpPanelLabels.nodes.text}</Paragraph>
 
-      <Collapse defaultActiveKey={HelpPanelLabels.nodes.color.key}>
-        <Panel
-          key={HelpPanelLabels.nodes.color.key}
-          header={HelpPanelLabels.nodes.color.header}
-        >
-          <Paragraph>{HelpPanelLabels.nodes.color.text}</Paragraph>
-          <Image src={HelpPanelLabels.nodes.color.img} />
+      <Collapse>
+        <Panel key={''} header={HelpPanelLabels.nodes.default.header}>
+          <Paragraph>{HelpPanelLabels.nodes.default.text}</Paragraph>
+          <Image src={HelpPanelLabels.nodes.default.img} />
         </Panel>
 
         <Panel key={''} header={HelpPanelLabels.nodes.size.header}>
@@ -23,9 +20,12 @@ const NodesSection = () => {
           <Image src={HelpPanelLabels.nodes.size.img} />
         </Panel>
 
-        <Panel key={''} header={HelpPanelLabels.nodes.white.header}>
-          <Paragraph>{HelpPanelLabels.nodes.white.text}</Paragraph>
-          <Image src={HelpPanelLabels.nodes.white.img} />
+        <Panel
+          key={HelpPanelLabels.nodes.color.key}
+          header={HelpPanelLabels.nodes.color.header}
+        >
+          <Paragraph>{HelpPanelLabels.nodes.color.text}</Paragraph>
+          <Image src={HelpPanelLabels.nodes.color.img} />
         </Panel>
       </Collapse>
     </>

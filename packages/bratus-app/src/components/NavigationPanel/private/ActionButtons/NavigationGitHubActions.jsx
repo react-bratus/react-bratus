@@ -1,23 +1,31 @@
+import { Typography } from 'antd';
 import React from 'react';
 import { ButtonLabels, UrlLabels } from '../../../../utils/constants/constants';
-import { ActionButton, GitHubActionsWrapper } from './ActionButtons.sc';
+import { StyledLi } from '../../../HelpPanel/HelpPanel.sc';
+const { Link } = Typography;
 
 // Buttons on sider to submit feedback, bugs and potential features
 const NavigationGitHubActions = () => {
   return (
-    <GitHubActionsWrapper>
-      <ActionButton target="_blank" href={UrlLabels.feedback} ghost>
-        {ButtonLabels.feedback}
-      </ActionButton>
+    <ul>
+      <StyledLi>
+        <Link target="_blank" href={UrlLabels.feedback}>
+          {ButtonLabels.feedback}
+        </Link>
+      </StyledLi>
 
-      <ActionButton target="_blank" href={UrlLabels.bug} ghost>
-        {ButtonLabels.bug}
-      </ActionButton>
+      <StyledLi>
+        <Link target="_blank" href={UrlLabels.bug}>
+          {ButtonLabels.bug}
+        </Link>
+      </StyledLi>
 
-      <ActionButton target="_blank" href={UrlLabels.feature} ghost>
-        {ButtonLabels.feature}
-      </ActionButton>
-    </GitHubActionsWrapper>
+      <StyledLi>
+        <Link target="_blank" href={UrlLabels.feature}>
+          {ButtonLabels.feature}
+        </Link>
+      </StyledLi>
+    </ul>
   );
 };
 

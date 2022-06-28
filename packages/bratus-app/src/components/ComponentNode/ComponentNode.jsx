@@ -1,7 +1,7 @@
-import { Modal } from 'antd';
+import { Modal, Tooltip } from 'antd';
 import ColorHash from 'color-hash';
 import React, { useContext, useState } from 'react';
-import { Handle } from 'react-flow-renderer';
+import { DraggableContent } from '../../App';
 import ComponentBackgroundContext from '../../contexts/ComponentBackgroundContext';
 import HighlightedComponentsContext from '../../contexts/HighlightedComponentsContext';
 import {
@@ -12,7 +12,12 @@ import {
 import { nodeNameLength } from '../../utils/constants/units';
 import { rgbaToHex } from '../../utils/functions/rgbaToHex';
 import { GraphDirectionContext } from '../ComponentTree/ComponentTree';
-import { StyledNode, StyledNodeContent, StyledTitle } from './ComponentNode.sc';
+import {
+  StyledHandle,
+  StyledNode,
+  StyledNodeContent,
+  StyledTitle,
+} from './ComponentNode.sc';
 import ModalContent from './private/ModalContent';
 
 const ComponentNode = (node) => {
@@ -20,10 +25,17 @@ const ComponentNode = (node) => {
 
   const { componentBackground } = useContext(ComponentBackgroundContext);
 
+  /**
+   * We need context, as it's the only way of passing props to a custom node,
+   * without overcomplicating it and passing a variable to getNodes in App.JS
+   * @const isDragging handles dragging, which in React-Flow triggers onClick
+   */
+  const isDragging = useContext(DraggableContent);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const openModal = () => {
-    setIsModalVisible(true);
+    isDragging && setIsModalVisible(true);
   };
 
   // We need the layout to pass it as props to the styled component.
@@ -54,7 +66,7 @@ const ComponentNode = (node) => {
         })`
       );
     } else {
-      return '#FFFFFFFF';
+      return '#7ae1a1';
     }
   };
 
@@ -91,38 +103,46 @@ const ComponentNode = (node) => {
   };
 
   const truncatedNodeName = truncateNodeName(node.data.label, nodeNameLength);
+  const tooltipTitleVisible = node.data.label.length > 10 && node.data.label;
 
   return (
     <>
-      <StyledNode
-        linesOfCode={node.data.linesOfCode}
-        componentBackground={componentBackground}
-        treeLayoutDirection={treeLayoutDirection}
-        isHighlighted={isHighlighted()}
-        bgColor={getBgColor}
-        fontColor={getFontColor()}
-        onClick={openModal}
-      >
-        {node.data.inDegree > 0 && (
-          <Handle
-            type={HandleLabels.target}
-            position={layoutTargetHandlePosition}
-          />
-        )}
+      {' '}
+      <Tooltip placement="bottom" title={tooltipTitleVisible}>
+        <StyledNode
+          linesOfCode={node.data.linesOfCode}
+          componentBackground={componentBackground}
+          treeLayoutDirection={treeLayoutDirection}
+          isHighlighted={isHighlighted()}
+          bgColor={getBgColor}
+          fontColor={getFontColor()}
+          onClick={openModal}
+        >
+          {node.data.inDegree > 0 && (
+            <StyledHandle
+              isHighlighted={isHighlighted()}
+              type={HandleLabels.target}
+              isConnectable={false}
+              position={layoutTargetHandlePosition}
+            />
+          )}
 
-        <StyledNodeContent>
-          <StyledTitle color={getFontColor} level={5}>
-            {truncatedNodeName}
-          </StyledTitle>
-        </StyledNodeContent>
+          <StyledNodeContent>
+            <StyledTitle color={getFontColor} level={5}>
+              {truncatedNodeName}
+            </StyledTitle>
+          </StyledNodeContent>
 
-        {node.data.outDegree > 0 && (
-          <Handle
-            type={HandleLabels.source}
-            position={layoutSourceHandlePosition}
-          />
-        )}
-      </StyledNode>
+          {node.data.outDegree > 0 && (
+            <StyledHandle
+              isHighlighted={isHighlighted()}
+              type={HandleLabels.source}
+              isConnectable={false}
+              position={layoutSourceHandlePosition}
+            />
+          )}
+        </StyledNode>
+      </Tooltip>
       <Modal
         title={node.data.label}
         visible={isModalVisible}

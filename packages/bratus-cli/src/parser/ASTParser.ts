@@ -235,12 +235,6 @@ class ASTParser {
                 jsxElement.isRouteElement = true;
                 jsxElement.resetIdentifier();
               }
-              if (node.attributes != null) {
-                console.log(
-                  '[WORKING] This node has attributes = props',
-                  node.attributes
-                );
-              }
             }
           },
           JSXAttribute({ node }) {

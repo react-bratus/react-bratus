@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReloadOutlined } from '@ant-design/icons';
+import { ApartmentOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
 import {
   ActionButton,
@@ -7,15 +7,19 @@ import {
 } from '../ActionButtons/ActionButtons.sc';
 import { useState } from 'react';
 import { makeConfiguration, recompile } from '../../../../api';
+import { ButtonLabels } from '../../../../utils/constants/constants';
 
 export const NavExperimentalActions = () => {
   const [customRootComponents, setCustomRootComponents] = useState('App');
 
-  const triggerCustomConfiguration = (newRoots) => {
-    makeConfiguration(newRoots)
-      .then(recompile())
+  const triggerRecompile = () => {
+    recompile()
       .then(location.reload())
       .catch((error) => console.log('An error occurred ', error));
+  };
+
+  const triggerCustomConfiguration = (newRoots) => {
+    makeConfiguration(newRoots).then(triggerRecompile());
   };
 
   function handleChange(e) {
@@ -31,16 +35,28 @@ export const NavExperimentalActions = () => {
           onChange={handleChange}
         />
       </Input.Group>
+
       <br />
       <br />
+
+      <ActionButton
+        type="primary"
+        shape="round"
+        size="middle"
+        icon={<ApartmentOutlined />}
+        onClick={() => triggerCustomConfiguration(customRootComponents)}
+      >
+        {'Set custom roots'}
+      </ActionButton>
+
       <ActionButton
         type="primary"
         shape="round"
         size="middle"
         icon={<ReloadOutlined />}
-        onClick={() => triggerCustomConfiguration(customRootComponents)}
+        onClick={() => triggerCustomConfiguration('App')}
       >
-        {'Set custom roots'}
+        {ButtonLabels.recompile}
       </ActionButton>
     </RecompileActionsWrapper>
   );

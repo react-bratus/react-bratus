@@ -9,7 +9,7 @@ const EdgesSection = () => {
     <>
       <Paragraph>{HelpPanelLabels.edges.text}</Paragraph>
 
-      <Collapse defaultActiveKey={HelpPanelLabels.edges.default.key}>
+      <Collapse>
         <Panel
           key={HelpPanelLabels.edges.default.key}
           header={HelpPanelLabels.edges.default.header}

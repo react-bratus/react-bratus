@@ -16,11 +16,12 @@ export const CheckboxWrapper = styled.div`
 
 export const StyledLink = styled(Link)`
   margin-left: 9px;
+  margin-top: ${baseUnit / 2}px;
+  display: inline-block;
 `;
 
 export const StyledLi = styled.li`
   list-style-type: none;
-  margin-bottom: ${baseUnit / 2}px;
 `;
 
 export const StyledUl = styled.ul`

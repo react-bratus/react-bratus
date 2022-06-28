@@ -24,7 +24,15 @@ export const NavigationTriggerButton = styled(Button)`
 export const MinimapTriggerButton = styled(Button)`
   position: absolute;
   top: ${({ isMinimapVisible }) =>
-    isMinimapVisible === true ? `${baseUnit * 19.2}px` : `${baseUnit}px`};
-  right: ${baseUnit}px;
+    isMinimapVisible === true ? `${baseUnit * 19.2}px` : `${baseUnit * 2}px`};
+  right: ${baseUnit * 2}px;
+  z-index: 999;
+`;
+
+export const OpenHelpButton = styled(Button)`
+  position: absolute;
+  right: ${baseUnit * 2}px;
+  display: ${({ isHelpVisible }) => isHelpVisible && `none`};
+  bottom: ${baseUnit * 2}px;
   z-index: 999;
 `;

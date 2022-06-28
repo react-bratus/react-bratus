@@ -2,23 +2,16 @@ import React from 'react';
 import { Divider, Button } from 'antd';
 
 const ModalContent = (node) => {
-  console.log('Incoming node:', node);
   const nodeDetails = node.node.data;
-  // const componentId = node.node.id;
-  // const componentPath = componentId.replaceAll(':', ' > ');
   const componentType =
     nodeDetails.component.node.type == 'VariableDeclaration'
       ? 'arrow function'
       : nodeDetails.component.node.type == 'FunctionDeclaration'
       ? 'function'
       : 'class';
+
   return (
     <>
-      {/* <p>
-        Location in the component tree:
-        <br />
-        {componentPath}
-      </p> */}
       <p>
         This is {componentType == 'arrow function' ? 'an' : 'a'}{' '}
         <span style={{ color: '#0080ff' }}>{componentType} component</span>,

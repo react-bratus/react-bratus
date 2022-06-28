@@ -3,7 +3,6 @@ import JSXElement from './JSXElement';
 import ParsableElement from './ParsableElement';
 class Component extends ParsableElement {
   private JSXElements: JSXElement[] = [];
-  private componentProps: String[] = [];
   private imports: Import[] = [];
   public timesUsed = 0;
   public code: string;
@@ -37,14 +36,6 @@ class Component extends ParsableElement {
 
   getJSXElements(): JSXElement[] {
     return this.JSXElements;
-  }
-
-  addProp(prop: string): void {
-    this.componentProps.push(prop);
-  }
-
-  getProps(): String[] {
-    return this.componentProps;
   }
 }
 
