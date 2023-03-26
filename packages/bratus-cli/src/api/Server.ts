@@ -47,17 +47,21 @@ class Server {
       (_req: express.Request, res: express.Response) => {
         try {
           this.config = getConfiguration();
+
           console.log(
             '[ParserConfig] Recompiling with configuration:',
             this.config
           );
+
           const parserOptions: ParserOptions = {
             rootFolderPath: this.config.rootFolderPath,
             log: false,
             rootComponents: this.config.rootComponents,
             pathToSaveDir: this.config.pathToSaveDir,
           };
+
           const parser = new ASTParser(parserOptions);
+
           parser
             .parse()
             .then(() => res.status(200).send())

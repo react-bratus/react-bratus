@@ -12,6 +12,7 @@ import JSXElement from './Builder/JSXElement';
 import ParsedFile from './Builder/ParsedFile';
 import Graph from './Graph/Graph';
 import { ParserOptions } from '../api/ParserConfiguration';
+
 class ASTParser {
   private componentMap: Map<string, Component> = new Map();
   private options: ParserOptions;
@@ -25,10 +26,19 @@ class ASTParser {
     );
   }
 
-  public parse(): Promise<void> {
+  public async parse(): Promise<void> {
+    const isNextProject = await this.identifyIfIsNextProject();
+
     return new Promise((resolve) => {
       console.log(`[ASTParser] Parsing project`);
+
+      isNextProject &&
+        console.log(
+          `[ASTParser] I can see it is a Next.js project. If not, please submit an issue under the Repo`
+        );
+
       this.getFilesAndDirectories().then(async (files) => {
+        // console.log('logging everything', files);
         ASTParser.logEntry(
           `[ASTParser] Traversing files: [${files.join(',\n')}]`
         );
@@ -37,6 +47,7 @@ class ASTParser {
           if (!files[i].includes('stories')) {
             if (fs.existsSync(files[i]) && fs.lstatSync(files[i]).isFile()) {
               const parsedFile = await this.parseFile(files[i]);
+              // console.log('parsedFile', parsedFile);
               if (parsedFile.hasComponents()) {
                 parsedFile.components.forEach((component) => {
                   const componentName = component.getElementName();
@@ -60,9 +71,18 @@ class ASTParser {
             }
           }
         }
+
+        const componentRootsArray = this.getApplicationRoots(
+          isNextProject,
+          this.componentMap
+        );
+
         const graph = new Graph(this.componentMap);
+
         console.log(`[ASTParser] Parsing finished`);
-        graph.build(this.options.rootComponents);
+
+        graph.build(componentRootsArray);
+
         console.log(`[Graph Builder] Building graph finished`);
 
         this.writeDataToFile(graph.toString());
@@ -75,7 +95,6 @@ class ASTParser {
    * The function responsible for saving the graph data to the data.json file.
    * @param graphData Graph data represented by a string
    */
-
   private writeDataToFile(graphData: string): void {
     const path = this.options.pathToSaveDir;
     if (!fs.existsSync(path)) {
@@ -102,6 +121,102 @@ class ASTParser {
     });
   }
 
+  public getPackageJsonPath(): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      glob.glob(
+        `${process.cwd()}` + '/**/package.json',
+        (err: any, res: any) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(res);
+        }
+      );
+    });
+  }
+
+  public async identifyIfIsNextProject(): Promise<boolean> {
+    /**
+     * Get the path of the package.json file, pass it as an argument in order to read the file.
+     * Returns a boolean, to use as a condition checker and evaluate if next exists in the dependencies.
+     */
+    const readPackageContent = this.getPackageJsonPath().then(
+      async (path: string[]) => {
+        // const isNextFramework = false;
+
+        const packageJsonFile = await JSON.parse(
+          fs.readFileSync(path[0], 'utf8')
+        );
+
+        return packageJsonFile;
+      }
+    );
+
+    const identifyIfNextIsInPackageJSON: Promise<boolean> =
+      readPackageContent.then((packageContent) => {
+        let isNextFramework = false;
+
+        const dependencies =
+          packageContent.dependencies || packageContent.devDependencies;
+
+        if (packageContent) {
+          if (dependencies) {
+            Object.keys(dependencies).forEach((dependency) => {
+              if (dependency.match(/^next$/)) {
+                isNextFramework = true;
+              }
+            });
+          }
+        }
+
+        return isNextFramework;
+      });
+
+    return identifyIfNextIsInPackageJSON;
+  }
+
+  /**
+   * The characteristic of Next.JS applications is that they don't have a single entrypoint (App),
+   * but multiple ones. Thus, we need to identify the pages, which is the convention, and identify the
+   * roots that are the entrypoints of the application. If @param {isNextProject} is false, and therefore
+   * it is not a Next.JS application, then we search for a single entry point like in every React app.
+   */
+  public getApplicationRoots(
+    isNextProject: boolean,
+    componentMap: Map<string, Component>
+  ): string[] {
+    const nextJSPagesArray: string[] = [];
+    let nextJsProjectHasPages = false;
+
+    if (isNextProject) {
+      const componentIterators = componentMap[Symbol.iterator]();
+
+      // For every file, get its path and identify if it is a page or not.
+      for (const iterator of componentIterators) {
+        // We use [1], as we need to access the 2nd key from the iterator object.
+        const path = iterator[1].getPath();
+
+        // Get component names of NextJS pages.
+        if (path.includes('pages/')) {
+          nextJSPagesArray.push(iterator[1].getElementName());
+        }
+      }
+
+      if (nextJSPagesArray.length > 0) {
+        nextJsProjectHasPages = true;
+      }
+    }
+
+    if (isNextProject && nextJsProjectHasPages) {
+      return nextJSPagesArray;
+    } else {
+      const mappedComponentNamesToArray = [...this.componentMap.keys()];
+      const rootComponents = this.options.rootComponents;
+      rootComponents.push(mappedComponentNamesToArray[0]);
+      return rootComponents;
+    }
+  }
+
   public static peek<T>(array: T[]): T {
     return array[array.length - 1];
   }
@@ -119,7 +234,7 @@ class ASTParser {
         let component: Component = new Component(path, fileContent);
         const elements: JSXElement[] = [new JSXElement(path)];
         const attributes: Attribute[] = [new Attribute()];
-        let ifStatementLevel = 0;
+        const ifStatementLevel = 0;
         let isConditional = false;
         let conditionKind = '';
         let conditionIdentifier = '';

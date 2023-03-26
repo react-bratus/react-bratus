@@ -16,6 +16,7 @@ class Graph {
 
   public build(rootComponents: string[]): void {
     console.log(`[Graph Builder] Building graph`);
+    console.log('root components', rootComponents);
     rootComponents.forEach((rootComponentName) => {
       const component = this.componentMap.get(rootComponentName);
       if (component) {

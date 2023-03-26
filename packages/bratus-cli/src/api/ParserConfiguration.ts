@@ -12,7 +12,7 @@ export interface ParserOptions {
 export const DEFAULT_PARSER_CONFIGURATION = {
   pathToSaveDir: `${process.cwd()}/.react-bratus`,
   rootFolderPath: `${process.cwd()}/src`,
-  rootComponents: ['App'],
+  rootComponents: [],
 };
 
 /**
@@ -25,10 +25,13 @@ export function getConfiguration() {
   const path = `${process.cwd()}/.react-bratus/bratusrc.json`;
   if (fs.existsSync(path) && fs.lstatSync(path).isFile()) {
     console.log('[ParserConfig] Parsing with custom configuration from file.');
-    return {
+
+    const defaultConfigItem = {
       ...DEFAULT_PARSER_CONFIGURATION,
       ...JSON.parse(fs.readFileSync(path, 'utf8')),
     };
+
+    return defaultConfigItem;
   } else {
     console.log('[ParserConfig] Parsing with default configuration.');
     return DEFAULT_PARSER_CONFIGURATION;
@@ -41,11 +44,11 @@ export function getConfiguration() {
  */
 export function makeConfiguration(input: string) {
   const filePath = `${process.cwd()}/.react-bratus/bratusrc.json`;
-  const rootsToArray =
-    input == '' ? 'App' : input.split(',').map((word) => word.trim());
+  const rootsToArray = input && input.split(',').map((word) => word.trim());
   const customRootsObject = {
     rootComponents: rootsToArray,
   };
+
   fs.writeFileSync(filePath, JSON.stringify(customRootsObject));
 }
 
