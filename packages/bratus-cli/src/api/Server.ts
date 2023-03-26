@@ -11,7 +11,11 @@ import path = require('path');
 
 class Server {
   private app = express();
-  private config: any;
+  private config: ParserOptions;
+
+  constructor(options: ParserOptions) {
+    this.config = options;
+  }
 
   public async listen(): Promise<void> {
     this.config = getConfiguration();
@@ -66,6 +70,7 @@ class Server {
             .parse()
             .then(() => res.status(200).send())
             .catch(() => res.status(500).send());
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           console.log('An error occurred when parsing: ', error.message);
           res.status(500).send(error.message);
@@ -78,6 +83,7 @@ class Server {
       try {
         makeConfiguration(_req.body.rootComponents);
         res.status(200).send();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         console.log('An error occurred when parsing: ', error.message);
         res.status(500).send(error.message);

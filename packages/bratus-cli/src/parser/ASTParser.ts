@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { parse } from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as fs from 'fs';
@@ -20,7 +22,9 @@ class ASTParser {
 
   constructor(options: ParserOptions) {
     this.options = options;
-    ASTParser.log = options.log;
+    if (options.log) {
+      ASTParser.log = options.log;
+    }
     console.log(
       `[ASTParser] Parser initialized with path: ${this.options.rootFolderPath}`
     );
