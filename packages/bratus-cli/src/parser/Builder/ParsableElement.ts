@@ -1,8 +1,8 @@
 import { Identifier, JSXIdentifier, Node } from '@babel/types';
 
 interface Location {
-  start: number | null;
-  end: number | null;
+  start: number | null | undefined;
+  end: number | null | undefined;
 }
 
 class ParsableElement {
