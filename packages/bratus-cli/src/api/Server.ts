@@ -11,7 +11,7 @@ import path = require('path');
 
 class Server {
   private app = express();
-  private config: ParserOptions | undefined;
+  private config: ParserOptions;
 
   public async listen(): Promise<void> {
     this.config = getConfiguration();
